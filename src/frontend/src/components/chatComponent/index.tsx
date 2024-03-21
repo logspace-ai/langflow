@@ -13,8 +13,6 @@ import { Separator } from "../ui/separator";
 
 export default function FlowToolbar({ flow }: ChatType): JSX.Element {
   const [open, setOpen] = useState(false);
-  const flowState = useFlowStore((state) => state.flowState);
-  const nodes = useFlowStore((state) => state.nodes);
   const hasIO = useFlowStore((state) => state.hasIO);
   const hasStore = useStoreStore((state) => state.hasStore);
   const validApiKey = useStoreStore((state) => state.validApiKey);

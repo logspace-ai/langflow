@@ -1,6 +1,7 @@
 import { cloneDeep } from "lodash";
 import { LinkIcon, SparklesIcon } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import AccordionComponent from "../../../../components/AccordionComponent";
 import ShadTooltip from "../../../../components/ShadTooltipComponent";
 import IconComponent from "../../../../components/genericIconComponent";
 import { Input } from "../../../../components/ui/input";
@@ -24,7 +25,6 @@ import {
   removeCountFromString,
   sensitiveSort,
 } from "../../../../utils/utils";
-import DisclosureComponent from "../DisclosureComponent";
 import SidebarDraggableComponent from "./sideBarDraggableComponent";
 import { sortKeys } from "./utils";
 
@@ -233,6 +233,20 @@ export default function ExtraSidebar(): JSX.Element {
     []
   );
 
+  const getIcon = useMemo(() => {
+    return (SBSectionName: string) => {
+      if (nodeIconsLucide[SBSectionName]) {
+        return (
+          <IconComponent
+            name={SBSectionName}
+            strokeWidth={1.5}
+            className="w-[22px] text-primary"
+          />
+        );
+      }
+    };
+  }, []);
+
   return (
     <div className="side-bar-arrangement">
       <div className="side-bar-search-div-placement">
@@ -306,23 +320,38 @@ export default function ExtraSidebar(): JSX.Element {
                         </div>
                       </div>
                     </a>
-                    <div className="p-2 px-4 text-sm font-semibold" key={index}>
+                    <div
+                      className=" font-semibol border-b-1 z-50 p-2 px-4 text-sm"
+                      key={index}
+                    >
                       Legacy Components
                     </div>
+                    <Separator className="h-[0.6px]" />
                   </>
                 )}
-                <DisclosureComponent
+
+                <AccordionComponent
+                  sideBar
+                  trigger={
+                    <>
+                      <div className="flex justify-between ">
+                        <div className="mr-3 text-primary">
+                          {getIcon(SBSectionName as any)}
+                        </div>
+
+                        <div className=" self-center pl-1 font-normal">
+                          {nodeNames[SBSectionName] ?? nodeNames.unknown}
+                        </div>
+                      </div>
+                    </>
+                  }
+                  key={index + search + JSON.stringify(getFilterEdge)}
+                  keyValue={index + search + JSON.stringify(getFilterEdge)}
                   openDisc={
                     getFilterEdge.length !== 0 || search.length !== 0
                       ? true
                       : false
                   }
-                  key={index + search + JSON.stringify(getFilterEdge)}
-                  button={{
-                    title: nodeNames[SBSectionName] ?? nodeNames.unknown,
-                    Icon:
-                      nodeIconsLucide[SBSectionName] ?? nodeIconsLucide.unknown,
-                  }}
                 >
                   <div className="side-bar-components-gap">
                     {Object.keys(dataFilter[SBSectionName])
@@ -370,7 +399,7 @@ export default function ExtraSidebar(): JSX.Element {
                         </ShadTooltip>
                       ))}
                   </div>
-                </DisclosureComponent>
+                </AccordionComponent>
               </>
             ) : (
               <div key={index}></div>
