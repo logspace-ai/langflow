@@ -11,6 +11,7 @@ import { useStoreStore } from "../../stores/storeStore";
 import { classNames, isThereModal } from "../../utils/utils";
 import ForwardedIconComponent from "../genericIconComponent";
 import { Separator } from "../ui/separator";
+import { useTranslation } from "react-i18next";
 
 export default function FlowToolbar(): JSX.Element {
   const preventDefault = true;
@@ -50,6 +51,8 @@ export default function FlowToolbar(): JSX.Element {
 
   const prevNodesRef = useRef<any[] | undefined>();
 
+  const { t } = useTranslation();
+
   const ModalMemo = useMemo(
     () => (
       <ShareModal
@@ -77,7 +80,7 @@ export default function FlowToolbar(): JSX.Element {
                 : "",
             )}
           />
-          Share
+          {t("Share")}
         </button>
       </ShareModal>
     ),
@@ -117,7 +120,7 @@ export default function FlowToolbar(): JSX.Element {
                       name="BotMessageSquareIcon"
                       className={"h-5 w-5 transition-all"}
                     />
-                    Playground
+                    {t("Playground")}
                   </div>
                 </IOModal>
               ) : (
@@ -128,7 +131,7 @@ export default function FlowToolbar(): JSX.Element {
                     name="BotMessageSquareIcon"
                     className={"h-5 w-5 transition-all"}
                   />
-                  Playground
+                  {t("Playground")}
                 </div>
               )}
             </div>
@@ -151,7 +154,7 @@ export default function FlowToolbar(): JSX.Element {
                       name="Code2"
                       className={"h-5 w-5"}
                     />
-                    API
+                    {t("API")}
                   </div>
                 </ApiModal>
               )}

@@ -41,6 +41,7 @@ import useAlertStore from "../../stores/alertStore";
 import useFlowsManagerStore from "../../stores/flowsManagerStore";
 import { Users } from "../../types/api";
 import { UserInputType } from "../../types/components";
+import { useTranslation } from "react-i18next";
 
 export default function AdminPage() {
   const [inputValue, setInputValue] = useState("");
@@ -55,6 +56,8 @@ export default function AdminPage() {
   const setCurrentFlowId = useFlowsManagerStore(
     (state) => state.setCurrentFlowId,
   );
+
+  const { t } = useTranslation();
 
   // set null id
   useEffect(() => {
@@ -218,16 +221,16 @@ export default function AdminPage() {
           <div className="main-page-nav-arrangement">
             <span className="main-page-nav-title">
               <IconComponent name="Shield" className="w-6" />
-              {ADMIN_HEADER_TITLE}
+              {t(ADMIN_HEADER_TITLE)}
             </span>
           </div>
           <span className="admin-page-description-text">
-            {ADMIN_HEADER_DESCRIPTION}
+            {t(ADMIN_HEADER_DESCRIPTION)}
           </span>
           <div className="flex w-full justify-between px-4">
             <div className="flex w-96 items-center gap-4">
               <Input
-                placeholder="Search Username"
+                placeholder={t("Search Username")}
                 value={inputValue}
                 onChange={(e) => handleFilterUsers(e.target.value)}
               />
@@ -252,17 +255,17 @@ export default function AdminPage() {
             </div>
             <div>
               <UserManagementModal
-                title="New User"
-                titleHeader={"Add a new user"}
-                cancelText="Cancel"
-                confirmationText="Save"
+                title={t("New User")}
+                titleHeader={t("Add a new user")}
+                cancelText={t("Cancel")}
+                confirmationText={t("Save")}
                 icon={"UserPlus2"}
                 onConfirm={(index, user) => {
                   handleNewUser(user);
                 }}
                 asChild
               >
-                <Button variant="primary">New User</Button>
+                <Button variant="primary">{t("New User")}</Button>
               </UserManagementModal>
             </div>
           </div>

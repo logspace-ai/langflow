@@ -14,6 +14,7 @@ import IconComponent, {
 import { Button, buttonVariants } from "../../../ui/button";
 import { Input } from "../../../ui/input";
 import useFileDrop from "../../hooks/use-on-file-drop";
+import { useTranslation } from "react-i18next";
 
 type SideBarFoldersButtonsComponentProps = {
   pathname: string;
@@ -148,10 +149,12 @@ const SideBarFoldersButtonsComponent = ({
     }
   };
 
+  const { t } = useTranslation();
+
   return (
     <>
       <div className="flex shrink-0 items-center justify-between gap-2">
-        <div className="flex-1 self-start text-lg font-semibold">Folders</div>
+        <div className="flex-1 self-start text-lg font-semibold">{ t("Folders")}</div>
         <Button
           variant="primary"
           size="icon"
@@ -285,7 +288,7 @@ const SideBarFoldersButtonsComponent = ({
                     </div>
                   ) : (
                     <span className="block w-full truncate opacity-100">
-                      {item.name}
+                      {t(item.name)}
                     </span>
                   )}
                   {index > 0 && (

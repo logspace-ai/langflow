@@ -30,6 +30,7 @@ import {
 } from "../ui/dropdown-menu";
 import { Separator } from "../ui/separator";
 import MenuBar from "./components/menuBar";
+import { useTranslation } from "react-i18next";
 
 export default function Header(): JSX.Element {
   const notificationCenter = useAlertStore((state) => state.notificationCenter);
@@ -83,6 +84,8 @@ export default function Header(): JSX.Element {
     LOCATIONS_TO_RETURN.some((path) => location.pathname.includes(path)) &&
     visitedFlowPathBefore();
 
+  const { t } = useTranslation();
+
   return (
     <div className="header-arrangement">
       <div className="header-start-display lg:w-[407px]">
@@ -118,7 +121,7 @@ export default function Header(): JSX.Element {
             onClick={checkForChanges}
           >
             <IconComponent name="Home" className="h-4 w-4" />
-            <div className="hidden flex-1 md:block">{USER_PROJECTS_HEADER}</div>
+            <div className="hidden flex-1 md:block">{t(USER_PROJECTS_HEADER)}</div>
           </Button>
         </Link>
 
@@ -132,7 +135,7 @@ export default function Header(): JSX.Element {
               data-testid="button-store"
             >
               <IconComponent name="Store" className="h-4 w-4" />
-              <div className="flex-1">Store</div>
+              <div className="flex-1">{t("Store")}</div>
             </Button>
           </Link>
         )}
@@ -231,19 +234,19 @@ export default function Header(): JSX.Element {
                           className="h-5 w-5 focus-visible:outline-0"
                         />
 
-                        {userData?.username ?? "User"}
+                        {t(userData?.username ?? "User")}
                       </div>
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
                   </>
                 )}
-                <DropdownMenuLabel>General</DropdownMenuLabel>
+                <DropdownMenuLabel>{t("General")}</DropdownMenuLabel>
                 <DropdownMenuItem
                   className="cursor-pointer gap-2"
                   onClick={() => navigate("/settings")}
                 >
                   <ForwardedIconComponent name="Settings" className="w-4" />
-                  Settings
+                  {t("Settings")}
                 </DropdownMenuItem>
                 {!autoLogin && (
                   <>
@@ -253,13 +256,13 @@ export default function Header(): JSX.Element {
                         onClick={() => navigate("/admin")}
                       >
                         <ForwardedIconComponent name="Shield" className="w-4" />
-                        Admin Page
+                        {t("Admin Page")}
                       </DropdownMenuItem>
                     )}
                   </>
                 )}
                 <DropdownMenuSeparator />
-                <DropdownMenuLabel>Help</DropdownMenuLabel>
+                <DropdownMenuLabel>{t("Help")}</DropdownMenuLabel>
                 <DropdownMenuItem
                   className="cursor-pointer gap-2"
                   onClick={() =>
@@ -267,7 +270,7 @@ export default function Header(): JSX.Element {
                   }
                 >
                   <ForwardedIconComponent name="FileText" className="w-4" />
-                  Docs
+                  {t("Docs")}
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   className="cursor-pointer gap-2"
@@ -282,7 +285,7 @@ export default function Header(): JSX.Element {
                     name="MessagesSquare"
                     className="w-4"
                   />
-                  Discussions
+                  {t("Discussions")}
                 </DropdownMenuItem>
                 {!autoLogin && (
                   <>
@@ -294,7 +297,7 @@ export default function Header(): JSX.Element {
                       }}
                     >
                       <ForwardedIconComponent name="LogOut" className="w-4" />
-                      Log Out
+                      {t("Log Out")}
                     </DropdownMenuItem>
                   </>
                 )}

@@ -25,6 +25,7 @@ import ParentDisclosureComponent from "../ParentDisclosureComponent";
 import SidebarDraggableComponent from "./sideBarDraggableComponent";
 import { sortKeys } from "./utils";
 import sensitiveSort from "./utils/sensitive-sort";
+import { useTranslation } from "react-i18next";
 
 export default function ExtraSidebar(): JSX.Element {
   const data = useTypesStore((state) => state.data);
@@ -244,6 +245,7 @@ export default function ExtraSidebar(): JSX.Element {
     };
   }, []);
 
+  const {t} = useTranslation();
   return (
     <div className="side-bar-arrangement">
       <div className="side-bar-search-div-placement">
@@ -253,7 +255,7 @@ export default function ExtraSidebar(): JSX.Element {
           type="text"
           name="search"
           id="search"
-          placeholder="Search"
+          placeholder={t("Search")}
           className="nopan nodelete nodrag noundo nocopy input-search"
           onChange={(event) => {
             handleSearchInput(event.target.value);
@@ -288,7 +290,7 @@ export default function ExtraSidebar(): JSX.Element {
       <div className="side-bar-components-div-arrangement">
         <div className="parent-disclosure-arrangement">
           <div className="flex items-center gap-4 align-middle">
-            <span className="parent-disclosure-title">Components</span>
+            <span className="parent-disclosure-title">{t("Components")}</span>
           </div>
         </div>
         {Object.keys(dataFilter)
@@ -306,7 +308,7 @@ export default function ExtraSidebar(): JSX.Element {
                   isChild={false}
                   key={index + search + JSON.stringify(getFilterEdge)}
                   button={{
-                    title: nodeNames[SBSectionName] ?? nodeNames.unknown,
+                    title: t(nodeNames[SBSectionName] ?? nodeNames.unknown),
                     Icon:
                       nodeIconsLucide[SBSectionName] ?? nodeIconsLucide.unknown,
                   }}
@@ -367,7 +369,7 @@ export default function ExtraSidebar(): JSX.Element {
           defaultOpen={search.length !== 0 || getFilterEdge.length !== 0}
           key={`${search.length !== 0}-${getFilterEdge.length !== 0}-Advanced`}
           button={{
-            title: "Experimental",
+            title: t("Experimental"),
             Icon: nodeIconsLucide.unknown,
           }}
           testId="extended-disclosure"
@@ -387,7 +389,7 @@ export default function ExtraSidebar(): JSX.Element {
                     }
                     key={index + search + JSON.stringify(getFilterEdge)}
                     button={{
-                      title: nodeNames[SBSectionName] ?? nodeNames.unknown,
+                      title: t(nodeNames[SBSectionName] ?? nodeNames.unknown),
                       Icon:
                         nodeIconsLucide[SBSectionName] ??
                         nodeIconsLucide.unknown,
