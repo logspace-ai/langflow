@@ -9,6 +9,7 @@ import useFlowsManagerStore from "../../stores/flowsManagerStore";
 import { FileComponentType } from "../../types/components";
 import IconComponent from "../genericIconComponent";
 import { Button } from "../ui/button";
+import { useTranslation } from "react-i18next";
 
 export default function InputFileComponent({
   value,
@@ -18,6 +19,7 @@ export default function InputFileComponent({
   onFileChange,
   editNode = false,
 }: FileComponentType): JSX.Element {
+  const { t } = useTranslation();
   const currentFlowId = useFlowsManagerStore((state) => state.currentFlowId);
   const [myValue, setMyValue] = useState(value);
   const [loading, setLoading] = useState(false);
@@ -84,7 +86,7 @@ export default function InputFileComponent({
       } else {
         // Show an error if the file type is not allowed
         setErrorData({
-          title: INVALID_FILE_ALERT,
+          title: t(INVALID_FILE_ALERT),
           list: fileTypes,
         });
         setLoading(false);
@@ -110,7 +112,7 @@ export default function InputFileComponent({
                 : "input-dialog primary-input text-muted-foreground"
           }
         >
-          {myValue !== "" ? myValue : "No file"}
+          {myValue !== "" ? myValue : t("No file")}
         </span>
         {!editNode && (
           <Button

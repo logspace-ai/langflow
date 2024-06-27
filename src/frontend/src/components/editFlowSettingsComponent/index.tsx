@@ -5,6 +5,7 @@ import { Textarea } from "../../components/ui/textarea";
 import useFlowsManagerStore from "../../stores/flowsManagerStore";
 import { InputProps } from "../../types/components";
 import { cn, isEndpointNameValid } from "../../utils/utils";
+import { useTranslation } from "react-i18next";
 
 export const EditFlowSettings: React.FC<InputProps> = ({
   name,
@@ -16,6 +17,7 @@ export const EditFlowSettings: React.FC<InputProps> = ({
   setDescription,
   setEndpointName,
 }: InputProps): JSX.Element => {
+  const { t } = useTranslation();
   const [isMaxLength, setIsMaxLength] = useState(false);
   const [validEndpointName, setValidEndpointName] = useState(true);
   const [isInvalidName, setIsInvalidName] = useState(false);
@@ -59,12 +61,12 @@ export const EditFlowSettings: React.FC<InputProps> = ({
     <>
       <Label>
         <div className="edit-flow-arrangement">
-          <span className="font-medium">Name{setName ? "" : ":"}</span>{" "}
+          <span className="font-medium">{t("Name")}{setName ? "" : ":"}</span>{" "}
           {isMaxLength && (
-            <span className="edit-flow-span">Character limit reached</span>
+            <span className="edit-flow-span">{t("Character limit reached")}</span>
           )}
           {isInvalidName && (
-            <span className="edit-flow-span">Invalid name</span>
+            <span className="edit-flow-span">{t("Invalid name")}</span>
           )}
         </div>
         {setName ? (
@@ -90,7 +92,7 @@ export const EditFlowSettings: React.FC<InputProps> = ({
       <Label>
         <div className="edit-flow-arrangement mt-3">
           <span className="font-medium">
-            Description{setDescription ? " (optional)" : ":"}
+            {t("Description")}{setDescription ? t("(optional)") : ":"}
           </span>
         </div>
         {setDescription ? (
@@ -113,18 +115,19 @@ export const EditFlowSettings: React.FC<InputProps> = ({
               description === "" ? "font-light italic" : "",
             )}
           >
-            {description === "" ? "No description" : description}
+            {description === "" ? t("No description") : description}
           </div>
         )}
       </Label>
       {setEndpointName && (
         <Label>
           <div className="edit-flow-arrangement mt-3">
-            <span className="font-medium">Endpoint Name</span>
+            <span className="font-medium">{t("Endpoint Name")}</span>
             {!validEndpointName && (
               <span className="edit-flow-span">
-                Invalid endpoint name. Use only letters, numbers, hyphens, and
-                underscores ({maxLength} characters max).
+                {t("Invalid endpoint name. Use only letters, numbers, hyphens, and underscores ({maxLength} characters max).", {
+                  maxLength: maxLength
+                })}
               </span>
             )}
           </div>
@@ -134,7 +137,7 @@ export const EditFlowSettings: React.FC<InputProps> = ({
             type="text"
             name="endpoint_name"
             value={endpointName ?? ""}
-            placeholder="An alternative name to run the endpoint"
+            placeholder={t("An alternative name to run the endpoint")}
             maxLength={maxLength}
             id="endpoint_name"
             onDoubleClickCapture={(event) => {

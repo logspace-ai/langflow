@@ -7,6 +7,7 @@ import { TextAreaComponentType } from "../../types/components";
 import IconComponent from "../genericIconComponent";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
+import { useTranslation } from "react-i18next";
 
 export default function TextAreaComponent({
   value,
@@ -15,6 +16,7 @@ export default function TextAreaComponent({
   editNode = false,
   id = "",
 }: TextAreaComponentType): JSX.Element {
+  const { t } = useTranslation();
   // Clear text area
   useEffect(() => {
     if (disabled && value !== "") {
@@ -32,7 +34,7 @@ export default function TextAreaComponent({
             value={value}
             disabled={disabled}
             className={editNode ? "input-edit-node w-full" : "w-full"}
-            placeholder={"Type something..."}
+            placeholder={t("Type something...")}
             onChange={(event) => {
               onChange(event.target.value);
             }}
@@ -40,8 +42,8 @@ export default function TextAreaComponent({
         </Case>
         <GenericModal
           type={TypeModal.TEXT}
-          buttonText="Finish Editing"
-          modalTitle={EDIT_TEXT_MODAL_TITLE}
+          buttonText={t("Finish Editing")}
+          modalTitle={t(EDIT_TEXT_MODAL_TITLE)}
           value={value}
           setValue={(value: string) => {
             onChange(value);
@@ -75,7 +77,7 @@ export default function TextAreaComponent({
                         " primary-input text-muted-foreground"
                   }
                 >
-                  {value !== "" ? value : "Type something..."}
+                  {value !== "" ? value : t("Type something...")}
                 </span>
               </div>
             </Button>

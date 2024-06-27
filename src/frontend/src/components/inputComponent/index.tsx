@@ -7,6 +7,7 @@ import ForwardedIconComponent from "../genericIconComponent";
 import { Input } from "../ui/input";
 import CustomInputPopover from "./components/popover";
 import CustomInputPopoverObject from "./components/popoverObject";
+import { useTranslation } from "react-i18next";
 
 export default function InputComponent({
   autoFocus = false,
@@ -39,6 +40,8 @@ export default function InputComponent({
   const [pwdVisible, setPwdVisible] = useState(false);
   const refInput = useRef<HTMLInputElement>(null);
   const [showOptions, setShowOptions] = useState<boolean>(false);
+
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (disabled && value && onChange && value !== "") {
@@ -73,7 +76,7 @@ export default function InputComponent({
               password && !editNode ? "pr-10" : "",
               className!,
             )}
-            placeholder={password && editNode ? "Key" : placeholder}
+            placeholder={password && editNode ? t("Key") : t(placeholder)}
             onChange={(e) => {
               if (onChangeFolderName) {
                 return onChangeFolderName(e);
@@ -113,9 +116,9 @@ export default function InputComponent({
               disabled={disabled}
               setShowOptions={setShowOptions}
               required={required}
-              placeholder={placeholder}
+              placeholder={t(placeholder)}
               blurOnEnter={blurOnEnter}
-              optionsPlaceholder={optionsPlaceholder}
+              optionsPlaceholder={t(optionsPlaceholder)}
               className={className}
             />
           ) : (
@@ -140,10 +143,10 @@ export default function InputComponent({
               password={password}
               pwdVisible={pwdVisible}
               editNode={editNode}
-              placeholder={placeholder}
+              placeholder={t(placeholder)}
               blurOnEnter={blurOnEnter}
               options={options}
-              optionsPlaceholder={optionsPlaceholder}
+              optionsPlaceholder={t(optionsPlaceholder)}
               className={className}
             />
           )}

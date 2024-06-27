@@ -15,6 +15,7 @@ import {
   INVALID_API_KEY,
   NO_API_KEY,
 } from "../../../../../../constants/constants";
+import { useTranslation } from "react-i18next";
 
 type StoreApiKeyFormComponentProps = {
   apikey: string;
@@ -32,6 +33,7 @@ const StoreApiKeyFormComponent = ({
   validApiKey,
   hasApiKey,
 }: StoreApiKeyFormComponentProps) => {
+  const { t } = useTranslation();
   return (
     <>
       <Form.Root
@@ -42,13 +44,13 @@ const StoreApiKeyFormComponent = ({
       >
         <Card x-chunk="dashboard-04-chunk-2" id="api">
           <CardHeader>
-            <CardTitle>Store API Key</CardTitle>
+            <CardTitle>{t("Store API Key")}</CardTitle>
             <CardDescription>
-              {(hasApiKey && !validApiKey
-                ? INVALID_API_KEY
+              {t(hasApiKey && !validApiKey
+                ? t(INVALID_API_KEY)
                 : !hasApiKey
                   ? NO_API_KEY
-                  : "") + INSERT_API_KEY}
+                  : "") + t(INSERT_API_KEY)}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -63,22 +65,22 @@ const StoreApiKeyFormComponent = ({
                     value={apikey}
                     isForm
                     password={true}
-                    placeholder="Insert your API Key"
+                    placeholder={t("Insert your API Key")}
                     className="w-full"
                   />
                   <Form.Message match="valueMissing" className="field-invalid">
-                    Please enter your API Key
+                    {t("Please enter your API Key")}
                   </Form.Message>
                 </Form.Field>
               </div>
               <span className="pr-1 text-xs text-muted-foreground">
-                {CREATE_API_KEY}{" "}
+                {t(CREATE_API_KEY)}{" "}
                 <a
                   className="text-high-indigo underline"
                   href="https://langflow.store/"
                   target="_blank"
                 >
-                  langflow.store
+                  {t("langflow.store")}
                 </a>
               </span>
             </div>
@@ -90,7 +92,7 @@ const StoreApiKeyFormComponent = ({
                 type="submit"
                 data-testid="api-key-save-button-store"
               >
-                Save
+                {t("Save")}
               </Button>
             </Form.Submit>
           </CardFooter>

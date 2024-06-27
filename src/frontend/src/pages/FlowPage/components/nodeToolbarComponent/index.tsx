@@ -32,6 +32,7 @@ import {
 } from "../../../../utils/reactflowUtils";
 import { classNames, cn, isThereModal } from "../../../../utils/utils";
 import ToolbarSelectItem from "./toolbarSelectItem";
+import { useTranslation } from "react-i18next";
 
 export default function NodeToolbarComponent({
   data,
@@ -46,6 +47,7 @@ export default function NodeToolbarComponent({
   updateNode,
   isOutdated,
 }: nodeToolbarPropsType): JSX.Element {
+  const { t } = useTranslation();
   const version = useDarkStore((state) => state.version);
   const [showModalAdvanced, setShowModalAdvanced] = useState(false);
   const [showconfirmShare, setShowconfirmShare] = useState(false);
@@ -317,6 +319,7 @@ export default function NodeToolbarComponent({
             paneX: nodes.find((node) => node.id === data.id)?.position.x,
             paneY: nodes.find((node) => node.id === data.id)?.position.y,
           },
+          t
         );
         break;
     }
@@ -347,7 +350,7 @@ export default function NodeToolbarComponent({
     if (!hasShift) shortcutWPlus = filteredShortcut.join("+").split(" ");
     return (
       <div className="flex justify-center">
-        <span> {name} </span>
+        <span> {t(name)} </span>
         <span
           className={`ml-3 flex items-center rounded-sm bg-muted px-1.5 py-[0.1em] text-lg text-muted-foreground`}
         >
@@ -533,7 +536,7 @@ export default function NodeToolbarComponent({
           </ShadTooltip>*/}
 
           <Select onValueChange={handleSelectChange} value="">
-            <ShadTooltip content="All" side="top">
+            <ShadTooltip content={t("All")} side="top">
               <SelectTrigger>
                 <div>
                   <div
@@ -557,7 +560,7 @@ export default function NodeToolbarComponent({
                     shortcut={
                       shortcuts.find((obj) => obj.name === "Code")?.shortcut!
                     }
-                    value={"Code"}
+                    value={t("Code")}
                     icon={"Code"}
                     dataTestId="code-button-modal"
                   />
@@ -570,7 +573,7 @@ export default function NodeToolbarComponent({
                       shortcuts.find((obj) => obj.name === "Advanced Settings")
                         ?.shortcut!
                     }
-                    value={"Advanced"}
+                    value={t("Advanced Settings")}
                     icon={"Settings2"}
                     dataTestId="edit-button-modal"
                   />
@@ -581,7 +584,7 @@ export default function NodeToolbarComponent({
                   shortcut={
                     shortcuts.find((obj) => obj.name === "Save")?.shortcut!
                   }
-                  value={"Save"}
+                  value={t("Save")}
                   icon={"SaveAll"}
                   dataTestId="save-button-modal"
                 />
@@ -591,7 +594,7 @@ export default function NodeToolbarComponent({
                   shortcut={
                     shortcuts.find((obj) => obj.name === "Duplicate")?.shortcut!
                   }
-                  value={"Duplicate"}
+                  value={t("Duplicate")}
                   icon={"Copy"}
                   dataTestId="copy-button-modal"
                 />
@@ -601,7 +604,7 @@ export default function NodeToolbarComponent({
                   shortcut={
                     shortcuts.find((obj) => obj.name === "Copy")?.shortcut!
                   }
-                  value={"Copy"}
+                  value={t("Copy")}
                   icon={"Clipboard"}
                   dataTestId="copy-button-modal"
                 />
@@ -620,7 +623,7 @@ export default function NodeToolbarComponent({
               )}
               {hasStore && (
                 <SelectItem
-                  value={"Share"}
+                  value={t("Share")}
                   disabled={!hasApiKey || !validApiKey}
                 >
                   <ToolbarSelectItem
@@ -628,7 +631,7 @@ export default function NodeToolbarComponent({
                       shortcuts.find((obj) => obj.name === "Component Share")
                         ?.shortcut!
                     }
-                    value={"Share"}
+                    value={t("Share")}
                     icon={"Share3"}
                     dataTestId="share-button-modal"
                   />
@@ -655,7 +658,7 @@ export default function NodeToolbarComponent({
                   shortcut={
                     shortcuts.find((obj) => obj.name === "Docs")?.shortcut!
                   }
-                  value={"Docs"}
+                  value={t("Docs")}
                   icon={"FileText"}
                   dataTestId="docs-button-modal"
                 />
@@ -667,7 +670,7 @@ export default function NodeToolbarComponent({
                       shortcuts.find((obj) => obj.name === "Minimize")
                         ?.shortcut!
                     }
-                    value={showNode ? "Minimize" : "Expand"}
+                    value={showNode ? t("Minimize") : t("Expand")}
                     icon={showNode ? "Minimize2" : "Maximize2"}
                     dataTestId="minimize-button-modal"
                   />
@@ -691,7 +694,7 @@ export default function NodeToolbarComponent({
                     shortcut={
                       shortcuts.find((obj) => obj.name === "Freeze")?.shortcut!
                     }
-                    value={"Freeze"}
+                    value={t("Freeze")}
                     icon={"Snowflake"}
                     dataTestId="group-button-modal"
                     style={`${frozen ? " text-ice" : ""} transition-all`}
@@ -703,7 +706,7 @@ export default function NodeToolbarComponent({
                   shortcut={
                     shortcuts.find((obj) => obj.name === "Download")?.shortcut!
                   }
-                  value={"Download"}
+                  value={t("Download")}
                   icon={"Download"}
                   dataTestId="download-button-modal"
                 />
@@ -719,7 +722,7 @@ export default function NodeToolbarComponent({
                     name="Trash2"
                     className="relative top-0.5 mr-2 h-4 w-4"
                   />{" "}
-                  <span className="">Delete</span>{" "}
+                  <span className="">{t("Delete")}</span>{" "}
                   <span
                     className={`absolute right-2 top-2 flex items-center justify-center rounded-sm px-1 py-[0.2] ${
                       deleteIsFocus ? " " : "bg-muted"
@@ -737,20 +740,20 @@ export default function NodeToolbarComponent({
 
           <ConfirmationModal
             open={showOverrideModal}
-            title={`Replace`}
-            cancelText="Create New"
-            confirmationText="Replace"
+            title={t(`Replace`)}
+            cancelText={t("Create New")}
+            confirmationText={t("Replace")}
             size={"x-small"}
             icon={"SaveAll"}
             index={6}
             onConfirm={(index, user) => {
               saveComponent(cloneDeep(data), true);
-              setSuccessData({ title: `${data.id} successfully overridden!` });
+              setSuccessData({ title: `${data.id} ${t("successfully overridden!")}` });
             }}
             onClose={setShowOverrideModal}
             onCancel={() => {
               saveComponent(cloneDeep(data), false);
-              setSuccessData({ title: "New node successfully saved!" });
+              setSuccessData({ title: t("New node successfully saved!") });
             }}
           >
             <ConfirmationModal.Content>

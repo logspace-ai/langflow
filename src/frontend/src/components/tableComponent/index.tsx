@@ -15,6 +15,7 @@ import ForwardedIconComponent from "../genericIconComponent";
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
 import TableOptions from "./components/TableOptions";
 import resetGrid from "./utils/reset-grid-columns";
+import { getI18n } from "react-i18next";
 
 interface TableComponentProps extends AgGridReactProps {
   columnDefs: NonNullable<AgGridReactProps["columnDefs"]>;
@@ -40,8 +41,8 @@ const TableComponent = forwardRef<
 >(
   (
     {
-      alertTitle = DEFAULT_TABLE_ALERT_TITLE,
-      alertDescription = DEFAULT_TABLE_ALERT_MSG,
+      alertTitle = getI18n().t(DEFAULT_TABLE_ALERT_TITLE),
+      alertDescription = getI18n().t(DEFAULT_TABLE_ALERT_MSG),
       ...props
     },
     ref,

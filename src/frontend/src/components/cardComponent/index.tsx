@@ -34,6 +34,7 @@ import useLikeComponent from "./hooks/use-handle-like";
 import useDragStart from "./hooks/use-on-drag-start";
 import usePlaygroundEffect from "./hooks/use-playground-effect";
 import { convertTestName } from "./utils/convert-test-name";
+import { useTranslation } from "react-i18next";
 
 export default function CollectionCardComponent({
   data,
@@ -141,6 +142,8 @@ export default function CollectionCardComponent({
     selectedFlowsComponentsCards?.includes(data?.id) ?? false;
 
   const { onDragStart } = useDragStart(data);
+
+  const { t } = useTranslation();
 
   return (
     <>
@@ -477,7 +480,7 @@ export default function CollectionCardComponent({
                   ) : (
                     <Loading className="h-4 w-4 text-medium-indigo" />
                   )}
-                  Playground
+                  {t("Playground")}
                 </Button>
               )}
             </div>

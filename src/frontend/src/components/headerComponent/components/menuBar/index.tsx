@@ -23,8 +23,11 @@ import { cn } from "../../../../utils/utils";
 import IconComponent from "../../../genericIconComponent";
 import ShadTooltip from "../../../shadTooltipComponent";
 import { Button } from "../../../ui/button";
+import { useTranslation } from "react-i18next";
 
 export const MenuBar = ({}: {}): JSX.Element => {
+  const { t } = useTranslation()
+
   const shortcuts = useShortcutsStore((state) => state.shortcuts);
   const addFlow = useFlowsManagerStore((state) => state.addFlow);
   const currentFlow = useFlowsManagerStore((state) => state.currentFlow);
@@ -63,11 +66,11 @@ export const MenuBar = ({}: {}): JSX.Element => {
 
   function printByBuildStatus() {
     if (isBuilding) {
-      return "Building...";
+      return t("Building...");
     } else if (saveLoading) {
-      return "Saving...";
+      return t("Saving...");
     }
-    return "Saved";
+    return t("Saved");
   }
 
   return currentFlow ? (
@@ -85,7 +88,7 @@ export const MenuBar = ({}: {}): JSX.Element => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-44">
-            <DropdownMenuLabel>Options</DropdownMenuLabel>
+            <DropdownMenuLabel>{t("Options")}</DropdownMenuLabel>
             <DropdownMenuItem
               onClick={() => {
                 handleAddFlow();
@@ -93,7 +96,7 @@ export const MenuBar = ({}: {}): JSX.Element => {
               className="cursor-pointer"
             >
               <IconComponent name="Plus" className="header-menu-options" />
-              New
+              {t("New")}
             </DropdownMenuItem>
 
             <DropdownMenuItem
@@ -103,7 +106,7 @@ export const MenuBar = ({}: {}): JSX.Element => {
               className="cursor-pointer"
             >
               <IconComponent name="Settings2" className="header-menu-options" />
-              Settings
+              {t("Settings")}
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => {
@@ -115,7 +118,7 @@ export const MenuBar = ({}: {}): JSX.Element => {
                 name="ScrollText"
                 className="header-menu-options"
               />
-              Logs
+              {t("Logs")}
             </DropdownMenuItem>
             <DropdownMenuItem
               className="cursor-pointer"
@@ -123,7 +126,7 @@ export const MenuBar = ({}: {}): JSX.Element => {
                 uploadFlow({ newProject: false, isComponent: false }).catch(
                   (error) => {
                     setErrorData({
-                      title: UPLOAD_ERROR_ALERT,
+                      title: t(UPLOAD_ERROR_ALERT),
                       list: [error],
                     });
                   },
@@ -131,7 +134,7 @@ export const MenuBar = ({}: {}): JSX.Element => {
               }}
             >
               <IconComponent name="FileUp" className="header-menu-options" />
-              Import
+              {t("Import")}
             </DropdownMenuItem>
             <ExportModal>
               <div className="header-menubar-item">
@@ -139,7 +142,7 @@ export const MenuBar = ({}: {}): JSX.Element => {
                   name="FileDown"
                   className="header-menu-options"
                 />
-                Export
+                {t("Export")}
               </div>
             </ExportModal>
             <DropdownMenuItem
@@ -149,7 +152,7 @@ export const MenuBar = ({}: {}): JSX.Element => {
               className="cursor-pointer"
             >
               <ToolbarSelectItem
-                value="Undo"
+                value={t("Undo")}
                 icon="Undo"
                 dataTestId=""
                 shortcut={
@@ -165,7 +168,7 @@ export const MenuBar = ({}: {}): JSX.Element => {
               className="cursor-pointer"
             >
               <ToolbarSelectItem
-                value="Redo"
+                value={t("Redo")}
                 icon="Redo"
                 dataTestId=""
                 shortcut={
@@ -184,7 +187,7 @@ export const MenuBar = ({}: {}): JSX.Element => {
                 name="RefreshCcw"
                 className="header-menu-options"
               />
-              Refresh All
+              {t("Refresh All")}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -197,7 +200,7 @@ export const MenuBar = ({}: {}): JSX.Element => {
       {(currentFlow.updated_at || saveLoading) && (
         <ShadTooltip
           content={
-            SAVED_HOVER +
+            t(SAVED_HOVER) +
             new Date(currentFlow.updated_at ?? "").toLocaleString("en-US", {
               hour: "numeric",
               minute: "numeric",
@@ -236,7 +239,7 @@ export const MenuBar = ({}: {}): JSX.Element => {
               }
             >
               <IconComponent name="Square" className="h-4 w-4" />
-              <span>Stop</span>
+              <span>t("Stop")</span>
             </button> */}
           </div>
         </ShadTooltip>

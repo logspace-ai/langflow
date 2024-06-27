@@ -14,6 +14,7 @@ import IconComponent, {
 import { Button, buttonVariants } from "../../../ui/button";
 import { Input } from "../../../ui/input";
 import useFileDrop from "../../hooks/use-on-file-drop";
+import { useTranslation } from "react-i18next";
 
 type SideBarFoldersButtonsComponentProps = {
   pathname: string;
@@ -25,6 +26,7 @@ const SideBarFoldersButtonsComponent = ({
   handleChangeFolder,
   handleDeleteFolder,
 }: SideBarFoldersButtonsComponentProps) => {
+  const { t } = useTranslation();
   const refInput = useRef<HTMLInputElement>(null);
   const setFolders = useFolderStore((state) => state.setFolders);
   const folders = useFolderStore((state) => state.folders);
@@ -66,13 +68,13 @@ const SideBarFoldersButtonsComponent = ({
       .then(() => {
         getFolderById(folderId);
         setSuccessData({
-          title: "Uploaded successfully",
+          title: t("Uploaded successfully"),
         });
       })
       .catch((err) => {
         console.log(err);
         setErrorData({
-          title: `Error on upload`,
+          title: t(`Error on upload`),
           list: [err["response"]["data"]],
         });
       });
@@ -83,7 +85,7 @@ const SideBarFoldersButtonsComponent = ({
   };
 
   function addNewFolder() {
-    addFolder({ name: "New Folder", parent_id: null, description: "" }).then(
+    addFolder({ name: t("New Folder"), parent_id: null, description: "" }).then(
       (res) => {
         refreshFolders();
       },
@@ -151,7 +153,7 @@ const SideBarFoldersButtonsComponent = ({
   return (
     <>
       <div className="flex shrink-0 items-center justify-between gap-2">
-        <div className="flex-1 self-start text-lg font-semibold">Folders</div>
+        <div className="flex-1 self-start text-lg font-semibold">{ t("Folders")}</div>
         <Button
           variant="primary"
           size="icon"
@@ -285,7 +287,7 @@ const SideBarFoldersButtonsComponent = ({
                     </div>
                   ) : (
                     <span className="block w-full truncate opacity-100">
-                      {item.name}
+                      {t(item.name)}
                     </span>
                   )}
                   {index > 0 && (

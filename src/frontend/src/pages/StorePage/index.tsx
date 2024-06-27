@@ -34,6 +34,7 @@ import { useStoreStore } from "../../stores/storeStore";
 import { storeComponent } from "../../types/store";
 import { cn } from "../../utils/utils";
 import InputSearchComponent from "../MainPage/components/myCollectionComponent/components/inputSearchComponent";
+import { useTranslation } from "react-i18next";
 
 export default function StorePage(): JSX.Element {
   const hasApiKey = useStoreStore((state) => state.hasApiKey);
@@ -66,18 +67,20 @@ export default function StorePage(): JSX.Element {
 
   const navigate = useNavigate();
 
+  const { t } = useTranslation();
+
   useEffect(() => {
     if (!loadingApiKey) {
       if (!hasApiKey) {
         setErrorData({
-          title: APIKEY_ERROR_ALERT,
-          list: [NOAPI_ERROR_ALERT],
+          title: t(APIKEY_ERROR_ALERT),
+          list: [t(NOAPI_ERROR_ALERT)],
         });
         setLoading(false);
       } else if (!validApiKey) {
         setErrorData({
-          title: APIKEY_ERROR_ALERT,
-          list: [INVALID_API_ERROR_ALERT],
+          title: t(APIKEY_ERROR_ALERT),
+          list: [t(INVALID_API_ERROR_ALERT)],
         });
       }
     }
@@ -155,7 +158,7 @@ export default function StorePage(): JSX.Element {
           setTotalRowsCount(0);
           setLoading(false);
           setErrorData({
-            title: COMPONENTS_ERROR_ALERT,
+            title: t(COMPONENTS_ERROR_ALERT),
             list: [err["response"]["data"]["detail"]],
           });
         }
@@ -175,8 +178,8 @@ export default function StorePage(): JSX.Element {
   return (
     <PageLayout
       betaIcon
-      title={STORE_TITLE}
-      description={STORE_DESC}
+      title={t(STORE_TITLE)}
+      description={t(STORE_DESC)}
       button={
         <Button
           data-testid="api-key-button-store"
@@ -191,7 +194,7 @@ export default function StorePage(): JSX.Element {
           }}
         >
           <IconComponent name="Key" className="mr-2 w-4" />
-          API Key
+          {t("API Key")}
         </Button>
       }
     >
@@ -226,7 +229,7 @@ export default function StorePage(): JSX.Element {
                   (loading ? " cursor-not-allowed" : "")
                 }
               >
-                All
+                {t("All")}
               </button>
               <button
                 data-testid="flows-button-store"
@@ -242,7 +245,7 @@ export default function StorePage(): JSX.Element {
                   (loading ? " cursor-not-allowed" : "")
                 }
               >
-                Flows
+                {t("Flows")}
               </button>
               <button
                 data-testid="components-button-store"
@@ -258,11 +261,11 @@ export default function StorePage(): JSX.Element {
                   (loading ? " cursor-not-allowed" : "")
                 }
               >
-                Components
+                {t("Components")}
               </button>
               <ShadTooltip content="Coming Soon">
                 <button className="cursor-not-allowed p-3 text-muted-foreground">
-                  Bundles
+                  {t("Bundles")}
                 </button>
               </ShadTooltip>
             </div>
@@ -275,22 +278,22 @@ export default function StorePage(): JSX.Element {
               value={selectFilter}
             >
               <SelectTrigger className="mr-4 w-[160px] flex-shrink-0">
-                <SelectValue placeholder="Filter Values" />
+                <SelectValue placeholder={t("Filter Values")} />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectItem value="all">All</SelectItem>
+                  <SelectItem value="all">{t("All")}</SelectItem>
                   <SelectItem
                     disabled={!hasApiKey || !validApiKey}
                     value="createdbyme"
                   >
-                    Created By Me
+                    {t("Created By Me")}
                   </SelectItem>
                   <SelectItem
                     disabled={!hasApiKey || !validApiKey}
                     value="likedbyme"
                   >
-                    Liked By Me
+                    {t("Liked By Me")}
                   </SelectItem>
                 </SelectGroup>
               </SelectContent>
@@ -321,7 +324,7 @@ export default function StorePage(): JSX.Element {
             <span className="px-0.5 text-sm text-muted-foreground">
               {(!loading || searchData.length !== 0) && (
                 <>
-                  {totalRowsCount} {totalRowsCount !== 1 ? "results" : "result"}
+                  {totalRowsCount} {t(totalRowsCount !== 1 ? "results" : "result")}
                 </>
               )}
             </span>
@@ -333,12 +336,12 @@ export default function StorePage(): JSX.Element {
               }}
             >
               <SelectTrigger data-testid="select-order-store">
-                <SelectValue placeholder="Popular" />
+                <SelectValue placeholder={t("Popular")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="Popular">Popular</SelectItem>
+                <SelectItem value="Popular">{t("Popular")}</SelectItem>
                 {/* <SelectItem value="Recent">Most Recent</SelectItem> */}
-                <SelectItem value="Alphabetical">Alphabetical</SelectItem>
+                <SelectItem value="Alphabetical">{t("Alphabetical")}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -377,15 +380,14 @@ export default function StorePage(): JSX.Element {
                   <div className="grid w-full gap-4">
                     {selectFilter != "all" ? (
                       <>
-                        You haven't{" "}
-                        {selectFilter === "createdbyme" ? "created" : "liked"}{" "}
-                        anything with the selected filters yet.
+                        {t("You haven't")}{" "}
+                        {t(selectFilter === "createdbyme" ? "created" : "liked")}{" "}
+                        {t("anything with the selected filters yet.")}
                       </>
                     ) : (
                       <>
-                        There are no{" "}
-                        {tabActive == "Flows" ? "Flows" : "Components"} with the
-                        selected filters.
+                        {t("There are no")}{" "}
+                        {t(tabActive == "Flows" ? "Flows" : "Components")} {t("with the selected filters.")}
                       </>
                     )}
                   </div>

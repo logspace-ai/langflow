@@ -26,6 +26,7 @@ import IOFieldView from "./components/IOFieldView";
 import SessionView from "./components/SessionView";
 import useRemoveSession from "./components/SessionView/hooks";
 import ChatView from "./components/chatView";
+import { useTranslation } from "react-i18next";
 
 export default function IOModal({
   children,
@@ -168,6 +169,8 @@ export default function IOModal({
     sessions;
   }, [messages]);
 
+  const { t } = useTranslation();
+
   return (
     <BaseModal
       size={"md-thin"}
@@ -178,9 +181,9 @@ export default function IOModal({
     >
       <BaseModal.Trigger>{children}</BaseModal.Trigger>
       {/* TODO ADAPT TO ALL TYPES OF INPUTS AND OUTPUTS */}
-      <BaseModal.Header description={CHAT_FORM_DIALOG_SUBTITLE}>
+      <BaseModal.Header description={t(CHAT_FORM_DIALOG_SUBTITLE)}>
         <div className="flex items-center">
-          <span className="pr-2">Playground</span>
+          <span className="pr-2">{t("Playground")}</span>
           <IconComponent
             name="BotMessageSquareIcon"
             className="h-6 w-6 pl-1 text-foreground"
@@ -208,13 +211,13 @@ export default function IOModal({
                 <div className="api-modal-tablist-div">
                   <TabsList>
                     {inputs.length > 0 && (
-                      <TabsTrigger value={"1"}>Inputs</TabsTrigger>
+                      <TabsTrigger value={"1"}>{t("Inputs")}</TabsTrigger>
                     )}
                     {outputs.length > 0 && (
-                      <TabsTrigger value={"2"}>Outputs</TabsTrigger>
+                      <TabsTrigger value={"2"}>{t("Outputs")}</TabsTrigger>
                     )}
                     {haveChat && (
-                      <TabsTrigger value={"0"}>Memories</TabsTrigger>
+                      <TabsTrigger value={"0"}>{t("Memories")}</TabsTrigger>
                     )}
                   </TabsList>
                 </div>
@@ -242,7 +245,7 @@ export default function IOModal({
                                 >
                                   <div>
                                     <Badge variant="gray" size="md">
-                                      {node.data.node.display_name}
+                                      {t(node.data.node.display_name)}
                                     </Badge>
                                   </div>
                                 </ShadTooltip>
@@ -311,7 +314,7 @@ export default function IOModal({
                                 >
                                   <div>
                                     <Badge variant="gray" size="md">
-                                      {node.data.node.display_name}
+                                      {t(node.data.node.display_name)}
                                     </Badge>
                                   </div>
                                 </ShadTooltip>
@@ -370,9 +373,9 @@ export default function IOModal({
                                 size="md"
                                 className="block truncate"
                               >
-                                {session === currentFlow?.id
+                                {t(session === currentFlow?.id
                                   ? "Default Session"
-                                  : session}
+                                  : session)}
                               </Badge>
                             </div>
                           </ShadTooltip>
@@ -451,8 +454,7 @@ export default function IOModal({
                       </button>
                     )}
                     {
-                      nodes.find((node) => node.id === selectedViewField.id)
-                        ?.data.node.display_name
+                      t(nodes.find((node) => node.id === selectedViewField.id)?.data.node.display_name)
                     }
                   </div>
                   <div className="h-full w-full">
@@ -505,7 +507,7 @@ export default function IOModal({
                   />
                 ) : (
                   <span className="flex h-full w-full items-center justify-center font-thin text-muted-foreground">
-                    Select an IO component to view
+                    {t("Select an IO component to view")}
                   </span>
                 )}
               </div>

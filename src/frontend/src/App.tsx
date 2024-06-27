@@ -1,3 +1,4 @@
+import "./i18n/config";
 import { useContext, useEffect, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { useNavigate } from "react-router-dom";
@@ -26,6 +27,7 @@ import useFlowsManagerStore from "./stores/flowsManagerStore";
 import { useFolderStore } from "./stores/foldersStore";
 import { useGlobalVariablesStore } from "./stores/globalVariablesStore/globalVariables";
 import { useStoreStore } from "./stores/storeStore";
+import { useTranslation } from "react-i18next";
 export default function App() {
   useTrackLastVisitedPath();
 
@@ -48,6 +50,8 @@ export default function App() {
   const isLoadingFolders = useFolderStore((state) => state.isLoadingFolders);
 
   const [isLoadingHealth, setIsLoadingHealth] = useState(false);
+
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (!dark) {
@@ -169,8 +173,8 @@ export default function App() {
         <>
           {
             <FetchErrorComponent
-              description={FETCH_ERROR_DESCRIPION}
-              message={FETCH_ERROR_MESSAGE}
+              description={t(FETCH_ERROR_DESCRIPION)}
+              message={t(FETCH_ERROR_MESSAGE)}
               openModal={fetchError}
               setRetry={() => {
                 checkApplicationHealth();

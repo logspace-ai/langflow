@@ -15,6 +15,7 @@ import useFlowStore from "../../../../../stores/flowStore";
 import { chatMessagePropsType } from "../../../../../types/components";
 import { classNames, cn } from "../../../../../utils/utils";
 import FileCardWrapper from "./components/fileCardWrapper";
+import { useTranslation } from "react-i18next";
 
 export default function ChatMessage({
   chat,
@@ -23,6 +24,7 @@ export default function ChatMessage({
   updateChat,
   setLockChat,
 }: chatMessagePropsType): JSX.Element {
+  const { t } = useTranslation();
   const [showFile, setShowFile] = useState<boolean>(true);
   const convert = new Convert({ newline: true });
   const [hidden, setHidden] = useState(true);
@@ -143,7 +145,7 @@ export default function ChatMessage({
                 "sender_name_" + chat.sender_name?.toLocaleLowerCase()
               }
             >
-              {chat.sender_name}
+              {t(chat.sender_name)}
             </span>
           </div>
         </div>
@@ -252,7 +254,7 @@ export default function ChatMessage({
                             }}
                           >
                             {chatMessage === ""
-                              ? EMPTY_INPUT_SEND_MESSAGE
+                              ? t(EMPTY_INPUT_SEND_MESSAGE)
                               : chatMessage}
                           </Markdown>
                         ),
@@ -286,7 +288,7 @@ export default function ChatMessage({
                   className={cn(
                     "prose word-break-break-word dark:prose-invert",
                     chatMessage !== ""
-                      ? EMPTY_INPUT_SEND_MESSAGE
+                      ? t(EMPTY_INPUT_SEND_MESSAGE)
                       : chatMessage
                         ? "text-primary"
                         : "text-chat-trigger-disabled",
@@ -322,7 +324,7 @@ export default function ChatMessage({
                         return <p>{parts}</p>;
                       })
                     : chatMessage === ""
-                      ? EMPTY_INPUT_SEND_MESSAGE
+                      ? t(EMPTY_INPUT_SEND_MESSAGE)
                       : chatMessage}
                 </span>
               </>
@@ -338,7 +340,7 @@ export default function ChatMessage({
                     "chat-message-" + chat.sender_name + "-" + chatMessage
                   }
                 >
-                  {chatMessage === "" ? EMPTY_INPUT_SEND_MESSAGE : chatMessage}
+                  {chatMessage === "" ? t(EMPTY_INPUT_SEND_MESSAGE) : chatMessage}
                 </span>
                 {chat.files && (
                   <div className="my-2 flex flex-col gap-5">

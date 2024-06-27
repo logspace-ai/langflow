@@ -5,23 +5,28 @@ import { Button } from "../../../../components/ui/button";
 import { defaultShortcuts } from "../../../../constants/constants";
 import { useShortcutsStore } from "../../../../stores/shortcuts";
 import EditShortcutButton from "./EditShortcutButton";
+import { useTranslation } from "react-i18next";
 
 export default function ShortcutsPage() {
+  const { t } = useTranslation();
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
   const shortcuts = useShortcutsStore((state) => state.shortcuts);
+  shortcuts.forEach(shortcut => {
+    shortcut.translate_name = t(shortcut.name)
+  })
   const setShortcuts = useShortcutsStore((state) => state.setShortcuts);
 
   // Column Definitions: Defines the columns to be displayed.
   const colDefs = [
     {
-      headerName: "Functionality",
-      field: "name",
+      headerName: t("Functionality"),
+      field: "translate_name",
       flex: 1,
       editable: false,
       resizable: false,
     }, //This column will be twice as wide as the others
     {
-      headerName: "Keyboard Shortcut",
+      headerName: t("Keyboard Shortcut"),
       field: "shortcut",
       flex: 2,
       editable: false,
@@ -30,7 +35,7 @@ export default function ShortcutsPage() {
   ];
 
   const [nodesRowData, setNodesRowData] = useState<
-    Array<{ name: string; shortcut: string }>
+    Array<{ translate_name: string, name: string; shortcut: string }>
   >([]);
 
   useEffect(() => {
@@ -57,14 +62,14 @@ export default function ShortcutsPage() {
       <div className="flex w-full items-center justify-between gap-4 space-y-0.5">
         <div className="flex w-full flex-col">
           <h2 className="flex items-center text-lg font-semibold tracking-tight">
-            Shortcuts
+            {t("Shortcuts")}
             <ForwardedIconComponent
               name="Keyboard"
               className="ml-2 h-5 w-5 text-primary"
             />
           </h2>
           <p className="text-sm text-muted-foreground">
-            Manage Shortcuts for quick access to frequently used actions.
+            {t("Manage Shortcuts for quick access to frequently used actions.")}
           </p>
         </div>
         <div>
@@ -89,7 +94,7 @@ export default function ShortcutsPage() {
                 onClick={handleRestore}
               >
                 <ForwardedIconComponent name="RotateCcw" className="mr-2 w-4" />
-                Restore
+                {t("Restore")}
               </Button>
             </div>
           </div>
