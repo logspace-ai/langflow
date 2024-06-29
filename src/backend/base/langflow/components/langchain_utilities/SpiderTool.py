@@ -4,6 +4,7 @@ from langflow.custom import CustomComponent
 from langflow.schema import Data
 from langflow.base.langchain_utilities.spider_constants import MODES
 
+
 class SpiderTool(CustomComponent):
     display_name: str = "Spider Web Crawler & Scraper"
     description: str = "Spider API for web crawling and scraping."
@@ -96,7 +97,7 @@ class SpiderTool(CustomComponent):
         params: Optional[Data] = None,
     ) -> Data:
         if params:
-            parameters = params.__dict__['data']
+            parameters = params.__dict__["data"]
         else:
             parameters = {
                 "limit": limit,
