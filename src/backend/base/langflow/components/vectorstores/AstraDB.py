@@ -3,13 +3,13 @@ from loguru import logger
 from langflow.base.vectorstores.model import LCVectorStoreComponent
 from langflow.io import (
     BoolInput,
+    DataInput,
     DropdownInput,
     HandleInput,
     IntInput,
     MultilineInput,
     SecretStrInput,
     StrInput,
-    DataInput,
 )
 from langflow.schema import Data
 
@@ -25,18 +25,21 @@ class AstraVectorStoreComponent(LCVectorStoreComponent):
             name="collection_name",
             display_name="Collection Name",
             info="The name of the collection within Astra DB where the vectors will be stored.",
+            required=True,
         ),
         SecretStrInput(
             name="token",
             display_name="Astra DB Application Token",
             info="Authentication token for accessing Astra DB.",
             value="ASTRA_DB_APPLICATION_TOKEN",
+            required=True,
         ),
         SecretStrInput(
             name="api_endpoint",
             display_name="API Endpoint",
             info="API endpoint URL for the Astra DB service.",
             value="ASTRA_DB_API_ENDPOINT",
+            required=True,
         ),
         MultilineInput(
             name="search_input",
@@ -137,7 +140,7 @@ class AstraVectorStoreComponent(LCVectorStoreComponent):
         ),
     ]
 
-    def build_vector_store(self):
+    def _build_vector_store_no_ingest(self):
         try:
             from langchain_astradb import AstraDBVectorStore
             from langchain_astradb.utils.astradb import SetupMode
@@ -196,7 +199,13 @@ class AstraVectorStoreComponent(LCVectorStoreComponent):
         except Exception as e:
             raise ValueError(f"Error initializing AstraDBVectorStore: {str(e)}") from e
 
-        self.status = self._astradb_collection_to_data(vector_store.collection)
+        return vector_store
+
+    def build_vector_store(self):
+        vector_store = self._build_vector_store_no_ingest()
+        if hasattr(self, "ingest_data") and self.ingest_data:
+            logger.debug("Ingesting data into the Vector Store.")
+            self._add_documents_to_vector_store(vector_store)
         return vector_store
 
     def _add_documents_to_vector_store(self, vector_store):
@@ -216,8 +225,8 @@ class AstraVectorStoreComponent(LCVectorStoreComponent):
         else:
             logger.debug("No documents to add to the Vector Store.")
 
-    def search_documents(self):
-        vector_store = self.build_vector_store()
+    def search_documents(self) -> list[Data]:
+        vector_store = self._build_vector_store_no_ingest()
 
         logger.debug(f"Search input: {self.search_input}")
         logger.debug(f"Search type: {self.search_type}")
@@ -249,13 +258,3 @@ class AstraVectorStoreComponent(LCVectorStoreComponent):
         else:
             logger.debug("No search input provided. Skipping search.")
             return []
-
-    def _astradb_collection_to_data(self, collection):
-        data = []
-        data_dict = collection.find()
-        if data_dict and "data" in data_dict:
-            data_dict = data_dict["data"].get("documents", [])
-
-        for item in data_dict:
-            data.append(Data(content=item["content"]))
-        return data

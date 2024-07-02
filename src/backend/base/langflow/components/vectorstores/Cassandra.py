@@ -1,9 +1,10 @@
-from typing import List
+from typing import List, Optional
 
 from langchain_community.vectorstores import Cassandra
 
 from langflow.base.vectorstores.model import LCVectorStoreComponent
 from langflow.helpers.data import docs_to_data
+from langflow.inputs import DictInput
 from langflow.io import (
     DataInput,
     DropdownInput,
@@ -23,24 +24,32 @@ class CassandraVectorStoreComponent(LCVectorStoreComponent):
     icon = "Cassandra"
 
     inputs = [
-        SecretStrInput(
-            name="token",
-            display_name="Token",
-            info="Authentication token for accessing Cassandra on Astra DB.",
+        MessageTextInput(
+            name="database_ref",
+            display_name="Contact Points / Astra Database ID",
+            info="Contact points for the database (or AstraDB database ID)",
             required=True,
         ),
-        MessageTextInput(name="database_id", display_name="Database ID", info="The Astra database ID.", required=True),
         MessageTextInput(
-            name="table_name",
-            display_name="Table Name",
-            info="The name of the table where vectors will be stored.",
+            name="username", display_name="Username", info="Username for the database (leave empty for AstraDB)."
+        ),
+        SecretStrInput(
+            name="token",
+            display_name="Password / AstraDB Token",
+            info="User password for the database (or AstraDB token).",
             required=True,
         ),
         MessageTextInput(
             name="keyspace",
             display_name="Keyspace",
-            info="Optional key space within Astra DB. The keyspace should already be created.",
-            advanced=False,
+            info="Table Keyspace (or AstraDB namespace).",
+            required=True,
+        ),
+        MessageTextInput(
+            name="table_name",
+            display_name="Table Name",
+            info="The name of the table (or AstraDB collection) where vectors will be stored.",
+            required=True,
         ),
         IntInput(
             name="ttl_seconds",
@@ -69,6 +78,13 @@ class CassandraVectorStoreComponent(LCVectorStoreComponent):
             value="Sync",
             advanced=True,
         ),
+        DictInput(
+            name="cluster_kwargs",
+            display_name="Cluster arguments",
+            info="Optional dictionary of additional keyword arguments for the Cassandra cluster.",
+            advanced=True,
+            is_list=True,
+        ),
         MultilineInput(name="search_query", display_name="Search Query"),
         DataInput(
             name="ingest_data",
@@ -86,9 +102,9 @@ class CassandraVectorStoreComponent(LCVectorStoreComponent):
     ]
 
     def build_vector_store(self) -> Cassandra:
-        return self._build_cassandra()
+        return self._build_cassandra(ingest=True)
 
-    def _build_cassandra(self) -> Cassandra:
+    def _build_cassandra(self, ingest: bool) -> Cassandra:
         try:
             import cassio
         except ImportError:
@@ -96,18 +112,42 @@ class CassandraVectorStoreComponent(LCVectorStoreComponent):
                 "Could not import cassio integration package. " "Please install it with `pip install cassio`."
             )
 
-        cassio.init(
-            database_id=self.database_id,
-            token=self.token,
-        )
+        from uuid import UUID
+
+        database_ref = self.database_ref
+
+        try:
+            UUID(self.database_ref)
+            is_astra = True
+        except ValueError:
+            is_astra = False
+            if "," in self.database_ref:
+                # use a copy because we can't change the type of the parameter
+                database_ref = self.database_ref.split(",")
+
+        if is_astra:
+            cassio.init(
+                database_id=database_ref,
+                token=self.token,
+                cluster_kwargs=self.cluster_kwargs,
+            )
+        else:
+            cassio.init(
+                contact_points=database_ref,
+                username=self.username,
+                password=self.token,
+                cluster_kwargs=self.cluster_kwargs,
+            )
+        ttl_seconds: Optional[int] = self.ttl_seconds
 
         documents = []
 
-        for _input in self.ingest_data or []:
-            if isinstance(_input, Data):
-                documents.append(_input.to_lc_document())
-            else:
-                documents.append(_input)
+        if ingest:
+            for _input in self.ingest_data or []:
+                if isinstance(_input, Data):
+                    documents.append(_input.to_lc_document())
+                else:
+                    documents.append(_input)
 
         if documents:
             table = Cassandra.from_documents(
@@ -115,7 +155,7 @@ class CassandraVectorStoreComponent(LCVectorStoreComponent):
                 embedding=self.embedding,
                 table_name=self.table_name,
                 keyspace=self.keyspace,
-                ttl_seconds=self.ttl_seconds,
+                ttl_seconds=ttl_seconds,
                 batch_size=self.batch_size,
                 body_index_options=self.body_index_options,
             )
@@ -125,7 +165,7 @@ class CassandraVectorStoreComponent(LCVectorStoreComponent):
                 embedding=self.embedding,
                 table_name=self.table_name,
                 keyspace=self.keyspace,
-                ttl_seconds=self.ttl_seconds,
+                ttl_seconds=ttl_seconds,
                 body_index_options=self.body_index_options,
                 setup_mode=self.setup_mode,
             )
@@ -133,7 +173,7 @@ class CassandraVectorStoreComponent(LCVectorStoreComponent):
         return table
 
     def search_documents(self) -> List[Data]:
-        vector_store = self._build_cassandra()
+        vector_store = self._build_cassandra(ingest=False)
 
         if self.search_query and isinstance(self.search_query, str) and self.search_query.strip():
             try:

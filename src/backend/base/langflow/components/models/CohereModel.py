@@ -5,7 +5,7 @@ from pydantic.v1 import SecretStr
 from langflow.base.constants import STREAM_INFO_TEXT
 from langflow.base.models.model import LCModelComponent
 from langflow.field_typing import LanguageModel
-from langflow.io import BoolInput, FloatInput, MessageInput, Output, SecretStrInput, StrInput
+from langflow.io import BoolInput, FloatInput, MessageInput, SecretStrInput, StrInput
 
 
 class CohereComponent(LCModelComponent):
@@ -32,10 +32,6 @@ class CohereComponent(LCModelComponent):
             advanced=True,
         ),
     ]
-    outputs = [
-        Output(display_name="Text", name="text_output", method="text_response"),
-        Output(display_name="Language Model", name="model_output", method="build_model"),
-    ]
 
     def build_model(self) -> LanguageModel | BaseChatModel:
         cohere_api_key = self.cohere_api_key
@@ -51,4 +47,4 @@ class CohereComponent(LCModelComponent):
             cohere_api_key=api_key,
         )
 
-        return output
+        return output  # type: ignore

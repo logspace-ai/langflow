@@ -6,7 +6,7 @@ from langchain_community.chat_models import ChatOllama
 from langflow.base.constants import STREAM_INFO_TEXT
 from langflow.base.models.model import LCModelComponent
 from langflow.field_typing import LanguageModel
-from langflow.io import BoolInput, DictInput, DropdownInput, FloatInput, IntInput, MessageInput, Output, StrInput
+from langflow.io import BoolInput, DictInput, DropdownInput, FloatInput, IntInput, MessageInput, StrInput
 
 
 class ChatOllamaComponent(LCModelComponent):
@@ -218,12 +218,8 @@ class ChatOllamaComponent(LCModelComponent):
             advanced=True,
         ),
     ]
-    outputs = [
-        Output(display_name="Text", name="text_output", method="text_response"),
-        Output(display_name="Language Model", name="model_output", method="build_model"),
-    ]
 
-    def build_model(self) -> LanguageModel:
+    def build_model(self) -> LanguageModel:  # type: ignore[type-var]
         # Mapping mirostat settings to their corresponding values
         mirostat_options = {"Mirostat": 1, "Mirostat 2.0": 2}
 
@@ -272,4 +268,4 @@ class ChatOllamaComponent(LCModelComponent):
         except Exception as e:
             raise ValueError("Could not initialize Ollama LLM.") from e
 
-        return output
+        return output  # type: ignore

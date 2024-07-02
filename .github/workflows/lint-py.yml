@@ -2,19 +2,17 @@ name: Lint Python
 
 on:
   pull_request:
-    paths:
-      - "poetry.lock"
-      - "pyproject.toml"
-      - "src/backend/**"
-      - "tests/**"
-  merge_group:
-    branches: [dev]
-
+    types: [opened, synchronize, reopened, auto_merge_enabled]
 env:
   POETRY_VERSION: "1.8.2"
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   lint:
+    name: Run Mypy
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -34,6 +32,8 @@ jobs:
         run: |
           poetry env use ${{ matrix.python-version }}
           poetry install
+      - name: Run Mypy
+        run: |
           make lint
         env:
           GITHUB_TOKEN: ${{ secrets.github_token }}

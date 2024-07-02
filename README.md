@@ -42,6 +42,7 @@
 
 # 📝 Content
 
+- [](#)
 - [📝 Content](#-content)
 - [📦 Get Started](#-get-started)
 - [🎨 Create Flows](#-create-flows)
@@ -49,6 +50,7 @@
   - [Deploy Langflow on Google Cloud Platform](#deploy-langflow-on-google-cloud-platform)
   - [Deploy on Railway](#deploy-on-railway)
   - [Deploy on Render](#deploy-on-render)
+  - [Deploy on Kubernetes](#deploy-on-kubernetes)
 - [🖥️ Command Line Interface (CLI)](#️-command-line-interface-cli)
   - [Usage](#usage)
     - [Environment Variables](#environment-variables)
@@ -62,10 +64,6 @@ You can install Langflow with pip:
 
 ```shell
 # Make sure you have >=Python 3.10 installed on your system.
-# Install the pre-release version (recommended for the latest updates)
-python -m pip install langflow --pre --force-reinstall
-
-# or stable version
 python -m pip install langflow -U
 ```
 
@@ -74,8 +72,6 @@ Then, run Langflow with:
 ```shell
 python -m langflow run
 ```
-
-You can also preview Langflow in [HuggingFace Spaces](https://huggingface.co/spaces/Langflow/Langflow-Preview). [Clone the space using this link](https://huggingface.co/spaces/Langflow/Langflow-Preview?duplicate=true) to create your own Langflow workspace in minutes.
 
 # 🎨 Create Flows
 
@@ -95,6 +91,12 @@ results = run_flow_from_json("path/to/flow.json", input_value="Hello, World!")
 
 # Deploy
 
+## DataStax Langflow
+DataStax Langflow is a hosted version of Langflow integrated with [AstraDB](https://www.datastax.com/products/datastax-astra). Be up and running in minutes with no installation or setup required. [Sign up for free](https://langflow.datastax.com).
+
+## Deploy Langflow on Hugging Face Spaces
+You can also preview Langflow in [HuggingFace Spaces](https://huggingface.co/spaces/Langflow/Langflow-Preview). [Clone the space using this link](https://huggingface.co/spaces/Langflow/Langflow-Preview?duplicate=true) to create your own Langflow workspace in minutes.
+
 ## Deploy Langflow on Google Cloud Platform
 
 Follow our step-by-step guide to deploy Langflow on Google Cloud Platform (GCP) using Google Cloud Shell. The guide is available in the [**Langflow in Google Cloud Platform**](https://github.com/langflow-ai/langflow/blob/dev/docs/docs/deployment/gcp-deployment.md) document.
@@ -105,11 +107,7 @@ Alternatively, click the **"Open in Cloud Shell"** button below to launch Google
 
 ## Deploy on Railway
 
-Use this template to deploy Langflow 1.0 Preview on Railway:
-
-[![Deploy 1.0 Preview on Railway](https://railway.app/button.svg)](https://railway.app/template/UsJ1uB?referralCode=MnPSdg)
-
-Or this one to deploy Langflow 0.6.x:
+Use this template to deploy Langflow 1.0 on Railway:
 
 [![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/JMXEWp?referralCode=MnPSdg)
 
@@ -122,6 +120,7 @@ Or this one to deploy Langflow 0.6.x:
 ## Deploy on Kubernetes
 
 Follow our step-by-step guide to deploy [Langflow on Kubernetes](https://github.com/langflow-ai/langflow/blob/dev/docs/docs/deployment/kubernetes.md).
+
 
 # 🖥️ Command Line Interface (CLI)
 

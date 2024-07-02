@@ -3,7 +3,7 @@ from langchain_google_vertexai import ChatVertexAI
 from langflow.base.constants import STREAM_INFO_TEXT
 from langflow.base.models.model import LCModelComponent
 from langflow.field_typing import LanguageModel
-from langflow.io import BoolInput, FileInput, FloatInput, IntInput, MessageInput, MultilineInput, Output, StrInput
+from langflow.io import BoolInput, FileInput, FloatInput, IntInput, MessageInput, MultilineInput, StrInput
 
 
 class ChatVertexAIComponent(LCModelComponent):
@@ -47,12 +47,8 @@ class ChatVertexAIComponent(LCModelComponent):
             advanced=True,
         ),
     ]
-    outputs = [
-        Output(display_name="Text", name="text_output", method="text_response"),
-        Output(display_name="Language Model", name="model_output", method="build_model"),
-    ]
 
-    def build_model(self) -> LanguageModel:
+    def build_model(self) -> LanguageModel:  # type: ignore[type-var]
         credentials = self.credentials
         location = self.location
         max_output_tokens = self.max_output_tokens
@@ -75,4 +71,4 @@ class ChatVertexAIComponent(LCModelComponent):
             verbose=verbose,
         )
 
-        return output
+        return output  # type: ignore

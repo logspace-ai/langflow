@@ -22,7 +22,9 @@ test("should interact with api request", async ({ page }) => {
     modalCount = await page.getByTestId("modal-title")?.count();
   }
   await page.getByTestId("blank-flow").click();
-  await page.waitForTimeout(1000);
+  await page.waitForSelector('[data-testid="extended-disclosure"]', {
+    timeout: 30000,
+  });
   await page.getByTestId("extended-disclosure").click();
   await page.getByPlaceholder("Search").click();
   await page.getByPlaceholder("Search").fill("api request");
@@ -44,6 +46,10 @@ test("erase button should clear the chat messages", async ({ page }) => {
   if (!process.env.CI) {
     dotenv.config({ path: path.resolve(__dirname, "../../.env") });
   }
+  test.skip(
+    !process?.env?.OPENAI_API_KEY,
+    "OPENAI_API_KEY required to run this test",
+  );
 
   await page.goto("/");
 
@@ -73,18 +79,33 @@ test("erase button should clear the chat messages", async ({ page }) => {
   await page.getByTitle("zoom out").click();
   await page.getByTitle("zoom out").click();
 
-  if (!process.env.OPENAI_API_KEY) {
-    //You must set the OPENAI_API_KEY on .env file to run this test
-    expect(false).toBe(true);
-  }
-
   await page
     .getByTestId("popover-anchor-input-openai_api_key")
     .fill(process.env.OPENAI_API_KEY ?? "");
+
+  await page.getByTestId("dropdown-model_name").click();
+  await page.getByTestId("gpt-4o-0-option").click();
+
+  await page.waitForTimeout(2000);
   await page.getByText("Playground", { exact: true }).click();
-  await page.getByPlaceholder("Send a message...").fill("Hello, how are you?");
+
+  await page.waitForSelector('[data-testid="input-chat-playground"]', {
+    timeout: 100000,
+  });
+
+  await page.getByTestId("input-chat-playground").fill("Hello, how are you?");
+
+  await page.waitForSelector('[data-testid="icon-LucideSend"]', {
+    timeout: 100000,
+  });
+
   await page.getByTestId("icon-LucideSend").click();
   let valueUser = await page.getByTestId("sender_name_user").textContent();
+
+  await page.waitForSelector('[data-testid="sender_name_ai"]', {
+    timeout: 30000,
+  });
+
   let valueAI = await page.getByTestId("sender_name_ai").textContent();
 
   expect(valueUser).toBe("User");

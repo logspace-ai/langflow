@@ -4,7 +4,7 @@ from langchain_community.llms.huggingface_endpoint import HuggingFaceEndpoint
 from langflow.base.constants import STREAM_INFO_TEXT
 from langflow.base.models.model import LCModelComponent
 from langflow.field_typing import LanguageModel
-from langflow.io import BoolInput, DictInput, DropdownInput, MessageInput, Output, SecretStrInput, StrInput
+from langflow.io import BoolInput, DictInput, DropdownInput, MessageInput, SecretStrInput, StrInput
 
 
 class HuggingFaceEndpointsComponent(LCModelComponent):
@@ -31,12 +31,7 @@ class HuggingFaceEndpointsComponent(LCModelComponent):
         ),
     ]
 
-    outputs = [
-        Output(display_name="Text", name="text_output", method="text_response"),
-        Output(display_name="Language Model", name="model_output", method="build_model"),
-    ]
-
-    def build_model(self) -> LanguageModel:
+    def build_model(self) -> LanguageModel:  # type: ignore[type-var]
         endpoint_url = self.endpoint_url
         task = self.task
         huggingfacehub_api_token = self.huggingfacehub_api_token
@@ -53,4 +48,4 @@ class HuggingFaceEndpointsComponent(LCModelComponent):
             raise ValueError("Could not connect to HuggingFace Endpoints API.") from e
 
         output = ChatHuggingFace(llm=llm)
-        return output
+        return output  # type: ignore
