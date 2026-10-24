@@ -8,18 +8,16 @@ test.beforeEach(async ({ page }, testInfo) => {
   await routeTestScopedDefaultFlowNames(page, testInfo, "sticky-notes");
 });
 
-test(
-  "user should be able to interact with sticky notes",
-  { tag: ["@release", "@workspace"] },
+test("user should be able to interact with sticky notes", {
+  tag: ["@release", "@workspace"],
+}, async ({ page }) => {
+  const randomTitle = Math.random()
+    .toString(36)
+    .substring(7)
+    .padEnd(8, "x")
+    .substring(0, 8);
 
-  async ({ page }) => {
-    const randomTitle = Math.random()
-      .toString(36)
-      .substring(7)
-      .padEnd(8, "x")
-      .substring(0, 8);
-
-    const noteText = `# ${randomTitle}
+  const noteText = `# ${randomTitle}
 
 Artificial Intelligence (AI) has rapidly evolved from a speculative concept in science fiction to a transformative force reshaping industries and everyday life. The term AI encompasses a broad range of technologies, from simple algorithms designed to perform specific tasks to complex systems capable of learning and adapting independently. As AI continues to advance, its applications are becoming increasingly diverse, impacting everything from healthcare to finance, entertainment, and beyond.
 
@@ -39,97 +37,94 @@ Despite its many benefits, AI also raises important ethical and societal questio
 
 The future of AI is both exciting and uncertain. As the technology continues to advance, it will undoubtedly bring about profound changes in society. The challenge will be to harness AI's potential for good while addressing the ethical and societal issues that arise. Whether it's through smarter healthcare, more efficient transportation, or enhanced creativity, AI has the potential to reshape the world in ways we are only beginning to imagine. The journey of AI is far from over, and its impact will be felt for generations to come.
   `;
-    await openBlankFlow(page);
-    await page.getByTestId("canvas-add-note-button").click();
+  await openBlankFlow(page);
+  await page.getByTestId("canvas-add-note-button").click();
 
-    const targetElement = page.locator('//*[@id="react-flow-id"]');
-    await targetElement.click();
+  const targetElement = page.locator('//*[@id="react-flow-id"]');
+  await targetElement.click();
 
-    await page.mouse.up();
-    await page.mouse.down();
-    await adjustScreenView(page, { numberOfZoomOut: 6 });
+  await page.mouse.up();
+  await page.mouse.down();
+  await adjustScreenView(page, { numberOfZoomOut: 6 });
 
-    await page.getByTestId("note_node").click();
+  await page.getByTestId("note_node").click();
 
-    await page.locator(".generic-node-desc-text").last().dblclick();
-    await page.getByTestId("textarea").fill(noteText);
+  await page.locator(".generic-node-desc-text").last().dblclick();
+  await page.getByTestId("textarea").fill(noteText);
 
-    expect(page.getByText("2500/2500")).toHaveCount(1);
+  expect(page.getByText("2500/2500")).toHaveCount(1);
 
-    await targetElement.click();
-    await page.keyboard.press("Escape");
-    const textMarkdown = await page
-      .getByTestId("generic-node-desc")
-      .innerText();
+  await targetElement.click();
+  await page.keyboard.press("Escape");
+  const textMarkdown = await page.getByTestId("generic-node-desc").innerText();
 
-    const textLength = textMarkdown.length;
-    const noteTextLength = noteText.length;
+  const textLength = textMarkdown.length;
+  const noteTextLength = noteText.length;
 
-    expect(textLength).toBeLessThan(noteTextLength);
+  expect(textLength).toBeLessThan(noteTextLength);
 
-    await page.getByTestId("note_node").click();
+  await page.getByTestId("note_node").click();
 
-    let element = await page.getByTestId("note_node");
+  let element = await page.getByTestId("note_node");
 
-    let hasStyles = await element?.evaluate((el) => {
-      const style = window.getComputedStyle(el);
-      return (
-        style.backgroundColor === "rgb(252, 211, 77)" ||
-        style.backgroundColor === "rgb(253, 230, 138)"
-      );
-    });
-    expect(hasStyles).toBe(true);
+  let hasStyles = await element?.evaluate((el) => {
+    const style = window.getComputedStyle(el);
+    return (
+      style.backgroundColor === "rgb(252, 211, 77)" ||
+      style.backgroundColor === "rgb(253, 230, 138)"
+    );
+  });
+  expect(hasStyles).toBe(true);
 
-    await page.getByTestId("note_node").click();
+  await page.getByTestId("note_node").click();
 
-    await page.getByTestId("color_picker").click();
+  await page.getByTestId("color_picker").click();
 
-    await page.getByTestId("color_picker_button_rose").click();
-    //await for the  animation to complete
-    await page.waitForTimeout(1000);
+  await page.getByTestId("color_picker_button_rose").click();
+  //await for the  animation to complete
+  await page.waitForTimeout(1000);
 
-    await page.getByTestId("note_node").click();
+  await page.getByTestId("note_node").click();
 
-    element = await page.getByTestId("note_node");
+  element = await page.getByTestId("note_node");
 
-    hasStyles = await element?.evaluate((el) => {
-      const style = window.getComputedStyle(el);
+  hasStyles = await element?.evaluate((el) => {
+    const style = window.getComputedStyle(el);
 
-      return (
-        style.backgroundColor === "rgb(253, 164, 175)" ||
-        style.backgroundColor === "rgb(254, 205, 211)"
-      );
-    });
-    expect(hasStyles).toBe(true);
+    return (
+      style.backgroundColor === "rgb(253, 164, 175)" ||
+      style.backgroundColor === "rgb(254, 205, 211)"
+    );
+  });
+  expect(hasStyles).toBe(true);
 
-    await page.getByTestId("note_node").click();
-    await page.getByTestId("more-options-modal").click();
+  await page.getByTestId("note_node").click();
+  await page.getByTestId("more-options-modal").click();
 
-    await page.getByText("Duplicate").click();
+  await page.getByText("Duplicate").click();
 
-    let titleNumber = await page.getByText(randomTitle).count();
-    expect(titleNumber).toBe(2);
+  let titleNumber = await page.getByText(randomTitle).count();
+  expect(titleNumber).toBe(2);
 
-    await page.getByTestId("note_node").last().click();
-    await page.getByTestId("more-options-modal").click();
+  await page.getByTestId("note_node").last().click();
+  await page.getByTestId("more-options-modal").click();
 
-    await page.getByText("Copy").click();
-    await adjustScreenView(page);
+  await page.getByText("Copy").click();
+  await adjustScreenView(page);
 
-    //double click
-    await targetElement.click();
-    await targetElement.click();
-    await page.keyboard.press(`ControlOrMeta+v`);
+  //double click
+  await targetElement.click();
+  await targetElement.click();
+  await page.keyboard.press(`ControlOrMeta+v`);
 
-    titleNumber = await page.getByText(randomTitle).count();
-    expect(titleNumber).toBe(3);
+  titleNumber = await page.getByText(randomTitle).count();
+  expect(titleNumber).toBe(3);
 
-    await page.getByTestId("note_node").last().click();
-    await page.getByTestId("more-options-modal").click();
-    await page.getByText(TEXTS.delete).first().click();
+  await page.getByTestId("note_node").last().click();
+  await page.getByTestId("more-options-modal").click();
+  await page.getByText(TEXTS.delete).first().click();
 
-    titleNumber = await page.getByText(randomTitle).count();
+  titleNumber = await page.getByText(randomTitle).count();
 
-    expect(titleNumber).toBe(2);
-  },
-);
+  expect(titleNumber).toBe(2);
+});

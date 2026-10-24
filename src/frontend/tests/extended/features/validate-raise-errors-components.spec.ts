@@ -4,11 +4,10 @@ import { adjustScreenView } from "../../utils/adjust-screen-view";
 import { TEXTS } from "../../utils/constants/texts";
 import { openBlankFlow } from "../../utils/flow/open-blank-flow";
 
-test(
-  "user should be able to see errors on popups when raise an error",
-  { tag: ["@release", "@workspace", "@components"] },
-  async ({ page }) => {
-    const customComponentCodeWithRaiseErrorMessage = `
+test("user should be able to see errors on popups when raise an error", {
+  tag: ["@release", "@workspace", "@components"],
+}, async ({ page }) => {
+  const customComponentCodeWithRaiseErrorMessage = `
 # from langflow.field_typing import Data
 from langflow.custom import Component
 from langflow.io import MessageTextInput, Output
@@ -42,56 +41,53 @@ class CustomComponent(Component):
         self.status = data
         return data
     `;
-    await openBlankFlow(page);
+  await openBlankFlow(page);
 
-    await page.waitForSelector(
-      '[data-testid="sidebar-custom-component-button"]',
-      {
-        timeout: 30000,
-      },
-    );
-
-    await addCustomComponent(page);
-    await adjustScreenView(page, { numberOfZoomOut: 1 });
-
-    await page.waitForTimeout(1000);
-
-    await page.waitForSelector('[data-testid="title-Custom Component"]', {
-      timeout: 10000,
-    });
-    await page.getByTestId("title-Custom Component").click();
-
-    await page.getByTestId("code-button-modal").last().click();
-
-    await page.locator(".ace_content").click();
-    await page.keyboard.press(`ControlOrMeta+A`);
-    await page
-      .locator("textarea")
-      .fill(customComponentCodeWithRaiseErrorMessage);
-
-    await page.getByText(TEXTS.checkAndSave).last().click();
-
-    await expect(page.getByTestId("code-button-modal").last()).not.toHaveClass(
-      /animate-pulse-pink/,
-    );
-
-    await page.getByTestId("button_run_custom component").click();
-
-    // Building and running a custom component that raises a runtime error can
-    // take well over 3s on slower (e.g. Windows) CI runners, so give the error
-    // popup the same generous window used by other build-dependent assertions.
-    await page.waitForSelector("text=THIS IS A TEST ERROR MESSAGE", {
+  await page.waitForSelector(
+    '[data-testid="sidebar-custom-component-button"]',
+    {
       timeout: 30000,
-    });
+    },
+  );
 
-    const numberOfErrorMessages = await page
-      .getByText("THIS IS A TEST ERROR MESSAGE")
-      .count();
+  await addCustomComponent(page);
+  await adjustScreenView(page, { numberOfZoomOut: 1 });
 
-    expect(numberOfErrorMessages).toBeGreaterThan(0);
-    const customNode = page.getByRole("application", {
-      name: "Custom Component node",
-    });
-    await expect(customNode.getByTestId("icon-Loader2")).toBeHidden();
-  },
-);
+  await page.waitForTimeout(1000);
+
+  await page.waitForSelector('[data-testid="title-Custom Component"]', {
+    timeout: 10000,
+  });
+  await page.getByTestId("title-Custom Component").click();
+
+  await page.getByTestId("code-button-modal").last().click();
+
+  await page.locator(".ace_content").click();
+  await page.keyboard.press(`ControlOrMeta+A`);
+  await page.locator("textarea").fill(customComponentCodeWithRaiseErrorMessage);
+
+  await page.getByText(TEXTS.checkAndSave).last().click();
+
+  await expect(page.getByTestId("code-button-modal").last()).not.toHaveClass(
+    /animate-pulse-pink/,
+  );
+
+  await page.getByTestId("button_run_custom component").click();
+
+  // Building and running a custom component that raises a runtime error can
+  // take well over 3s on slower (e.g. Windows) CI runners, so give the error
+  // popup the same generous window used by other build-dependent assertions.
+  await page.waitForSelector("text=THIS IS A TEST ERROR MESSAGE", {
+    timeout: 30000,
+  });
+
+  const numberOfErrorMessages = await page
+    .getByText("THIS IS A TEST ERROR MESSAGE")
+    .count();
+
+  expect(numberOfErrorMessages).toBeGreaterThan(0);
+  const customNode = page.getByRole("application", {
+    name: "Custom Component node",
+  });
+  await expect(customNode.getByTestId("icon-Loader2")).toBeHidden();
+});

@@ -9,99 +9,94 @@ import {
   toggleParameterOnNode,
 } from "../../utils/open-advanced-options";
 
-test(
-  "dropDownComponent",
-  { tag: ["@release", "@workspace"] },
-  async ({ page }) => {
-    await openBlankFlow(page);
+test("dropDownComponent", { tag: ["@release", "@workspace"] }, async ({
+  page,
+}) => {
+  await openBlankFlow(page);
 
-    // Allow for legacy components
-    await page.getByTestId("sidebar-options-trigger").click();
-    await page.getByTestId("sidebar-legacy-switch").click();
+  // Allow for legacy components
+  await page.getByTestId("sidebar-options-trigger").click();
+  await page.getByTestId("sidebar-legacy-switch").click();
 
-    await page.getByTestId("sidebar-search-input").click();
-    await page.getByTestId("sidebar-search-input").fill("amazon");
+  await page.getByTestId("sidebar-search-input").click();
+  await page.getByTestId("sidebar-search-input").fill("amazon");
 
-    await page.waitForSelector('[data-testid="amazonAmazon Bedrock"]', {
-      timeout: 3000,
-    });
+  await page.waitForSelector('[data-testid="amazonAmazon Bedrock"]', {
+    timeout: 3000,
+  });
 
-    await page
-      .getByTestId("amazonAmazon Bedrock")
-      .first()
-      .dragTo(page.locator('//*[@id="react-flow-id"]'));
-    await page.mouse.up();
-    await page.mouse.down();
-    await adjustScreenView(page);
-    await page.getByTestId("title-Amazon Bedrock").click();
+  await page
+    .getByTestId("amazonAmazon Bedrock")
+    .first()
+    .dragTo(page.locator('//*[@id="react-flow-id"]'));
+  await page.mouse.up();
+  await page.mouse.down();
+  await adjustScreenView(page);
+  await page.getByTestId("title-Amazon Bedrock").click();
 
-    await page.getByTestId("dropdown_str_model_id").click();
+  await page.getByTestId("dropdown_str_model_id").click();
 
-    await page
-      .getByTestId(/anthropic\.claude-3-haiku-20240307-v1:0.*option/)
-      .click();
+  await page
+    .getByTestId(/anthropic\.claude-3-haiku-20240307-v1:0.*option/)
+    .click();
 
-    const modelTrigger = page.getByTestId("dropdown_str_model_id");
-    await expect(modelTrigger).toContainText(
-      "anthropic.claude-3-haiku-20240307-v1:0",
-    );
-    await expect(
-      page.getByTestId(/anthropic\.claude-3-haiku-20240307-v1:0.*option/),
-    ).toHaveCount(0);
+  const modelTrigger = page.getByTestId("dropdown_str_model_id");
+  await expect(modelTrigger).toContainText(
+    "anthropic.claude-3-haiku-20240307-v1:0",
+  );
+  await expect(
+    page.getByTestId(/anthropic\.claude-3-haiku-20240307-v1:0.*option/),
+  ).toHaveCount(0);
 
-    await modelTrigger.click();
-    await page.getByText("anthropic.claude-v2").last().click();
-    await expect(modelTrigger).toContainText("anthropic.claude-v2");
+  await modelTrigger.click();
+  await page.getByText("anthropic.claude-v2").last().click();
+  await expect(modelTrigger).toContainText("anthropic.claude-v2");
 
-    await page.waitForSelector('[data-testid="more-options-modal"]', {
-      timeout: 3000,
-    });
+  await page.waitForSelector('[data-testid="more-options-modal"]', {
+    timeout: 3000,
+  });
 
-    // LE-1810: values live on the node; the panel only manages visibility.
-    await openParametersPanel(page);
+  // LE-1810: values live on the node; the panel only manages visibility.
+  await openParametersPanel(page);
 
-    // visibility round-trips through the panel Add/Remove actions
-    await toggleParameterOnNode(page, "region_name");
-    await expect(page.getByTestId("inspector-add-region_name")).toBeVisible();
+  // visibility round-trips through the panel Add/Remove actions
+  await toggleParameterOnNode(page, "region_name");
+  await expect(page.getByTestId("inspector-add-region_name")).toBeVisible();
 
-    await toggleParameterOnNode(page, "region_name");
-    await expect(
-      page.getByTestId("inspector-remove-region_name"),
-    ).toBeVisible();
+  await toggleParameterOnNode(page, "region_name");
+  await expect(page.getByTestId("inspector-remove-region_name")).toBeVisible();
 
-    await toggleParameterOnNode(page, "model_id");
-    await expect(page.getByTestId("inspector-add-model_id")).toBeVisible();
+  await toggleParameterOnNode(page, "model_id");
+  await expect(page.getByTestId("inspector-add-model_id")).toBeVisible();
 
-    await toggleParameterOnNode(page, "model_id");
-    await expect(page.getByTestId("inspector-remove-model_id")).toBeVisible();
+  await toggleParameterOnNode(page, "model_id");
+  await expect(page.getByTestId("inspector-remove-model_id")).toBeVisible();
 
-    await toggleParameterOnNode(page, "region_name");
-    await expect(page.getByTestId("inspector-add-region_name")).toBeVisible();
+  await toggleParameterOnNode(page, "region_name");
+  await expect(page.getByTestId("inspector-add-region_name")).toBeVisible();
 
-    await toggleParameterOnNode(page, "region_name");
-    await expect(
-      page.getByTestId("inspector-remove-region_name"),
-    ).toBeVisible();
+  await toggleParameterOnNode(page, "region_name");
+  await expect(page.getByTestId("inspector-remove-region_name")).toBeVisible();
 
-    await toggleParameterOnNode(page, "model_id");
-    await expect(page.getByTestId("inspector-add-model_id")).toBeVisible();
+  await toggleParameterOnNode(page, "model_id");
+  await expect(page.getByTestId("inspector-add-model_id")).toBeVisible();
 
-    await toggleParameterOnNode(page, "model_id");
-    await expect(page.getByTestId("inspector-remove-model_id")).toBeVisible();
+  await toggleParameterOnNode(page, "model_id");
+  await expect(page.getByTestId("inspector-remove-model_id")).toBeVisible();
 
-    await closeParametersPanel(page);
+  await closeParametersPanel(page);
 
-    // value editing happens on the node dropdown
-    await page.getByTestId("value-dropdown-dropdown_str_model_id").click();
-    await page.getByText("cohere").last().click();
+  // value editing happens on the node dropdown
+  await page.getByTestId("value-dropdown-dropdown_str_model_id").click();
+  await page.getByText("cohere").last().click();
 
-    await expect(
-      page.getByTestId("value-dropdown-dropdown_str_model_id"),
-    ).toHaveText("cohere.command-r-plus-v1:0");
-    await page.getByTestId("code-button-modal").last().click();
+  await expect(
+    page.getByTestId("value-dropdown-dropdown_str_model_id"),
+  ).toHaveText("cohere.command-r-plus-v1:0");
+  await page.getByTestId("code-button-modal").last().click();
 
-    await page.locator("textarea").press("Control+a");
-    const emptyOptionsCode = `from langchain_aws import ChatBedrock as BedrockChat
+  await page.locator("textarea").press("Control+a");
+  const emptyOptionsCode = `from langchain_aws import ChatBedrock as BedrockChat
 
 from langflow.base.constants import STREAM_INFO_TEXT
 from langflow.base.models.model import LCModelComponent
@@ -204,10 +199,7 @@ class AmazonBedrockComponent(LCModelComponent):
             raise ValueError("Could not connect to AmazonBedrock API.") from e
         return output
   `;
-    await page.locator("textarea").fill(emptyOptionsCode);
-    await page.getByRole("button", { name: TEXTS.checkAndSave }).click();
-    await page
-      .getByText("No parameters are available for display.")
-      .isVisible();
-  },
-);
+  await page.locator("textarea").fill(emptyOptionsCode);
+  await page.getByRole("button", { name: TEXTS.checkAndSave }).click();
+  await page.getByText("No parameters are available for display.").isVisible();
+});

@@ -57,50 +57,48 @@ async function clickEdit(
   await page.getByRole("menuitem", { name: "Edit" }).click();
 }
 
-test(
-  "editing a server deleted elsewhere reports it is gone instead of opening an empty form",
-  { tag: ["@release", "@mcp"] },
-  async ({ page }) => {
-    const name = `stale-edit-${Date.now()}`;
-    await openServersPageListing(page, name);
+test("editing a server deleted elsewhere reports it is gone instead of opening an empty form", {
+  tag: ["@release", "@mcp"],
+}, async ({ page }) => {
+  const name = `stale-edit-${Date.now()}`;
+  await openServersPageListing(page, name);
 
-    await deleteServer(page.request, name);
-    await clickEdit(page, name);
+  await deleteServer(page.request, name);
+  await clickEdit(page, name);
 
-    await expect(
-      page.getByText("This MCP server no longer exists", { exact: false }),
-    ).toBeVisible({ timeout: 10_000 });
-    await expect(page.getByTestId("add-mcp-server-button")).toHaveCount(0);
-    await expect(
-      page.getByTestId(`mcp-server-menu-button-${name}`),
-    ).toHaveCount(0, { timeout: 10_000 });
-    await expectServerGone(page.request, name);
-  },
-);
+  await expect(
+    page.getByText("This MCP server no longer exists", { exact: false }),
+  ).toBeVisible({ timeout: 10_000 });
+  await expect(page.getByTestId("add-mcp-server-button")).toHaveCount(0);
+  await expect(page.getByTestId(`mcp-server-menu-button-${name}`)).toHaveCount(
+    0,
+    { timeout: 10_000 },
+  );
+  await expectServerGone(page.request, name);
+});
 
-test(
-  "saving an edit after the server was deleted does not re-create it",
-  { tag: ["@release", "@mcp"] },
-  async ({ page }) => {
-    const name = `stale-save-${Date.now()}`;
-    await openServersPageListing(page, name);
+test("saving an edit after the server was deleted does not re-create it", {
+  tag: ["@release", "@mcp"],
+}, async ({ page }) => {
+  const name = `stale-save-${Date.now()}`;
+  await openServersPageListing(page, name);
 
-    await clickEdit(page, name);
-    const saveButton = page.getByTestId("add-mcp-server-button");
-    await expect(saveButton).toBeVisible({ timeout: 10_000 });
-    await expect(page.getByTestId("http-url-input")).toHaveValue(
-      SERVER_CONFIG.url,
-    );
+  await clickEdit(page, name);
+  const saveButton = page.getByTestId("add-mcp-server-button");
+  await expect(saveButton).toBeVisible({ timeout: 10_000 });
+  await expect(page.getByTestId("http-url-input")).toHaveValue(
+    SERVER_CONFIG.url,
+  );
 
-    await deleteServer(page.request, name);
-    await saveButton.click();
+  await deleteServer(page.request, name);
+  await saveButton.click();
 
-    await expect(
-      page.getByText("This MCP server no longer exists", { exact: false }),
-    ).toBeVisible({ timeout: 10_000 });
-    await expect(
-      page.getByTestId(`mcp-server-menu-button-${name}`),
-    ).toHaveCount(0, { timeout: 10_000 });
-    await expectServerGone(page.request, name);
-  },
-);
+  await expect(
+    page.getByText("This MCP server no longer exists", { exact: false }),
+  ).toBeVisible({ timeout: 10_000 });
+  await expect(page.getByTestId(`mcp-server-menu-button-${name}`)).toHaveCount(
+    0,
+    { timeout: 10_000 },
+  );
+  await expectServerGone(page.request, name);
+});

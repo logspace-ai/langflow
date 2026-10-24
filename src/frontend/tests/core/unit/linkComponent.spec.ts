@@ -4,75 +4,73 @@ import { awaitBootstrapTest } from "../../utils/await-bootstrap-test";
 import { extractAndCleanCode } from "../../utils/extract-and-clean-code";
 
 // TODO: This test might not be needed anymore
-test(
-  "user should interact with link component",
-  { tag: ["@release", "@workspace"] },
-  async ({ context, page }) => {
-    await awaitBootstrapTest(page);
+test("user should interact with link component", {
+  tag: ["@release", "@workspace"],
+}, async ({ context, page }) => {
+  await awaitBootstrapTest(page);
 
-    await page.waitForSelector('[data-testid="blank-flow"]', {
-      timeout: 30000,
-    });
-    await page.getByTestId("blank-flow").click();
+  await page.waitForSelector('[data-testid="blank-flow"]', {
+    timeout: 30000,
+  });
+  await page.getByTestId("blank-flow").click();
 
-    await page.waitForSelector(
-      '[data-testid="sidebar-custom-component-button"]',
-      {
-        timeout: 3000,
-      },
-    );
-
-    await page.getByTestId("sidebar-custom-component-button").click();
-    await adjustScreenView(page, { numberOfZoomOut: 1 });
-
-    await page.getByTestId("title-Custom Component").first().click();
-
-    await expect(page.getByTestId("code-button-modal").last()).toBeVisible({
+  await page.waitForSelector(
+    '[data-testid="sidebar-custom-component-button"]',
+    {
       timeout: 3000,
-    });
+    },
+  );
 
-    await page.getByTestId("code-button-modal").last().click();
+  await page.getByTestId("sidebar-custom-component-button").click();
+  await adjustScreenView(page, { numberOfZoomOut: 1 });
 
-    let cleanCode = await extractAndCleanCode(page);
+  await page.getByTestId("title-Custom Component").first().click();
 
-    // Use regex pattern to match the imports section more flexibly
-    cleanCode = updateComponentCode(cleanCode, {
-      imports: ["MessageTextInput", "Output", "LinkInput"],
-      inputs: [
-        {
-          name: "MessageTextInput",
-          config: {
-            name: "input_value",
-            display_name: "Input Value",
-            info: "This is a custom component Input",
-            value: "Hello, World!",
-            tool_mode: true,
-          },
+  await expect(page.getByTestId("code-button-modal").last()).toBeVisible({
+    timeout: 3000,
+  });
+
+  await page.getByTestId("code-button-modal").last().click();
+
+  let cleanCode = await extractAndCleanCode(page);
+
+  // Use regex pattern to match the imports section more flexibly
+  cleanCode = updateComponentCode(cleanCode, {
+    imports: ["MessageTextInput", "Output", "LinkInput"],
+    inputs: [
+      {
+        name: "MessageTextInput",
+        config: {
+          name: "input_value",
+          display_name: "Input Value",
+          info: "This is a custom component Input",
+          value: "Hello, World!",
+          tool_mode: true,
         },
-        {
-          name: "LinkInput",
-          config: {
-            name: "link",
-            display_name: "BUTTON",
-            value: "https://www.datastax.com",
-            text: "Click me",
-          },
+      },
+      {
+        name: "LinkInput",
+        config: {
+          name: "link",
+          display_name: "BUTTON",
+          value: "https://www.datastax.com",
+          text: "Click me",
         },
-      ],
-    });
+      },
+    ],
+  });
 
-    await page.locator("textarea").last().press(`ControlOrMeta+a`);
-    await page.keyboard.press("Backspace");
-    await page.locator("textarea").last().fill(cleanCode);
-    await page.locator('//*[@id="checkAndSaveBtn"]').click();
-    await adjustScreenView(page, { numberOfZoomOut: 2 });
+  await page.locator("textarea").last().press(`ControlOrMeta+a`);
+  await page.keyboard.press("Backspace");
+  await page.locator("textarea").last().fill(cleanCode);
+  await page.locator('//*[@id="checkAndSaveBtn"]').click();
+  await adjustScreenView(page, { numberOfZoomOut: 2 });
 
-    await expect(page.getByTestId("title-button")).toBeVisible();
-    expect(await page.getByText("Click me").isVisible()).toBeTruthy();
-    expect(await page.getByTestId("link_link_link")).toBeEnabled();
-    await page.getByTestId("link_link_link").click();
-  },
-);
+  await expect(page.getByTestId("title-button")).toBeVisible();
+  expect(await page.getByText("Click me").isVisible()).toBeTruthy();
+  expect(await page.getByTestId("link_link_link")).toBeEnabled();
+  await page.getByTestId("link_link_link").click();
+});
 
 function updateComponentCode(
   code: string,

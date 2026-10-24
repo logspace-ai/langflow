@@ -67,7 +67,7 @@ export default function Dropdown({
   const allowedProviderNames = useMemo(
     () =>
       isLegacyProviderSelector &&
-      Boolean(currentFlowId) &&
+      currentFlowId &&
       !isFetchingScopedModelProviders &&
       scopedModelProvidersFetchStatus !== "paused" &&
       !scopedModelProvidersError &&

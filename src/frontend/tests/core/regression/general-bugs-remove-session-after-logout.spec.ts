@@ -3,81 +3,79 @@ import { expect, test } from "../../fixtures";
 import { TEXTS } from "../../utils/constants/texts";
 import { submitLoginAndRequireSuccess } from "../../utils/login-langflow";
 
-test(
-  "user must not be able to login after logout and refresh the page when auto_login is false",
-  { tag: ["@release", "@api"] },
-  async ({ page }) => {
-    await page.route("**/api/v1/auto_login", (route) => {
-      route.fulfill({
-        status: 403,
-        contentType: "application/json",
-        body: JSON.stringify({
-          detail: {
-            message: "Auto login is disabled.",
-            auto_login: false,
-          },
-        }),
-      });
+test("user must not be able to login after logout and refresh the page when auto_login is false", {
+  tag: ["@release", "@api"],
+}, async ({ page }) => {
+  await page.route("**/api/v1/auto_login", (route) => {
+    route.fulfill({
+      status: 403,
+      contentType: "application/json",
+      body: JSON.stringify({
+        detail: {
+          message: "Auto login is disabled.",
+          auto_login: false,
+        },
+      }),
+    });
+  });
+
+  await page.addInitScript(() => {
+    window.process = window.process || {};
+
+    const newEnv = { ...window.process.env, LANGFLOW_AUTO_LOGIN: "false" };
+
+    Object.defineProperty(window.process, "env", {
+      value: newEnv,
+      writable: true,
+      configurable: true,
     });
 
-    await page.addInitScript(() => {
-      window.process = window.process || {};
+    sessionStorage.setItem("testMockAutoLogin", "true");
+  });
 
-      const newEnv = { ...window.process.env, LANGFLOW_AUTO_LOGIN: "false" };
+  await page.goto("/");
 
-      Object.defineProperty(window.process, "env", {
-        value: newEnv,
-        writable: true,
-        configurable: true,
-      });
+  await expect(page.getByRole("button", { name: TEXTS.signIn })).toBeVisible({
+    timeout: 30000,
+  });
 
-      sessionStorage.setItem("testMockAutoLogin", "true");
-    });
+  await page
+    .getByPlaceholder(TEXTS.placeholderUsername)
+    .fill(TEXTS.authDefaultCredential);
+  await page
+    .getByPlaceholder(TEXTS.placeholderPassword)
+    .fill(TEXTS.authDefaultPassword);
 
-    await page.goto("/");
+  await page.evaluate(() => {
+    sessionStorage.removeItem("testMockAutoLogin");
+  });
 
-    await expect(page.getByRole("button", { name: TEXTS.signIn })).toBeVisible({
-      timeout: 30000,
-    });
+  await submitLoginAndRequireSuccess(page);
 
-    await page
-      .getByPlaceholder(TEXTS.placeholderUsername)
-      .fill(TEXTS.authDefaultCredential);
-    await page
-      .getByPlaceholder(TEXTS.placeholderPassword)
-      .fill(TEXTS.authDefaultPassword);
+  await page.waitForSelector('[data-testid="mainpage_title"]', {
+    timeout: 30000,
+  });
 
-    await page.evaluate(() => {
-      sessionStorage.removeItem("testMockAutoLogin");
-    });
+  await page.getByTestId("user-profile-settings").click();
 
-    await submitLoginAndRequireSuccess(page);
+  await page.evaluate(() => {
+    sessionStorage.setItem("testMockAutoLogin", "true");
+  });
 
-    await page.waitForSelector('[data-testid="mainpage_title"]', {
-      timeout: 30000,
-    });
+  await page.getByText(TEXTS.logout, { exact: true }).click();
 
-    await page.getByTestId("user-profile-settings").click();
+  await page.waitForTimeout(1000);
 
-    await page.evaluate(() => {
-      sessionStorage.setItem("testMockAutoLogin", "true");
-    });
+  await page.reload();
 
-    await page.getByText(TEXTS.logout, { exact: true }).click();
+  await expect(page.getByRole("button", { name: TEXTS.signIn })).toBeVisible({
+    timeout: 30000,
+  });
 
-    await page.waitForTimeout(1000);
+  const isLoggedIn = await page
+    .getByTestId("mainpage_title")
+    .isVisible()
+    .catch(() => false);
 
-    await page.reload();
-
-    await expect(page.getByRole("button", { name: TEXTS.signIn })).toBeVisible({
-      timeout: 30000,
-    });
-
-    const isLoggedIn = await page
-      .getByTestId("mainpage_title")
-      .isVisible()
-      .catch(() => false);
-
-    expect(isLoggedIn).toBeFalsy();
-  },
-);
+  expect(isLoggedIn).toBeFalsy();
+});

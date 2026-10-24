@@ -1,12 +1,12 @@
 import { act, renderHook, waitFor } from "@testing-library/react";
 import type { AxiosError } from "axios";
+import type { ChangeEvent } from "react";
+import { useState } from "react";
 import {
   FS_ERROR_TEXT,
   SN_ERROR_TEXT,
 } from "@/constants/file-upload-constants";
 import { useChatFileUpload } from "@/shared/hooks/use-chat-file-upload";
-import { useState } from "react";
-import type { ChangeEvent } from "react";
 import type { FilePreviewType } from "@/types/components";
 
 const mutateMock = jest.fn();

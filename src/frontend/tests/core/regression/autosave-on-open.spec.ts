@@ -34,63 +34,56 @@ function trackFlowWrites(page: Page): { count: () => number } {
   return { count: () => count };
 }
 
-test(
-  "opening a flow does not save it",
-  { tag: ["@release", "@workspace"] },
-  async ({ page }) => {
-    const writes = trackFlowWrites(page);
+test("opening a flow does not save it", {
+  tag: ["@release", "@workspace"],
+}, async ({ page }) => {
+  const writes = trackFlowWrites(page);
 
-    await openStarterProject(page, "Basic Prompting");
-    await adjustScreenView(page);
-    await page.waitForTimeout(IDLE_WINDOW_MS);
+  await openStarterProject(page, "Basic Prompting");
+  await adjustScreenView(page);
+  await page.waitForTimeout(IDLE_WINDOW_MS);
 
-    expect(
-      writes.count(),
-      "a flow nobody touched must not be written back",
-    ).toBe(0);
-  },
-);
+  expect(writes.count(), "a flow nobody touched must not be written back").toBe(
+    0,
+  );
+});
 
-test(
-  "an edit is still saved after the open no longer saves",
-  { tag: ["@release", "@workspace"] },
-  async ({ page }) => {
-    await openStarterProject(page, "Basic Prompting");
-    await adjustScreenView(page);
-    await page.waitForTimeout(IDLE_WINDOW_MS);
+test("an edit is still saved after the open no longer saves", {
+  tag: ["@release", "@workspace"],
+}, async ({ page }) => {
+  await openStarterProject(page, "Basic Prompting");
+  await adjustScreenView(page);
+  await page.waitForTimeout(IDLE_WINDOW_MS);
 
-    const writes = trackFlowWrites(page);
-    const node = page
-      .locator('.react-flow__node[data-id^="ChatInput"]')
-      .first();
-    await expect(node).toBeVisible();
-    const box = await node.boundingBox();
-    if (!box) throw new Error("the Chat Input node has no bounding box");
+  const writes = trackFlowWrites(page);
+  const node = page.locator('.react-flow__node[data-id^="ChatInput"]').first();
+  await expect(node).toBeVisible();
+  const box = await node.boundingBox();
+  if (!box) throw new Error("the Chat Input node has no bounding box");
 
-    const before = box.y;
-    await page.mouse.move(box.x + box.width / 2, box.y + 10);
-    await page.mouse.down();
-    await page.mouse.move(box.x + box.width / 2, box.y + 190, { steps: 14 });
-    await page.mouse.up();
+  const before = box.y;
+  await page.mouse.move(box.x + box.width / 2, box.y + 10);
+  await page.mouse.down();
+  await page.mouse.move(box.x + box.width / 2, box.y + 190, { steps: 14 });
+  await page.mouse.up();
 
-    await expect
-      .poll(() => writes.count(), { timeout: SAVE_WINDOW_MS })
-      .toBeGreaterThan(0);
+  await expect
+    .poll(() => writes.count(), { timeout: SAVE_WINDOW_MS })
+    .toBeGreaterThan(0);
 
-    // The save is only proven by the reload: a request that never reached the
-    // database would still have satisfied the assertion above.
-    await page.reload();
-    await page.waitForSelector(".react-flow__node", { timeout: 30_000 });
-    await adjustScreenView(page);
-    const reloaded = await page
-      .locator('.react-flow__node[data-id^="ChatInput"]')
-      .first()
-      .boundingBox();
-    if (!reloaded) throw new Error("the Chat Input node did not come back");
+  // The save is only proven by the reload: a request that never reached the
+  // database would still have satisfied the assertion above.
+  await page.reload();
+  await page.waitForSelector(".react-flow__node", { timeout: 30_000 });
+  await adjustScreenView(page);
+  const reloaded = await page
+    .locator('.react-flow__node[data-id^="ChatInput"]')
+    .first()
+    .boundingBox();
+  if (!reloaded) throw new Error("the Chat Input node did not come back");
 
-    expect(
-      Math.abs(reloaded.y - before),
-      "the moved node must come back where it was left",
-    ).toBeGreaterThan(20);
-  },
-);
+  expect(
+    Math.abs(reloaded.y - before),
+    "the moved node must come back where it was left",
+  ).toBeGreaterThan(20);
+});

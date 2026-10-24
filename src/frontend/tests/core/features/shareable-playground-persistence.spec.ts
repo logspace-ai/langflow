@@ -44,165 +44,157 @@ async function setupAutoLoginOff(page: Page): Promise<void> {
   });
 }
 
-test(
-  "shareable playground: logged-in user messages persist after page refresh",
-  { tag: ["@release", "@api", "@database"] },
-  async ({ page, context }) => {
-    skipIfMissing.autoLoginDisabled();
+test("shareable playground: logged-in user messages persist after page refresh", {
+  tag: ["@release", "@api", "@database"],
+}, async ({ page, context }) => {
+  skipIfMissing.autoLoginDisabled();
 
-    await setupAutoLoginOff(page);
-    const { url: playgroundUrl, playgroundPage } =
-      await publishBasicPromptingAndOpenShareablePlayground(page, context, {
-        skipBootstrap: true,
-      });
-    await playgroundPage.close();
-
-    await page.goto(playgroundUrl);
-    await page.waitForSelector(`[data-testid="${TID.buttonSend}"]`, {
-      timeout: TIMEOUTS.standard,
+  await setupAutoLoginOff(page);
+  const { url: playgroundUrl, playgroundPage } =
+    await publishBasicPromptingAndOpenShareablePlayground(page, context, {
+      skipBootstrap: true,
     });
+  await playgroundPage.close();
 
-    await sendPlaygroundMessage(page, "persist test", {
-      surface: "shareable",
+  await page.goto(playgroundUrl);
+  await page.waitForSelector(`[data-testid="${TID.buttonSend}"]`, {
+    timeout: TIMEOUTS.standard,
+  });
+
+  await sendPlaygroundMessage(page, "persist test", {
+    surface: "shareable",
+  });
+
+  const messagesBefore = await page
+    .locator(`[data-testid="${TID.chatMessage}"]`)
+    .count();
+  expect(messagesBefore).toBeGreaterThanOrEqual(2);
+
+  await page.reload();
+  await page.waitForSelector(`[data-testid="${TID.buttonSend}"]`, {
+    timeout: TIMEOUTS.standard,
+  });
+
+  const messagesAfter = await page
+    .locator(`[data-testid="${TID.chatMessage}"]`)
+    .count();
+  expect(messagesAfter).toBeGreaterThanOrEqual(2);
+});
+
+test("shareable playground: default session appears first", {
+  tag: ["@release", "@api", "@database"],
+}, async ({ page, context }) => {
+  skipIfMissing.autoLoginDisabled();
+
+  await setupAutoLoginOff(page);
+  const { url: playgroundUrl, playgroundPage } =
+    await publishBasicPromptingAndOpenShareablePlayground(page, context, {
+      skipBootstrap: true,
     });
+  await playgroundPage.close();
 
-    const messagesBefore = await page
-      .locator(`[data-testid="${TID.chatMessage}"]`)
-      .count();
-    expect(messagesBefore).toBeGreaterThanOrEqual(2);
+  await page.goto(playgroundUrl);
+  await page.waitForSelector(`[data-testid="${TID.buttonSend}"]`, {
+    timeout: TIMEOUTS.standard,
+  });
 
-    await page.reload();
-    await page.waitForSelector(`[data-testid="${TID.buttonSend}"]`, {
-      timeout: TIMEOUTS.standard,
+  await sendPlaygroundMessage(page, "default session msg", {
+    surface: "shareable",
+  });
+
+  // Create new session
+  await page.getByTestId(TID.newChat).click();
+
+  // First session should be Default Session
+  const firstSession = page.getByTestId(TID.sessionSelector).first();
+  await expect(firstSession).toContainText("Default Session");
+});
+
+test("shareable playground: delete session persists after refresh", {
+  tag: ["@release", "@api", "@database"],
+}, async ({ page, context }) => {
+  skipIfMissing.autoLoginDisabled();
+
+  await setupAutoLoginOff(page);
+  const { url: playgroundUrl, playgroundPage } =
+    await publishBasicPromptingAndOpenShareablePlayground(page, context, {
+      skipBootstrap: true,
     });
+  await playgroundPage.close();
 
-    const messagesAfter = await page
-      .locator(`[data-testid="${TID.chatMessage}"]`)
-      .count();
-    expect(messagesAfter).toBeGreaterThanOrEqual(2);
-  },
-);
+  await page.goto(playgroundUrl);
+  await page.waitForSelector(`[data-testid="${TID.buttonSend}"]`, {
+    timeout: TIMEOUTS.standard,
+  });
 
-test(
-  "shareable playground: default session appears first",
-  { tag: ["@release", "@api", "@database"] },
-  async ({ page, context }) => {
-    skipIfMissing.autoLoginDisabled();
+  await sendPlaygroundMessage(page, "keep this", { surface: "shareable" });
 
-    await setupAutoLoginOff(page);
-    const { url: playgroundUrl, playgroundPage } =
-      await publishBasicPromptingAndOpenShareablePlayground(page, context, {
-        skipBootstrap: true,
-      });
-    await playgroundPage.close();
+  // Create new session and send a message in it
+  await page.getByTestId(TID.newChat).click();
+  await sendPlaygroundMessage(page, "delete this", { surface: "shareable" });
 
-    await page.goto(playgroundUrl);
-    await page.waitForSelector(`[data-testid="${TID.buttonSend}"]`, {
-      timeout: TIMEOUTS.standard,
+  const sessionsBefore = await page.getByTestId(TID.sessionSelector).count();
+
+  // Delete last session
+  await sessionMoreMenu(page, "last").click();
+  await page.getByTestId("delete-session-option").click();
+
+  const sessionsAfterDelete = await page
+    .getByTestId(TID.sessionSelector)
+    .count();
+  expect(sessionsAfterDelete).toBeLessThan(sessionsBefore);
+
+  // Refresh
+  await page.reload();
+  await page.waitForSelector(`[data-testid="${TID.buttonSend}"]`, {
+    timeout: TIMEOUTS.standard,
+  });
+
+  const sessionsAfterRefresh = await page
+    .getByTestId(TID.sessionSelector)
+    .count();
+  expect(sessionsAfterRefresh).toBeLessThanOrEqual(sessionsAfterDelete);
+});
+
+test("shareable playground: rename session persists after refresh", {
+  tag: ["@release", "@api", "@database"],
+}, async ({ page, context }) => {
+  skipIfMissing.autoLoginDisabled();
+
+  await setupAutoLoginOff(page);
+  const { url: playgroundUrl, playgroundPage } =
+    await publishBasicPromptingAndOpenShareablePlayground(page, context, {
+      skipBootstrap: true,
     });
+  await playgroundPage.close();
 
-    await sendPlaygroundMessage(page, "default session msg", {
-      surface: "shareable",
-    });
+  await page.goto(playgroundUrl);
+  await page.waitForSelector(`[data-testid="${TID.buttonSend}"]`, {
+    timeout: TIMEOUTS.standard,
+  });
 
-    // Create new session
-    await page.getByTestId(TID.newChat).click();
+  // Create new session and send message
+  await page.getByTestId(TID.newChat).click();
+  await sendPlaygroundMessage(page, "rename test", { surface: "shareable" });
 
-    // First session should be Default Session
-    const firstSession = page.getByTestId(TID.sessionSelector).first();
-    await expect(firstSession).toContainText("Default Session");
-  },
-);
+  // Rename session
+  await sessionMoreMenu(page, "last").click();
+  await page.getByTestId("rename-session-option").click();
+  await page.getByTestId("session-rename-input").fill("Custom Name");
+  await page.keyboard.press("Enter");
 
-test(
-  "shareable playground: delete session persists after refresh",
-  { tag: ["@release", "@api", "@database"] },
-  async ({ page, context }) => {
-    skipIfMissing.autoLoginDisabled();
+  await expect(
+    page.getByTestId(TID.sessionSelector).getByText("Custom Name"),
+  ).toBeVisible({ timeout: TIMEOUTS.medium });
 
-    await setupAutoLoginOff(page);
-    const { url: playgroundUrl, playgroundPage } =
-      await publishBasicPromptingAndOpenShareablePlayground(page, context, {
-        skipBootstrap: true,
-      });
-    await playgroundPage.close();
+  // Refresh
+  await page.reload();
+  await page.waitForSelector(`[data-testid="${TID.buttonSend}"]`, {
+    timeout: TIMEOUTS.standard,
+  });
 
-    await page.goto(playgroundUrl);
-    await page.waitForSelector(`[data-testid="${TID.buttonSend}"]`, {
-      timeout: TIMEOUTS.standard,
-    });
-
-    await sendPlaygroundMessage(page, "keep this", { surface: "shareable" });
-
-    // Create new session and send a message in it
-    await page.getByTestId(TID.newChat).click();
-    await sendPlaygroundMessage(page, "delete this", { surface: "shareable" });
-
-    const sessionsBefore = await page.getByTestId(TID.sessionSelector).count();
-
-    // Delete last session
-    await sessionMoreMenu(page, "last").click();
-    await page.getByTestId("delete-session-option").click();
-
-    const sessionsAfterDelete = await page
-      .getByTestId(TID.sessionSelector)
-      .count();
-    expect(sessionsAfterDelete).toBeLessThan(sessionsBefore);
-
-    // Refresh
-    await page.reload();
-    await page.waitForSelector(`[data-testid="${TID.buttonSend}"]`, {
-      timeout: TIMEOUTS.standard,
-    });
-
-    const sessionsAfterRefresh = await page
-      .getByTestId(TID.sessionSelector)
-      .count();
-    expect(sessionsAfterRefresh).toBeLessThanOrEqual(sessionsAfterDelete);
-  },
-);
-
-test(
-  "shareable playground: rename session persists after refresh",
-  { tag: ["@release", "@api", "@database"] },
-  async ({ page, context }) => {
-    skipIfMissing.autoLoginDisabled();
-
-    await setupAutoLoginOff(page);
-    const { url: playgroundUrl, playgroundPage } =
-      await publishBasicPromptingAndOpenShareablePlayground(page, context, {
-        skipBootstrap: true,
-      });
-    await playgroundPage.close();
-
-    await page.goto(playgroundUrl);
-    await page.waitForSelector(`[data-testid="${TID.buttonSend}"]`, {
-      timeout: TIMEOUTS.standard,
-    });
-
-    // Create new session and send message
-    await page.getByTestId(TID.newChat).click();
-    await sendPlaygroundMessage(page, "rename test", { surface: "shareable" });
-
-    // Rename session
-    await sessionMoreMenu(page, "last").click();
-    await page.getByTestId("rename-session-option").click();
-    await page.getByTestId("session-rename-input").fill("Custom Name");
-    await page.keyboard.press("Enter");
-
-    await expect(
-      page.getByTestId(TID.sessionSelector).getByText("Custom Name"),
-    ).toBeVisible({ timeout: TIMEOUTS.medium });
-
-    // Refresh
-    await page.reload();
-    await page.waitForSelector(`[data-testid="${TID.buttonSend}"]`, {
-      timeout: TIMEOUTS.standard,
-    });
-
-    // Renamed session should persist
-    await expect(
-      page.getByTestId(TID.sessionSelector).getByText("Custom Name"),
-    ).toBeVisible({ timeout: TIMEOUTS.medium });
-  },
-);
+  // Renamed session should persist
+  await expect(
+    page.getByTestId(TID.sessionSelector).getByText("Custom Name"),
+  ).toBeVisible({ timeout: TIMEOUTS.medium });
+});

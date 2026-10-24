@@ -11,43 +11,37 @@ import {
 import { skipIfComponentUnavailable } from "../../utils/skip-if-component-unavailable";
 
 // TODO: This component doesn't have slider needs updating
-test(
-  "user should be able to use query input",
-  {
-    tag: ["@release", "@workspace"],
-  },
-  async ({ page }) => {
-    await awaitBootstrapTest(page);
+test("user should be able to use query input", {
+  tag: ["@release", "@workspace"],
+}, async ({ page }) => {
+  await awaitBootstrapTest(page);
 
-    await page.waitForSelector('[data-testid="blank-flow"]', {
-      timeout: 30000,
-    });
-    await page.getByTestId("blank-flow").click();
-    await page.getByTestId("sidebar-search-input").click();
-    await page
-      .getByTestId("sidebar-search-input")
-      .fill(TEXTS.providerOpenAiSearch);
+  await page.waitForSelector('[data-testid="blank-flow"]', {
+    timeout: 30000,
+  });
+  await page.getByTestId("blank-flow").click();
+  await page.getByTestId("sidebar-search-input").click();
+  await page
+    .getByTestId("sidebar-search-input")
+    .fill(TEXTS.providerOpenAiSearch);
 
-    await skipIfComponentUnavailable(
-      page.getByTestId("openaiOpenAI"),
-      "OpenAI",
-    );
+  await skipIfComponentUnavailable(page.getByTestId("openaiOpenAI"), "OpenAI");
 
-    await page
-      .getByTestId("openaiOpenAI")
-      .dragTo(page.locator('//*[@id="react-flow-id"]'));
-    await page.mouse.up();
-    await page.mouse.down();
-    await adjustScreenView(page);
+  await page
+    .getByTestId("openaiOpenAI")
+    .dragTo(page.locator('//*[@id="react-flow-id"]'));
+  await page.mouse.up();
+  await page.mouse.down();
+  await adjustScreenView(page);
 
-    await page.getByTestId("title-OpenAI").click();
-    await page.getByTestId("code-button-modal").last().click();
+  await page.getByTestId("title-OpenAI").click();
+  await page.getByTestId("code-button-modal").last().click();
 
-    const cleanCode = await extractAndCleanCode(page);
+  const cleanCode = await extractAndCleanCode(page);
 
-    // Replace the multiline string in the code
-    let newCode = cleanCode.replace(
-      `StrInput(
+  // Replace the multiline string in the code
+  let newCode = cleanCode.replace(
+    `StrInput(
             name="openai_api_base",
             display_name="OpenAI API Base",
             advanced=True,
@@ -55,68 +49,67 @@ test(
             "Defaults to https://api.openai.com/v1. "
             "You can change this to use other APIs like JinaChat, LocalAI and Prem.",
         ),`,
-      `QueryInput(
+    `QueryInput(
             name="openai_api_base",
             display_name="OpenAI API Base",
             advanced=False,
             info="THIS IS A TEST INFORMATION TO DISPLAY",
             placeholder="THIS IS A TEST PLACEHOLDER",
         ),`,
-    );
+  );
 
-    newCode = newCode.replace(
-      `from lfx.inputs.inputs import BoolInput, DictInput, DropdownInput, IntInput, SecretStrInput, SliderInput, StrInput`,
-      `from lfx.inputs.inputs import BoolInput, DictInput, DropdownInput, IntInput, SecretStrInput, SliderInput, StrInput, QueryInput`,
-    );
+  newCode = newCode.replace(
+    `from lfx.inputs.inputs import BoolInput, DictInput, DropdownInput, IntInput, SecretStrInput, SliderInput, StrInput`,
+    `from lfx.inputs.inputs import BoolInput, DictInput, DropdownInput, IntInput, SecretStrInput, SliderInput, StrInput, QueryInput`,
+  );
 
-    // make sure codes are different
-    expect(cleanCode).not.toEqual(newCode);
-    await page.locator("textarea").last().press(`ControlOrMeta+a`);
-    await page.keyboard.press("Backspace");
-    await page.locator("textarea").last().fill(newCode);
-    await page.locator('//*[@id="checkAndSaveBtn"]').click();
-    await adjustScreenView(page);
+  // make sure codes are different
+  expect(cleanCode).not.toEqual(newCode);
+  await page.locator("textarea").last().press(`ControlOrMeta+a`);
+  await page.keyboard.press("Backspace");
+  await page.locator("textarea").last().fill(newCode);
+  await page.locator('//*[@id="checkAndSaveBtn"]').click();
+  await adjustScreenView(page);
 
-    await page
-      .getByTestId("query_query_openai_api_base")
-      .fill("THIS IS A TEST VALUE");
+  await page
+    .getByTestId("query_query_openai_api_base")
+    .fill("THIS IS A TEST VALUE");
 
-    await page
-      .getByTestId("button_open_text_area_modal_query_query_openai_api_base")
-      .click();
+  await page
+    .getByTestId("button_open_text_area_modal_query_query_openai_api_base")
+    .click();
 
-    expect(await page.getByTestId("text-area-modal").inputValue()).toEqual(
-      "THIS IS A TEST VALUE",
-    );
-    expect(
-      await page.getByText("THIS IS A TEST INFORMATION TO DISPLAY").isVisible(),
-    ).toBeTruthy();
+  expect(await page.getByTestId("text-area-modal").inputValue()).toEqual(
+    "THIS IS A TEST VALUE",
+  );
+  expect(
+    await page.getByText("THIS IS A TEST INFORMATION TO DISPLAY").isVisible(),
+  ).toBeTruthy();
 
-    await page.getByTestId("text-area-modal").fill("THIS IS A NEW VALUE");
+  await page.getByTestId("text-area-modal").fill("THIS IS A NEW VALUE");
 
-    await page.getByTestId("genericModalBtnSave").click();
+  await page.getByTestId("genericModalBtnSave").click();
 
-    expect(
-      await page.getByTestId("query_query_openai_api_base").inputValue(),
-    ).toEqual("THIS IS A NEW VALUE");
+  expect(
+    await page.getByTestId("query_query_openai_api_base").inputValue(),
+  ).toEqual("THIS IS A NEW VALUE");
 
-    // LE-1810: the panel only manages parameters — the value is edited on
-    // the node itself.
-    await openParametersPanel(page);
-    await closeParametersPanel(page);
+  // LE-1810: the panel only manages parameters — the value is edited on
+  // the node itself.
+  await openParametersPanel(page);
+  await closeParametersPanel(page);
 
-    await page
-      .getByTestId("button_open_text_area_modal_query_query_openai_api_base")
-      .click();
+  await page
+    .getByTestId("button_open_text_area_modal_query_query_openai_api_base")
+    .click();
 
-    await page
-      .getByTestId("text-area-modal")
-      .fill("THIS IA TEST TEXT INSIDE CONTROLS PANEL");
+  await page
+    .getByTestId("text-area-modal")
+    .fill("THIS IA TEST TEXT INSIDE CONTROLS PANEL");
 
-    await page.getByTestId("genericModalBtnSave").click();
+  await page.getByTestId("genericModalBtnSave").click();
 
-    expect(
-      await page.getByTestId("query_query_openai_api_base").inputValue(),
-    ).toEqual("THIS IA TEST TEXT INSIDE CONTROLS PANEL");
-  },
-);
+  expect(
+    await page.getByTestId("query_query_openai_api_base").inputValue(),
+  ).toEqual("THIS IA TEST TEXT INSIDE CONTROLS PANEL");
+});

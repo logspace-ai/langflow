@@ -175,17 +175,14 @@ class TextUppercaseComponent(Component):
 });
 
 describe("bugs and edge cases", () => {
-  it.failing(
-    "BUG: formatType('MessageInput') returns empty string — replace chain removes everything",
-    () => {
-      // L15: .replace(/Input$/, "").replace(/^Message/, "")
-      // "MessageInput" -> "Message" (strip Input) -> "" (strip Message)
-      // An empty type string is displayed as "( )" in the UI.
-      const result = formatType("MessageInput");
-      expect(result).not.toBe("");
-      expect(result.length).toBeGreaterThan(0);
-    },
-  );
+  it.failing("BUG: formatType('MessageInput') returns empty string — replace chain removes everything", () => {
+    // L15: .replace(/Input$/, "").replace(/^Message/, "")
+    // "MessageInput" -> "Message" (strip Input) -> "" (strip Message)
+    // An empty type string is displayed as "( )" in the UI.
+    const result = formatType("MessageInput");
+    expect(result).not.toBe("");
+    expect(result.length).toBeGreaterThan(0);
+  });
 
   it("formatType('Input') returns empty string — documents behavior", () => {
     // "Input" -> "" after removing Input$ suffix. Edge case but unlikely in practice.
@@ -197,33 +194,27 @@ describe("bugs and edge cases", () => {
     expect(formatType("DataFrame")).toBe("DataFrame");
   });
 
-  it.failing(
-    "BUG: parseComponentInfo ignores single-quoted descriptions",
-    () => {
-      // L22: regex only matches double-quoted strings: description\s*=\s*"([^"]+)"
-      // Python allows single quotes: description = 'My component'
-      const code = `
+  it.failing("BUG: parseComponentInfo ignores single-quoted descriptions", () => {
+    // L22: regex only matches double-quoted strings: description\s*=\s*"([^"]+)"
+    // Python allows single quotes: description = 'My component'
+    const code = `
 class MyComponent(Component):
     description = 'A single-quoted description'
 `;
-      const result = parseComponentInfo(code);
-      expect(result.description).toBe("A single-quoted description");
-    },
-  );
+    const result = parseComponentInfo(code);
+    expect(result.description).toBe("A single-quoted description");
+  });
 
-  it.failing(
-    "BUG: parseComponentInfo ignores triple-quoted descriptions",
-    () => {
-      // L22: same regex — triple-quoted strings are also valid Python.
-      const code = `
+  it.failing("BUG: parseComponentInfo ignores triple-quoted descriptions", () => {
+    // L22: same regex — triple-quoted strings are also valid Python.
+    const code = `
 class MyComponent(Component):
     description = """A multi-line
     description with triple quotes"""
 `;
-      const result = parseComponentInfo(code);
-      expect(result.description).not.toBeNull();
-    },
-  );
+    const result = parseComponentInfo(code);
+    expect(result.description).not.toBeNull();
+  });
 
   it("Output with method before display_name falls back to default type", () => {
     // L42: primary outputRegex requires display_name BEFORE method.

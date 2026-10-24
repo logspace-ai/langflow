@@ -168,493 +168,451 @@ async function openApplyToFieldsPopover(page: LangflowPage) {
 }
 
 test.describe("Global variables route accessibility", () => {
-  test(
-    "scans populated global variables table",
-    { tag: ["@release", "@workspace"] },
-    async ({ page }) => {
-      await openGlobalVariablesRoute(page);
-      await expect(page.getByText("OPENAI_API_KEY")).toBeVisible();
-      await expect(page.getByText("DEFAULT_MODEL")).toBeVisible();
-      await expect(page.getByText("*****")).toBeVisible();
-      await expect(page.getByTestId("delete-row-button")).toBeDisabled();
-      // AG Grid may legitimately mark its responsive initial column sizing as
-      // resettable. This scan cares that the control is present and named; its
-      // enabled state is not part of the route's accessibility contract.
-      await expect(page.getByTestId("reset-columns-button")).toBeVisible();
-      await expect(
-        page.getByTestId("sidebar-nav-Global Variables"),
-      ).toBeVisible();
+  test("scans populated global variables table", {
+    tag: ["@release", "@workspace"],
+  }, async ({ page }) => {
+    await openGlobalVariablesRoute(page);
+    await expect(page.getByText("OPENAI_API_KEY")).toBeVisible();
+    await expect(page.getByText("DEFAULT_MODEL")).toBeVisible();
+    await expect(page.getByText("*****")).toBeVisible();
+    await expect(page.getByTestId("delete-row-button")).toBeDisabled();
+    // AG Grid may legitimately mark its responsive initial column sizing as
+    // resettable. This scan cares that the control is present and named; its
+    // enabled state is not part of the route's accessibility contract.
+    await expect(page.getByTestId("reset-columns-button")).toBeVisible();
+    await expect(
+      page.getByTestId("sidebar-nav-Global Variables"),
+    ).toBeVisible();
 
-      await page.runA11yScan("settings-global-variables-data-rich");
-    },
-  );
+    await page.runA11yScan("settings-global-variables-data-rich");
+  });
 
-  test(
-    "scans empty global variables table",
-    { tag: ["@release", "@workspace"] },
-    async ({ page }) => {
-      await openGlobalVariablesRoute(page, []);
-      await expect(page.getByText("No Data Available")).toBeVisible({
-        timeout: TIMEOUTS.standard,
-      });
-      await expect(
-        page.getByText(
-          "Oops! It seems there's no data to display right now. Please check back later.",
-        ),
-      ).toBeVisible();
+  test("scans empty global variables table", {
+    tag: ["@release", "@workspace"],
+  }, async ({ page }) => {
+    await openGlobalVariablesRoute(page, []);
+    await expect(page.getByText("No Data Available")).toBeVisible({
+      timeout: TIMEOUTS.standard,
+    });
+    await expect(
+      page.getByText(
+        "Oops! It seems there's no data to display right now. Please check back later.",
+      ),
+    ).toBeVisible();
 
-      await page.runA11yScan("settings-global-variables-empty");
-    },
-  );
+    await page.runA11yScan("settings-global-variables-empty");
+  });
 
-  test(
-    "scans invalid provider credentials alert",
-    { tag: ["@release", "@workspace"] },
-    async ({ page }) => {
-      await openGlobalVariablesRoute(page, invalidProviderVariables);
-      await expect(
-        page.getByText("Invalid Provider Credentials Detected"),
-      ).toBeVisible({ timeout: TIMEOUTS.standard });
-      await expect(page.getByText("DEFAULT_MODEL")).toBeVisible();
-      await expect(page.getByText("OPENAI_API_KEY")).toHaveCount(0);
+  test("scans invalid provider credentials alert", {
+    tag: ["@release", "@workspace"],
+  }, async ({ page }) => {
+    await openGlobalVariablesRoute(page, invalidProviderVariables);
+    await expect(
+      page.getByText("Invalid Provider Credentials Detected"),
+    ).toBeVisible({ timeout: TIMEOUTS.standard });
+    await expect(page.getByText("DEFAULT_MODEL")).toBeVisible();
+    await expect(page.getByText("OPENAI_API_KEY")).toHaveCount(0);
 
-      await page.runA11yScan("settings-global-variables-invalid-credentials");
-    },
-  );
+    await page.runA11yScan("settings-global-variables-invalid-credentials");
+  });
 
-  test(
-    "scans create modal credential default with disabled submit",
-    { tag: ["@release", "@workspace"] },
-    async ({ page }) => {
-      await openGlobalVariablesRoute(page);
-      await openCreateModal(page);
-      await expect(page.getByTestId("credential-tab")).toBeVisible();
-      await expect(page.getByTestId("generic-tab")).toBeVisible();
-      await expect(
-        page.getByPlaceholder("Enter a name for the variable..."),
-      ).toBeVisible();
-      await expect(
-        page.getByPlaceholder("Enter a value for the variable..."),
-      ).toBeVisible();
-      await expect(
-        page.getByRole("button", { name: "Show password" }),
-      ).toBeVisible();
-      await expect(page.getByTestId("save-variable-btn")).toBeDisabled();
-      await expect(page.getByTestId("btn-cancel-modal")).toBeVisible();
+  test("scans create modal credential default with disabled submit", {
+    tag: ["@release", "@workspace"],
+  }, async ({ page }) => {
+    await openGlobalVariablesRoute(page);
+    await openCreateModal(page);
+    await expect(page.getByTestId("credential-tab")).toBeVisible();
+    await expect(page.getByTestId("generic-tab")).toBeVisible();
+    await expect(
+      page.getByPlaceholder("Enter a name for the variable..."),
+    ).toBeVisible();
+    await expect(
+      page.getByPlaceholder("Enter a value for the variable..."),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "Show password" }),
+    ).toBeVisible();
+    await expect(page.getByTestId("save-variable-btn")).toBeDisabled();
+    await expect(page.getByTestId("btn-cancel-modal")).toBeVisible();
 
-      await page.runA11yScan("settings-global-variables-create-modal");
-    },
-  );
+    await page.runA11yScan("settings-global-variables-create-modal");
+  });
 
-  test(
-    "scans create modal generic type tab",
-    { tag: ["@release", "@workspace"] },
-    async ({ page }) => {
-      await openGlobalVariablesRoute(page);
-      await openCreateModal(page);
-      await page.getByTestId("generic-tab").click();
-      await expect(page.getByTestId("generic-tab")).toHaveAttribute(
-        "data-state",
-        "active",
-      );
-      await expect(
-        page.getByPlaceholder("Enter a value for the variable..."),
-      ).toBeVisible();
-      await expect(
-        page.getByRole("button", { name: "Show password" }),
-      ).toHaveCount(0);
+  test("scans create modal generic type tab", {
+    tag: ["@release", "@workspace"],
+  }, async ({ page }) => {
+    await openGlobalVariablesRoute(page);
+    await openCreateModal(page);
+    await page.getByTestId("generic-tab").click();
+    await expect(page.getByTestId("generic-tab")).toHaveAttribute(
+      "data-state",
+      "active",
+    );
+    await expect(
+      page.getByPlaceholder("Enter a value for the variable..."),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "Show password" }),
+    ).toHaveCount(0);
 
-      await page.runA11yScan("settings-global-variables-create-modal-generic");
-    },
-  );
+    await page.runA11yScan("settings-global-variables-create-modal-generic");
+  });
 
-  test(
-    "scans create modal with password value visible",
-    { tag: ["@release", "@workspace"] },
-    async ({ page }) => {
-      await openGlobalVariablesRoute(page);
-      await openCreateModal(page);
-      await page
-        .getByPlaceholder("Enter a name for the variable...")
-        .fill("A11Y_SECRET");
-      await page
-        .getByPlaceholder("Enter a value for the variable...")
-        .fill("super-secret-value"); // pragma: allowlist secret
-      await page.getByRole("button", { name: "Show password" }).click();
-      await expect(
-        page.getByRole("button", { name: "Hide password" }),
-      ).toHaveAttribute("aria-pressed", "true");
-      await expect(page.getByTestId("save-variable-btn")).toBeEnabled();
+  test("scans create modal with password value visible", {
+    tag: ["@release", "@workspace"],
+  }, async ({ page }) => {
+    await openGlobalVariablesRoute(page);
+    await openCreateModal(page);
+    await page
+      .getByPlaceholder("Enter a name for the variable...")
+      .fill("A11Y_SECRET");
+    await page
+      .getByPlaceholder("Enter a value for the variable...")
+      .fill("super-secret-value"); // pragma: allowlist secret
+    await page.getByRole("button", { name: "Show password" }).click();
+    await expect(
+      page.getByRole("button", { name: "Hide password" }),
+    ).toHaveAttribute("aria-pressed", "true");
+    await expect(page.getByTestId("save-variable-btn")).toBeEnabled();
 
-      await page.runA11yScan(
-        "settings-global-variables-create-modal-password-visible",
-      );
-    },
-  );
+    await page.runA11yScan(
+      "settings-global-variables-create-modal-password-visible",
+    );
+  });
 
-  test(
-    "scans create modal apply-to-fields popover open",
-    { tag: ["@release", "@workspace"] },
-    async ({ page }) => {
-      await openGlobalVariablesRoute(page);
-      await openCreateModal(page);
-      await openApplyToFieldsPopover(page);
-      await expect(
-        page.getByRole("dialog").getByText("System", { exact: true }).first(),
-      ).toBeVisible({ timeout: TIMEOUTS.standard });
+  test("scans create modal apply-to-fields popover open", {
+    tag: ["@release", "@workspace"],
+  }, async ({ page }) => {
+    await openGlobalVariablesRoute(page);
+    await openCreateModal(page);
+    await openApplyToFieldsPopover(page);
+    await expect(
+      page.getByRole("dialog").getByText("System", { exact: true }).first(),
+    ).toBeVisible({ timeout: TIMEOUTS.standard });
 
-      await page.runA11yScan(
-        "settings-global-variables-create-modal-apply-fields-open",
-      );
-    },
-  );
+    await page.runA11yScan(
+      "settings-global-variables-create-modal-apply-fields-open",
+    );
+  });
 
-  test(
-    "scans create modal with apply-to-fields selected",
-    { tag: ["@release", "@workspace"] },
-    async ({ page }) => {
-      await openGlobalVariablesRoute(page);
-      await openCreateModal(page);
-      await openApplyToFieldsPopover(page);
-      await page
-        .getByRole("dialog")
-        .locator('[cmdk-item]:has-text("System")')
-        .first()
-        .click();
-      await expect(page.getByTestId("remove-icon-badge")).toBeVisible();
-      await expect(
-        page.getByText(
-          "Selected fields will auto-apply the variable as a default value.",
-        ),
-      ).toBeVisible();
+  test("scans create modal with apply-to-fields selected", {
+    tag: ["@release", "@workspace"],
+  }, async ({ page }) => {
+    await openGlobalVariablesRoute(page);
+    await openCreateModal(page);
+    await openApplyToFieldsPopover(page);
+    await page
+      .getByRole("dialog")
+      .locator('[cmdk-item]:has-text("System")')
+      .first()
+      .click();
+    await expect(page.getByTestId("remove-icon-badge")).toBeVisible();
+    await expect(
+      page.getByText(
+        "Selected fields will auto-apply the variable as a default value.",
+      ),
+    ).toBeVisible();
 
-      await page.runA11yScan(
-        "settings-global-variables-create-modal-apply-fields-selected",
-      );
-    },
-  );
+    await page.runA11yScan(
+      "settings-global-variables-create-modal-apply-fields-selected",
+    );
+  });
 
-  test(
-    "scans page after create modal closes",
-    { tag: ["@release", "@workspace"] },
-    async ({ page }) => {
-      await openGlobalVariablesRoute(page);
-      await openCreateModal(page);
-      await page.keyboard.press("Escape");
-      await expect(page.getByRole("dialog")).toHaveCount(0);
-      await expect(page.getByTestId("api-key-button-store")).toBeVisible();
-      await expect(page.getByText("OPENAI_API_KEY")).toBeVisible();
+  test("scans page after create modal closes", {
+    tag: ["@release", "@workspace"],
+  }, async ({ page }) => {
+    await openGlobalVariablesRoute(page);
+    await openCreateModal(page);
+    await page.keyboard.press("Escape");
+    await expect(page.getByRole("dialog")).toHaveCount(0);
+    await expect(page.getByTestId("api-key-button-store")).toBeVisible();
+    await expect(page.getByText("OPENAI_API_KEY")).toBeVisible();
 
-      await page.runA11yScan("settings-global-variables-modal-closed");
-    },
-  );
+    await page.runA11yScan("settings-global-variables-modal-closed");
+  });
 
-  test(
-    "scans edit generic variable modal",
-    { tag: ["@release", "@workspace"] },
-    async ({ page }) => {
-      await openGlobalVariablesRoute(page);
-      await page.locator('.ag-cell:has-text("DEFAULT_MODEL")').first().click();
-      await expect(page.getByRole("dialog")).toBeVisible();
-      await expect(
-        page.getByRole("heading", { name: "Update Variable" }),
-      ).toBeVisible();
-      await expect(page.getByTestId("save-variable-btn")).toBeVisible();
-      // The active type's tab stays enabled/tabbable (so a tablist always has
-      // at least one reachable tab); only the inactive type is locked.
-      await expect(page.getByTestId("credential-tab")).toBeDisabled();
-      await expect(page.getByTestId("generic-tab")).toBeEnabled();
-      await expect(
-        page.getByPlaceholder("Enter a name for the variable..."),
-      ).toHaveValue("DEFAULT_MODEL");
-      await expect(
-        page.getByRole("button", { name: "Show password" }),
-      ).toHaveCount(0);
+  test("scans edit generic variable modal", {
+    tag: ["@release", "@workspace"],
+  }, async ({ page }) => {
+    await openGlobalVariablesRoute(page);
+    await page.locator('.ag-cell:has-text("DEFAULT_MODEL")').first().click();
+    await expect(page.getByRole("dialog")).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Update Variable" }),
+    ).toBeVisible();
+    await expect(page.getByTestId("save-variable-btn")).toBeVisible();
+    // The active type's tab stays enabled/tabbable (so a tablist always has
+    // at least one reachable tab); only the inactive type is locked.
+    await expect(page.getByTestId("credential-tab")).toBeDisabled();
+    await expect(page.getByTestId("generic-tab")).toBeEnabled();
+    await expect(
+      page.getByPlaceholder("Enter a name for the variable..."),
+    ).toHaveValue("DEFAULT_MODEL");
+    await expect(
+      page.getByRole("button", { name: "Show password" }),
+    ).toHaveCount(0);
 
-      await page.runA11yScan("settings-global-variables-edit-modal");
-    },
-  );
+    await page.runA11yScan("settings-global-variables-edit-modal");
+  });
 
-  test(
-    "scans edit credential variable modal",
-    { tag: ["@release", "@workspace"] },
-    async ({ page }) => {
-      await openGlobalVariablesRoute(page);
-      await page.locator('.ag-cell:has-text("OPENAI_API_KEY")').first().click();
-      await expect(page.getByRole("dialog")).toBeVisible();
-      await expect(
-        page.getByRole("heading", { name: "Update Variable" }),
-      ).toBeVisible();
-      await expect(page.getByTestId("credential-tab")).toBeEnabled();
-      await expect(page.getByTestId("generic-tab")).toBeDisabled();
-      await expect(
-        page.getByRole("button", { name: "Show password" }),
-      ).toBeVisible();
-      await expect(page.getByTestId("save-variable-btn")).toBeEnabled();
-      await expect(page.getByTestId("remove-icon-badge")).toBeVisible();
+  test("scans edit credential variable modal", {
+    tag: ["@release", "@workspace"],
+  }, async ({ page }) => {
+    await openGlobalVariablesRoute(page);
+    await page.locator('.ag-cell:has-text("OPENAI_API_KEY")').first().click();
+    await expect(page.getByRole("dialog")).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Update Variable" }),
+    ).toBeVisible();
+    await expect(page.getByTestId("credential-tab")).toBeEnabled();
+    await expect(page.getByTestId("generic-tab")).toBeDisabled();
+    await expect(
+      page.getByRole("button", { name: "Show password" }),
+    ).toBeVisible();
+    await expect(page.getByTestId("save-variable-btn")).toBeEnabled();
+    await expect(page.getByTestId("remove-icon-badge")).toBeVisible();
 
-      await page.runA11yScan("settings-global-variables-edit-modal-credential");
-    },
-  );
+    await page.runA11yScan("settings-global-variables-edit-modal-credential");
+  });
 
-  test(
-    "scans edit modal apply-to-fields popover open",
-    { tag: ["@release", "@workspace"] },
-    async ({ page }) => {
-      await openGlobalVariablesRoute(page);
-      await page.locator('.ag-cell:has-text("DEFAULT_MODEL")').first().click();
-      await expect(page.getByRole("dialog")).toBeVisible();
-      await openApplyToFieldsPopover(page);
-      await expect(
-        page.getByRole("dialog").getByPlaceholder("Fields"),
-      ).toBeVisible();
+  test("scans edit modal apply-to-fields popover open", {
+    tag: ["@release", "@workspace"],
+  }, async ({ page }) => {
+    await openGlobalVariablesRoute(page);
+    await page.locator('.ag-cell:has-text("DEFAULT_MODEL")').first().click();
+    await expect(page.getByRole("dialog")).toBeVisible();
+    await openApplyToFieldsPopover(page);
+    await expect(
+      page.getByRole("dialog").getByPlaceholder("Fields"),
+    ).toBeVisible();
 
-      await page.runA11yScan(
-        "settings-global-variables-edit-modal-apply-fields-open",
-      );
-    },
-  );
+    await page.runA11yScan(
+      "settings-global-variables-edit-modal-apply-fields-open",
+    );
+  });
 
-  test(
-    "scans selected row with delete enabled",
-    { tag: ["@release", "@workspace"] },
-    async ({ page }) => {
-      await openGlobalVariablesRoute(page);
-      const firstRow = page
-        .locator(".ag-center-cols-container .ag-row")
-        .first();
-      await firstRow.locator(".ag-selection-checkbox").click();
-      await expect(firstRow).toHaveAttribute("aria-selected", "true");
-      await expect(page.getByTestId("delete-row-button")).toBeEnabled();
+  test("scans selected row with delete enabled", {
+    tag: ["@release", "@workspace"],
+  }, async ({ page }) => {
+    await openGlobalVariablesRoute(page);
+    const firstRow = page.locator(".ag-center-cols-container .ag-row").first();
+    await firstRow.locator(".ag-selection-checkbox").click();
+    await expect(firstRow).toHaveAttribute("aria-selected", "true");
+    await expect(page.getByTestId("delete-row-button")).toBeEnabled();
 
-      await page.runA11yScan("settings-global-variables-row-selected");
-    },
-  );
+    await page.runA11yScan("settings-global-variables-row-selected");
+  });
 
-  test(
-    "scans multi-row selected table state",
-    { tag: ["@release", "@workspace"] },
-    async ({ page }) => {
-      await openGlobalVariablesRoute(page);
-      const rows = page.locator(".ag-center-cols-container .ag-row");
-      await rows.nth(0).locator(".ag-selection-checkbox").click();
-      await rows.nth(1).locator(".ag-selection-checkbox").click();
-      await expect(rows.nth(0)).toHaveAttribute("aria-selected", "true");
-      await expect(rows.nth(1)).toHaveAttribute("aria-selected", "true");
-      await expect(page.getByTestId("delete-row-button")).toBeEnabled();
+  test("scans multi-row selected table state", {
+    tag: ["@release", "@workspace"],
+  }, async ({ page }) => {
+    await openGlobalVariablesRoute(page);
+    const rows = page.locator(".ag-center-cols-container .ag-row");
+    await rows.nth(0).locator(".ag-selection-checkbox").click();
+    await rows.nth(1).locator(".ag-selection-checkbox").click();
+    await expect(rows.nth(0)).toHaveAttribute("aria-selected", "true");
+    await expect(rows.nth(1)).toHaveAttribute("aria-selected", "true");
+    await expect(page.getByTestId("delete-row-button")).toBeEnabled();
 
-      await page.runA11yScan("settings-global-variables-multi-row-selected");
-    },
-  );
+    await page.runA11yScan("settings-global-variables-multi-row-selected");
+  });
 
-  test(
-    "opens edit modal from a focused row with Enter",
-    { tag: ["@release", "@workspace"] },
-    async ({ page }) => {
-      await openGlobalVariablesRoute(page);
+  test("opens edit modal from a focused row with Enter", {
+    tag: ["@release", "@workspace"],
+  }, async ({ page }) => {
+    await openGlobalVariablesRoute(page);
 
-      // Focus a data cell without relying on a prior open/close cycle (that
-      // race left the dialog mounted on Escape in CI).
-      const nameCell = page
-        .locator(
-          '.ag-center-cols-container .ag-row [role="gridcell"][col-id="name"]',
-        )
-        .filter({ hasText: "DEFAULT_MODEL" })
-        .first();
-      await nameCell.click({ position: { x: 4, y: 4 } });
-      // Row click opens the edit modal; dismiss it, then re-focus the cell.
-      await expect(page.getByRole("dialog")).toBeVisible({
-        timeout: TIMEOUTS.standard,
-      });
-      await page.keyboard.press("Escape");
-      await expect(page.getByRole("dialog")).toHaveCount(0, {
-        timeout: TIMEOUTS.standard,
-      });
-      // Closing the edit modal must return focus to the cell that opened it
-      // (WCAG 2.4.3) — do not require a manual re-focus before Enter.
-      await expect
-        .poll(
-          async () =>
-            page.evaluate(
-              () =>
-                document.activeElement?.getAttribute("col-id") ??
-                document.activeElement
-                  ?.closest("[col-id]")
-                  ?.getAttribute("col-id") ??
-                "",
-            ),
-          { timeout: TIMEOUTS.standard },
-        )
-        .toBe("name");
+    // Focus a data cell without relying on a prior open/close cycle (that
+    // race left the dialog mounted on Escape in CI).
+    const nameCell = page
+      .locator(
+        '.ag-center-cols-container .ag-row [role="gridcell"][col-id="name"]',
+      )
+      .filter({ hasText: "DEFAULT_MODEL" })
+      .first();
+    await nameCell.click({ position: { x: 4, y: 4 } });
+    // Row click opens the edit modal; dismiss it, then re-focus the cell.
+    await expect(page.getByRole("dialog")).toBeVisible({
+      timeout: TIMEOUTS.standard,
+    });
+    await page.keyboard.press("Escape");
+    await expect(page.getByRole("dialog")).toHaveCount(0, {
+      timeout: TIMEOUTS.standard,
+    });
+    // Closing the edit modal must return focus to the cell that opened it
+    // (WCAG 2.4.3) — do not require a manual re-focus before Enter.
+    await expect
+      .poll(
+        async () =>
+          page.evaluate(
+            () =>
+              document.activeElement?.getAttribute("col-id") ??
+              document.activeElement
+                ?.closest("[col-id]")
+                ?.getAttribute("col-id") ??
+              "",
+          ),
+        { timeout: TIMEOUTS.standard },
+      )
+      .toBe("name");
 
-      await page.keyboard.press("Enter");
-      await expect(
-        page.getByRole("dialog", { name: "Update Variable" }),
-      ).toBeVisible({ timeout: TIMEOUTS.standard });
-    },
-  );
+    await page.keyboard.press("Enter");
+    await expect(
+      page.getByRole("dialog", { name: "Update Variable" }),
+    ).toBeVisible({ timeout: TIMEOUTS.standard });
+  });
 
-  test(
-    "restores focus to the last table cell after edit modal closes",
-    { tag: ["@release", "@workspace"] },
-    async ({ page }) => {
-      await openGlobalVariablesRoute(page);
+  test("restores focus to the last table cell after edit modal closes", {
+    tag: ["@release", "@workspace"],
+  }, async ({ page }) => {
+    await openGlobalVariablesRoute(page);
 
-      const nameCell = page
-        .locator(
-          '.ag-center-cols-container .ag-row [role="gridcell"][col-id="name"]',
-        )
-        .filter({ hasText: "DEFAULT_MODEL" })
-        .first();
-      await nameCell.click({ position: { x: 4, y: 4 } });
-      await expect(
-        page.getByRole("dialog", { name: "Update Variable" }),
-      ).toBeVisible({ timeout: TIMEOUTS.standard });
+    const nameCell = page
+      .locator(
+        '.ag-center-cols-container .ag-row [role="gridcell"][col-id="name"]',
+      )
+      .filter({ hasText: "DEFAULT_MODEL" })
+      .first();
+    await nameCell.click({ position: { x: 4, y: 4 } });
+    await expect(
+      page.getByRole("dialog", { name: "Update Variable" }),
+    ).toBeVisible({ timeout: TIMEOUTS.standard });
 
-      await page.keyboard.press("Escape");
-      await expect(page.getByRole("dialog")).toHaveCount(0, {
-        timeout: TIMEOUTS.standard,
-      });
+    await page.keyboard.press("Escape");
+    await expect(page.getByRole("dialog")).toHaveCount(0, {
+      timeout: TIMEOUTS.standard,
+    });
 
-      await expect
-        .poll(
-          async () =>
-            page.evaluate(() => {
-              const el = document.activeElement as HTMLElement | null;
-              if (!el) return "";
-              if (el.getAttribute("col-id") === "name") return "name";
-              return (
-                el
-                  .closest('[role="gridcell"][col-id="name"]')
-                  ?.getAttribute("col-id") ?? ""
-              );
-            }),
-          { timeout: TIMEOUTS.standard },
-        )
-        .toBe("name");
-    },
-  );
+    await expect
+      .poll(
+        async () =>
+          page.evaluate(() => {
+            const el = document.activeElement as HTMLElement | null;
+            if (!el) return "";
+            if (el.getAttribute("col-id") === "name") return "name";
+            return (
+              el
+                .closest('[role="gridcell"][col-id="name"]')
+                ?.getAttribute("col-id") ?? ""
+            );
+          }),
+        { timeout: TIMEOUTS.standard },
+      )
+      .toBe("name");
+  });
 
-  test(
-    "toggles row selection with Space without opening the edit modal",
-    { tag: ["@release", "@workspace"] },
-    async ({ page }) => {
-      await openGlobalVariablesRoute(page);
+  test("toggles row selection with Space without opening the edit modal", {
+    tag: ["@release", "@workspace"],
+  }, async ({ page }) => {
+    await openGlobalVariablesRoute(page);
 
-      const row = page
-        .locator(".ag-center-cols-container .ag-row")
-        .filter({ hasText: "DEFAULT_MODEL" })
-        .first();
-      const nameCell = row.locator('[role="gridcell"][col-id="name"]');
+    const row = page
+      .locator(".ag-center-cols-container .ag-row")
+      .filter({ hasText: "DEFAULT_MODEL" })
+      .first();
+    const nameCell = row.locator('[role="gridcell"][col-id="name"]');
 
-      // Focus the name cell via the grid without leaving a stuck dialog:
-      // select via checkbox first (does not open edit), then move to the name cell.
-      await row.locator(".ag-selection-checkbox").click();
-      await expect(row).toHaveAttribute("aria-selected", "true");
-      await nameCell.click({ position: { x: 4, y: 4 } });
-      await expect(page.getByRole("dialog")).toBeVisible({
-        timeout: TIMEOUTS.standard,
-      });
-      await page.keyboard.press("Escape");
-      await expect(page.getByRole("dialog")).toHaveCount(0, {
-        timeout: TIMEOUTS.standard,
-      });
-      await nameCell.focus();
+    // Focus the name cell via the grid without leaving a stuck dialog:
+    // select via checkbox first (does not open edit), then move to the name cell.
+    await row.locator(".ag-selection-checkbox").click();
+    await expect(row).toHaveAttribute("aria-selected", "true");
+    await nameCell.click({ position: { x: 4, y: 4 } });
+    await expect(page.getByRole("dialog")).toBeVisible({
+      timeout: TIMEOUTS.standard,
+    });
+    await page.keyboard.press("Escape");
+    await expect(page.getByRole("dialog")).toHaveCount(0, {
+      timeout: TIMEOUTS.standard,
+    });
+    await nameCell.focus();
 
-      // Space while selected → deselect
-      await page.keyboard.press(" ");
-      await expect(row).toHaveAttribute("aria-selected", "false", {
-        timeout: TIMEOUTS.standard,
-      });
-      await expect(page.getByRole("dialog")).toHaveCount(0);
-      await expect(page.getByTestId("delete-row-button")).toBeDisabled();
+    // Space while selected → deselect
+    await page.keyboard.press(" ");
+    await expect(row).toHaveAttribute("aria-selected", "false", {
+      timeout: TIMEOUTS.standard,
+    });
+    await expect(page.getByRole("dialog")).toHaveCount(0);
+    await expect(page.getByTestId("delete-row-button")).toBeDisabled();
 
-      // Space again → select
-      await page.keyboard.press(" ");
-      await expect(row).toHaveAttribute("aria-selected", "true", {
-        timeout: TIMEOUTS.standard,
-      });
-      await expect(page.getByRole("dialog")).toHaveCount(0);
-      await expect(page.getByTestId("delete-row-button")).toBeEnabled({
-        timeout: TIMEOUTS.standard,
-      });
-    },
-  );
+    // Space again → select
+    await page.keyboard.press(" ");
+    await expect(row).toHaveAttribute("aria-selected", "true", {
+      timeout: TIMEOUTS.standard,
+    });
+    await expect(page.getByRole("dialog")).toHaveCount(0);
+    await expect(page.getByTestId("delete-row-button")).toBeEnabled({
+      timeout: TIMEOUTS.standard,
+    });
+  });
 
-  test(
-    "create modal is named by its visible title",
-    { tag: ["@release", "@workspace"] },
-    async ({ page }) => {
-      await openGlobalVariablesRoute(page);
-      await openCreateModal(page);
+  test("create modal is named by its visible title", {
+    tag: ["@release", "@workspace"],
+  }, async ({ page }) => {
+    await openGlobalVariablesRoute(page);
+    await openCreateModal(page);
 
-      await expect(
-        page.getByRole("dialog", { name: "Create Variable" }),
-      ).toBeVisible();
-      await expect(page.getByText("Dialog", { exact: true })).toHaveCount(0);
-    },
-  );
+    await expect(
+      page.getByRole("dialog", { name: "Create Variable" }),
+    ).toBeVisible();
+    await expect(page.getByText("Dialog", { exact: true })).toHaveCount(0);
+  });
 
-  test(
-    "tabs from Name directly onto the Value input",
-    { tag: ["@release", "@workspace"] },
-    async ({ page }) => {
-      await openGlobalVariablesRoute(page);
-      await openCreateModal(page);
+  test("tabs from Name directly onto the Value input", {
+    tag: ["@release", "@workspace"],
+  }, async ({ page }) => {
+    await openGlobalVariablesRoute(page);
+    await openCreateModal(page);
 
-      const nameInput = page
-        .getByRole("dialog")
-        .getByRole("textbox", { name: /Name/i });
-      await nameInput.focus();
-      await page.keyboard.press("Tab");
+    const nameInput = page
+      .getByRole("dialog")
+      .getByRole("textbox", { name: /Name/i });
+    await nameInput.focus();
+    await page.keyboard.press("Tab");
 
-      const focusedTestId = await page.evaluate(
-        () => document.activeElement?.getAttribute("data-testid") ?? "",
-      );
-      // Credential value uses InputComponent; its input test id is the
-      // popover-anchor id. Must not land on the wrapper anchor button.
-      expect(focusedTestId).toBe(
-        "popover-anchor-global-variable-value-credential",
-      );
-      expect(focusedTestId).not.toContain("anchor-popover");
-    },
-  );
+    const focusedTestId = await page.evaluate(
+      () => document.activeElement?.getAttribute("data-testid") ?? "",
+    );
+    // Credential value uses InputComponent; its input test id is the
+    // popover-anchor id. Must not land on the wrapper anchor button.
+    expect(focusedTestId).toBe(
+      "popover-anchor-global-variable-value-credential",
+    );
+    expect(focusedTestId).not.toContain("anchor-popover");
+  });
 
-  test(
-    "restores focus to Apply to Fields after Esc closes the popover",
-    { tag: ["@release", "@workspace"] },
-    async ({ page }) => {
-      await openGlobalVariablesRoute(page);
-      await openCreateModal(page);
+  test("restores focus to Apply to Fields after Esc closes the popover", {
+    tag: ["@release", "@workspace"],
+  }, async ({ page }) => {
+    await openGlobalVariablesRoute(page);
+    await openCreateModal(page);
 
-      const applyTrigger = page.getByTestId(
-        "anchor-popover-anchor-apply-to-fields",
-      );
-      await applyTrigger.focus();
-      await page.keyboard.press("Enter");
-      await expect(
-        page.getByRole("dialog").getByPlaceholder("Fields"),
-      ).toBeVisible({
-        timeout: TIMEOUTS.standard,
-      });
+    const applyTrigger = page.getByTestId(
+      "anchor-popover-anchor-apply-to-fields",
+    );
+    await applyTrigger.focus();
+    await page.keyboard.press("Enter");
+    await expect(
+      page.getByRole("dialog").getByPlaceholder("Fields"),
+    ).toBeVisible({
+      timeout: TIMEOUTS.standard,
+    });
 
-      await page.keyboard.press("Escape");
-      await expect(
-        page.getByRole("dialog").getByPlaceholder("Fields"),
-      ).toHaveCount(0);
-      await expect(
-        page.getByRole("dialog", { name: "Create Variable" }),
-      ).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expect(
+      page.getByRole("dialog").getByPlaceholder("Fields"),
+    ).toHaveCount(0);
+    await expect(
+      page.getByRole("dialog", { name: "Create Variable" }),
+    ).toBeVisible();
 
-      await expect
-        .poll(
-          async () =>
-            page.evaluate(
-              () => document.activeElement?.getAttribute("data-testid") ?? "",
-            ),
-          { timeout: TIMEOUTS.standard },
-        )
-        .toBe("anchor-popover-anchor-apply-to-fields");
-    },
-  );
+    await expect
+      .poll(
+        async () =>
+          page.evaluate(
+            () => document.activeElement?.getAttribute("data-testid") ?? "",
+          ),
+        { timeout: TIMEOUTS.standard },
+      )
+      .toBe("anchor-popover-anchor-apply-to-fields");
+  });
 });

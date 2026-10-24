@@ -3,36 +3,34 @@ import { awaitBootstrapTest } from "../../utils/await-bootstrap-test";
 
 import { TEXTS } from "../../utils/constants/texts";
 
-test(
-  "custom component code button should be pink when adding custom component",
-  { tag: ["@release", "@components"] },
+test("custom component code button should be pink when adding custom component", {
+  tag: ["@release", "@components"],
+}, async ({ page }) => {
+  await awaitBootstrapTest(page);
 
-  async ({ page }) => {
-    await awaitBootstrapTest(page);
+  await page.waitForSelector('[data-testid="blank-flow"]', {
+    timeout: 3000,
+  });
 
-    await page.waitForSelector('[data-testid="blank-flow"]', {
-      timeout: 3000,
-    });
+  await page.getByTestId("blank-flow").click();
 
-    await page.getByTestId("blank-flow").click();
+  await page.waitForSelector('[data-testid="canvas_controls_dropdown"]', {
+    timeout: 3000,
+  });
 
-    await page.waitForSelector('[data-testid="canvas_controls_dropdown"]', {
-      timeout: 3000,
-    });
+  await page.getByTestId("sidebar-custom-component-button").click();
 
-    await page.getByTestId("sidebar-custom-component-button").click();
+  await expect(page.getByTestId("code-button-modal").last()).toBeVisible({
+    timeout: 3000,
+  });
 
-    await expect(page.getByTestId("code-button-modal").last()).toBeVisible({
-      timeout: 3000,
-    });
+  await expect(page.getByTestId("code-button-modal").last()).toHaveClass(
+    /animate-pulse-pink/,
+  );
 
-    await expect(page.getByTestId("code-button-modal").last()).toHaveClass(
-      /animate-pulse-pink/,
-    );
+  await page.getByTestId("code-button-modal").last().click();
 
-    await page.getByTestId("code-button-modal").last().click();
-
-    const waitTimeoutCode = `
+  const waitTimeoutCode = `
 # from langflow.field_typing import Data
 from langflow.custom import Component
 from langflow.io import MessageTextInput, Output
@@ -61,15 +59,14 @@ class CustomComponent(Component):
         sleep(60)
         return data`;
 
-    await page.locator(".ace_content").click();
-    await page.keyboard.press(`ControlOrMeta+A`);
-    await page.locator("textarea").last().fill(waitTimeoutCode);
+  await page.locator(".ace_content").click();
+  await page.keyboard.press(`ControlOrMeta+A`);
+  await page.locator("textarea").last().fill(waitTimeoutCode);
 
-    await page.getByText(TEXTS.checkAndSave).last().click();
+  await page.getByText(TEXTS.checkAndSave).last().click();
 
-    await expect(page.getByTestId("code-button-modal").last()).not.toHaveClass(
-      /animate-pulse-pink/,
-      { timeout: 3000 },
-    );
-  },
-);
+  await expect(page.getByTestId("code-button-modal").last()).not.toHaveClass(
+    /animate-pulse-pink/,
+    { timeout: 3000 },
+  );
+});

@@ -3,79 +3,77 @@ import { awaitBootstrapTest } from "../../utils/await-bootstrap-test";
 import { TEXTS } from "../../utils/constants/texts";
 import { extractAndCleanCode } from "../../utils/extract-and-clean-code";
 
-test(
-  "user must be able to use component as tool shortcut only if has tool mode is True",
-  { tag: ["@release", "@components"] },
-  async ({ page }) => {
-    await awaitBootstrapTest(page);
+test("user must be able to use component as tool shortcut only if has tool mode is True", {
+  tag: ["@release", "@components"],
+}, async ({ page }) => {
+  await awaitBootstrapTest(page);
 
-    await page.getByTestId("blank-flow").click();
+  await page.getByTestId("blank-flow").click();
 
-    await page.waitForSelector('[data-testid="canvas_controls_dropdown"]', {
-      timeout: 100000,
+  await page.waitForSelector('[data-testid="canvas_controls_dropdown"]', {
+    timeout: 100000,
+  });
+
+  await page.getByTestId("sidebar-search-input").click();
+  await page.getByTestId("sidebar-search-input").fill(TEXTS.searchPrompt);
+
+  await page
+    .getByTestId("models_and_agentsPrompt Template")
+    .hover()
+    .then(async () => {
+      await page.getByTestId("add-component-button-prompt-template").click();
     });
 
-    await page.getByTestId("sidebar-search-input").click();
-    await page.getByTestId("sidebar-search-input").fill(TEXTS.searchPrompt);
+  await page.waitForSelector('[data-testid="title-Prompt Template"]', {
+    timeout: 3000,
+  });
 
-    await page
-      .getByTestId("models_and_agentsPrompt Template")
-      .hover()
-      .then(async () => {
-        await page.getByTestId("add-component-button-prompt-template").click();
-      });
+  expect(await page.getByText("Toolset", { exact: true }).count()).toBe(0);
 
-    await page.waitForSelector('[data-testid="title-Prompt Template"]', {
-      timeout: 3000,
-    });
+  await page.getByTestId("title-Prompt Template").click();
+  await page.keyboard.press("ControlOrMeta+Shift+m");
 
-    expect(await page.getByText("Toolset", { exact: true }).count()).toBe(0);
+  await page.waitForSelector('text="Toolset"', {
+    timeout: 3000,
+  });
+  expect(
+    await page.getByText("Toolset", { exact: true }).count(),
+  ).toBeGreaterThan(0);
 
-    await page.getByTestId("title-Prompt Template").click();
-    await page.keyboard.press("ControlOrMeta+Shift+m");
+  await page.getByTestId("title-Prompt Template").click();
 
-    await page.waitForSelector('text="Toolset"', {
-      timeout: 3000,
-    });
-    expect(
-      await page.getByText("Toolset", { exact: true }).count(),
-    ).toBeGreaterThan(0);
+  await expect(page.getByTestId("code-button-modal").last()).toBeVisible({
+    timeout: 3000,
+  });
 
-    await page.getByTestId("title-Prompt Template").click();
+  await page.getByTestId("code-button-modal").last().click();
 
-    await expect(page.getByTestId("code-button-modal").last()).toBeVisible({
-      timeout: 3000,
-    });
+  const code = await extractAndCleanCode(page);
+  const updatedCode = code!.replace("tool_mode=True", "tool_mode=False");
 
-    await page.getByTestId("code-button-modal").last().click();
+  expect(updatedCode).not.toBe(code);
 
-    const code = await extractAndCleanCode(page);
-    const updatedCode = code!.replace("tool_mode=True", "tool_mode=False");
+  await page.locator("textarea").last().press(`ControlOrMeta+a`);
+  await page.keyboard.press("Backspace");
+  await page.locator("textarea").last().fill(updatedCode);
+  const customComponentPromise = page.waitForResponse((response) => {
+    const url = new URL(response.url());
+    return (
+      response.request().method() === "POST" &&
+      url.pathname === "/api/v1/custom_component"
+    );
+  });
+  await page.locator('//*[@id="checkAndSaveBtn"]').click();
+  const customComponentResponse = await customComponentPromise;
+  // check if the response is 200
+  expect(customComponentResponse?.status()).toBe(200);
 
-    expect(updatedCode).not.toBe(code);
+  await page.waitForSelector('[data-testid="title-Prompt Template"]', {
+    timeout: 3000,
+  });
 
-    await page.locator("textarea").last().press(`ControlOrMeta+a`);
-    await page.keyboard.press("Backspace");
-    await page.locator("textarea").last().fill(updatedCode);
-    const customComponentPromise = page.waitForResponse((response) => {
-      const url = new URL(response.url());
-      return (
-        response.request().method() === "POST" &&
-        url.pathname === "/api/v1/custom_component"
-      );
-    });
-    await page.locator('//*[@id="checkAndSaveBtn"]').click();
-    const customComponentResponse = await customComponentPromise;
-    // check if the response is 200
-    expect(customComponentResponse?.status()).toBe(200);
+  await page.getByTestId("title-Prompt Template").click();
+  await page.keyboard.press("ControlOrMeta+Shift+m");
 
-    await page.waitForSelector('[data-testid="title-Prompt Template"]', {
-      timeout: 3000,
-    });
-
-    await page.getByTestId("title-Prompt Template").click();
-    await page.keyboard.press("ControlOrMeta+Shift+m");
-
-    expect(await page.getByText("Toolset", { exact: true }).count()).toBe(0);
-  },
-);
+  expect(await page.getByText("Toolset", { exact: true }).count()).toBe(0);
+});

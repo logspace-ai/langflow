@@ -428,48 +428,39 @@ describe("error responses", () => {
 });
 
 describe("bugs and edge cases", () => {
-  it.failing(
-    "BUG: should accept 'data:' without space (SSE spec allows no space after colon)",
-    async () => {
-      // SSE spec: "data:" is valid without trailing space.
-      // L33: line.startsWith("data: ") requires space — "data:{json}" is silently dropped.
-      const json = JSON.stringify({
-        event: "complete",
-        data: { result: "", validated: true },
-      });
-      const text = `data:${json}\n\n`;
-      mockFetch.mockResolvedValue(createMockResponse(200, [encode(text)]));
+  it.failing("BUG: should accept 'data:' without space (SSE spec allows no space after colon)", async () => {
+    // SSE spec: "data:" is valid without trailing space.
+    // L33: line.startsWith("data: ") requires space — "data:{json}" is silently dropped.
+    const json = JSON.stringify({
+      event: "complete",
+      data: { result: "", validated: true },
+    });
+    const text = `data:${json}\n\n`;
+    mockFetch.mockResolvedValue(createMockResponse(200, [encode(text)]));
 
-      const onComplete = jest.fn();
-      await postAssistStream(
-        { flow_id: "f1", input_value: "" },
-        { onComplete },
-      );
+    const onComplete = jest.fn();
+    await postAssistStream({ flow_id: "f1", input_value: "" }, { onComplete });
 
-      expect(onComplete).toHaveBeenCalledTimes(1);
-    },
-  );
+    expect(onComplete).toHaveBeenCalledTimes(1);
+  });
 
-  it.failing(
-    "BUG: should reject events with wrong shape instead of casting",
-    async () => {
-      // L22: `JSON.parse(data) as AgenticSSEEvent` — no runtime validation.
-      // A well-typed object that doesn't match any event type is accepted silently.
-      const fakeEvent = { event: "unknown_type", foo: "bar" };
-      const text = `data: ${JSON.stringify(fakeEvent)}\n\ndata: ${JSON.stringify({ event: "complete", data: { result: "", validated: true } })}\n\n`;
-      mockFetch.mockResolvedValue(createMockResponse(200, [encode(text)]));
+  it.failing("BUG: should reject events with wrong shape instead of casting", async () => {
+    // L22: `JSON.parse(data) as AgenticSSEEvent` — no runtime validation.
+    // A well-typed object that doesn't match any event type is accepted silently.
+    const fakeEvent = { event: "unknown_type", foo: "bar" };
+    const text = `data: ${JSON.stringify(fakeEvent)}\n\ndata: ${JSON.stringify({ event: "complete", data: { result: "", validated: true } })}\n\n`;
+    mockFetch.mockResolvedValue(createMockResponse(200, [encode(text)]));
 
-      const onError = jest.fn();
-      await postAssistStream({ flow_id: "f1", input_value: "" }, { onError });
+    const onError = jest.fn();
+    await postAssistStream({ flow_id: "f1", input_value: "" }, { onError });
 
-      // Should have reported an error for the unknown event type
-      expect(onError).toHaveBeenCalledWith(
-        expect.objectContaining({
-          message: expect.stringContaining("unknown"),
-        }),
-      );
-    },
-  );
+    // Should have reported an error for the unknown event type
+    expect(onError).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: expect.stringContaining("unknown"),
+      }),
+    );
+  });
 
   it("should_cancel_reader_before_releasing_lock_to_close_connection", async () => {
     // Bug: reader.releaseLock() without reader.cancel() — the underlying TCP

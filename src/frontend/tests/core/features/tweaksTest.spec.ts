@@ -12,59 +12,56 @@ import { skipIfComponentUnavailable } from "../../utils/skip-if-component-unavai
 // toggle backed by the persisted api_editable flag). The apiModal no longer
 // hosts an "Input Schema" section — snippets derive from the exposed fields.
 
-test(
-  "curl_api_generation",
-  { tag: ["@release", "@workspace", "@api"] },
+test("curl_api_generation", {
+  tag: ["@release", "@workspace", "@api"],
+}, async ({ page, context }) => {
+  await awaitBootstrapTest(page);
 
-  async ({ page, context }) => {
-    await awaitBootstrapTest(page);
+  await page.getByTestId("side_nav_options_all-templates").click();
+  await page
+    .getByRole("heading", { name: TEXTS.templateBasicPrompting })
+    .click();
+  // Wait for the new-flow Loading state to clear before checking the
+  // publish button — the canvas mounts only after the flow finishes
+  // loading, which can outlast a 20s action timeout on Windows CI.
+  await page.waitForSelector('text="Loading"', {
+    state: "hidden",
+    timeout: 60000,
+  });
+  await page.waitForSelector('[data-testid="publish-button"]', {
+    timeout: 30000,
+  });
+  await page.getByTestId("publish-button").click();
+  await page.getByTestId("api-access-item").click();
+  await page.getByTestId("api_tab_curl").click();
+  await page.getByTestId("icon-Copy").click();
+  const handle = await page.evaluateHandle(() =>
+    navigator.clipboard.readText(),
+  );
+  const clipboardContent = await handle.jsonValue();
+  const oldValue = clipboardContent;
+  expect(clipboardContent.length).toBeGreaterThan(0);
 
-    await page.getByTestId("side_nav_options_all-templates").click();
-    await page
-      .getByRole("heading", { name: TEXTS.templateBasicPrompting })
-      .click();
-    // Wait for the new-flow Loading state to clear before checking the
-    // publish button — the canvas mounts only after the flow finishes
-    // loading, which can outlast a 20s action timeout on Windows CI.
-    await page.waitForSelector('text="Loading"', {
-      state: "hidden",
-      timeout: 60000,
-    });
-    await page.waitForSelector('[data-testid="publish-button"]', {
-      timeout: 30000,
-    });
-    await page.getByTestId("publish-button").click();
-    await page.getByTestId("api-access-item").click();
-    await page.getByTestId("api_tab_curl").click();
-    await page.getByTestId("icon-Copy").click();
-    const handle = await page.evaluateHandle(() =>
-      navigator.clipboard.readText(),
-    );
-    const clipboardContent = await handle.jsonValue();
-    const oldValue = clipboardContent;
-    expect(clipboardContent.length).toBeGreaterThan(0);
+  // Expose a parameter through the node's parameters panel — the snippet
+  // must pick it up as a tweak.
+  await page.keyboard.press("Escape");
+  await page.getByTestId("title-Language Model").click();
+  await addParameterToNode(page, "stream");
+  await setParameterApiEditable(page, "stream", true);
 
-    // Expose a parameter through the node's parameters panel — the snippet
-    // must pick it up as a tweak.
-    await page.keyboard.press("Escape");
-    await page.getByTestId("title-Language Model").click();
-    await addParameterToNode(page, "stream");
-    await setParameterApiEditable(page, "stream", true);
-
-    await page.getByTestId("publish-button").click();
-    await page.getByTestId("api-access-item").click();
-    await page.getByTestId("api_tab_curl").click();
-    await page.getByTestId("icon-Copy").click();
-    const handle2 = await page.evaluateHandle(() =>
-      navigator.clipboard.readText(),
-    );
-    const clipboardContent2 = await handle2.jsonValue();
-    const newValue = clipboardContent2;
-    expect(oldValue).not.toBe(newValue);
-    expect(newValue).toContain("stream");
-    expect(clipboardContent2.length).toBeGreaterThan(clipboardContent.length);
-  },
-);
+  await page.getByTestId("publish-button").click();
+  await page.getByTestId("api-access-item").click();
+  await page.getByTestId("api_tab_curl").click();
+  await page.getByTestId("icon-Copy").click();
+  const handle2 = await page.evaluateHandle(() =>
+    navigator.clipboard.readText(),
+  );
+  const clipboardContent2 = await handle2.jsonValue();
+  const newValue = clipboardContent2;
+  expect(oldValue).not.toBe(newValue);
+  expect(newValue).toContain("stream");
+  expect(clipboardContent2.length).toBeGreaterThan(clipboardContent.length);
+});
 
 test("check if exposed parameters are updating when something on the flow changes", async ({
   page,

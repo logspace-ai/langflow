@@ -119,13 +119,11 @@ async function waitForRouteToSettle(page: LangflowPage, route: StaticRoute) {
 
 test.describe("canonical static route accessibility", () => {
   for (const route of canonicalStaticRoutes) {
-    test(
-      `scans ${route.path}`,
-      { tag: ["@release", "@workspace"] },
-      async ({ page }) => {
-        await waitForRouteToSettle(page, route);
-        await page.runA11yScan(`route-${route.id}`);
-      },
-    );
+    test(`scans ${route.path}`, { tag: ["@release", "@workspace"] }, async ({
+      page,
+    }) => {
+      await waitForRouteToSettle(page, route);
+      await page.runA11yScan(`route-${route.id}`);
+    });
   }
 });

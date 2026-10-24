@@ -13,338 +13,336 @@ import { unselectNodes } from "../../utils/unselect-nodes";
 import { updateOldComponents } from "../../utils/update-old-components";
 import { zoomOut } from "../../utils/zoom-out";
 
-test(
-  "user must be able to check similarity between embedding texts",
-  { tag: ["@release", "@components"] },
-  async ({ page }) => {
-    await awaitBootstrapTest(page);
+test("user must be able to check similarity between embedding texts", {
+  tag: ["@release", "@components"],
+}, async ({ page }) => {
+  await awaitBootstrapTest(page);
 
-    await page.getByTestId("blank-flow").click();
+  await page.getByTestId("blank-flow").click();
 
-    await addLegacyComponents(page);
+  await addLegacyComponents(page);
 
-    //first component
+  //first component
 
-    await page.getByTestId("sidebar-search-input").click();
-    await page.getByTestId("sidebar-search-input").fill("openai embedding");
-    await skipIfComponentUnavailable(
-      page.getByText("OpenAI Embeddings", { exact: true }),
-      "OpenAI Embeddings",
+  await page.getByTestId("sidebar-search-input").click();
+  await page.getByTestId("sidebar-search-input").fill("openai embedding");
+  await skipIfComponentUnavailable(
+    page.getByText("OpenAI Embeddings", { exact: true }),
+    "OpenAI Embeddings",
+  );
+
+  await page
+    .getByText("OpenAI Embeddings", { exact: true })
+    .dragTo(page.locator('//*[@id="react-flow-id"]'), {
+      targetPosition: { x: 100, y: 100 },
+    });
+
+  await zoomOut(page, 5);
+
+  await page.getByTestId("sidebar-search-input").click();
+  await page.getByTestId("sidebar-search-input").fill("text embedder");
+  await page.waitForSelector("text=Text Embedder", {
+    timeout: 1000,
+  });
+
+  await page
+    .getByTestId("embeddingsText Embedder")
+    .dragTo(page.locator('//*[@id="react-flow-id"]'), {
+      targetPosition: { x: 100, y: 400 },
+    });
+
+  //fourth component
+
+  await page
+    .getByTestId("embeddingsText Embedder")
+    .dragTo(page.locator('//*[@id="react-flow-id"]'), {
+      targetPosition: { x: 300, y: 400 },
+    });
+
+  //fifth component
+
+  await page.getByTestId("sidebar-search-input").click();
+  await page.getByTestId("sidebar-search-input").fill("embedding similarity");
+  await page.waitForSelector("text=Embedding Similarity", {
+    timeout: 1000,
+  });
+
+  await page
+    .getByTestId("embeddingsEmbedding Similarity")
+    .dragTo(page.locator('//*[@id="react-flow-id"]'), {
+      targetPosition: { x: 350, y: 100 },
+    });
+
+  //sisxth component
+
+  await page.getByTestId("sidebar-search-input").click();
+  await page.getByTestId("sidebar-search-input").fill("data to message");
+  await page.waitForSelector("text=Data to Message", {
+    timeout: 1000,
+  });
+
+  await page
+    .getByTestId("processingData to Message")
+    .dragTo(page.locator('//*[@id="react-flow-id"]'), {
+      targetPosition: { x: 50, y: 100 },
+    });
+
+  //seventh component
+
+  await page.getByTestId("sidebar-search-input").click();
+  await page.getByTestId("sidebar-search-input").fill(TEXTS.searchTextOutput);
+  await page.waitForSelector("text=Text Output", {
+    timeout: 1000,
+  });
+
+  await page
+    .getByTestId("input_outputText Output")
+    .dragTo(page.locator('//*[@id="react-flow-id"]'), {
+      targetPosition: { x: 500, y: 100 },
+    });
+
+  await page.getByTestId("sidebar-search-input").click();
+  await page.getByTestId("sidebar-search-input").fill("filter data");
+  await page.waitForSelector("text=Filter Data", {
+    timeout: 1000,
+  });
+
+  await page
+    .getByTestId("processingFilter Data")
+    .dragTo(page.locator('//*[@id="react-flow-id"]'), {
+      targetPosition: { x: 600, y: 200 },
+    });
+
+  await updateOldComponents(page);
+
+  await adjustScreenView(page);
+
+  await page
+    .getByTestId("textarea_str_template")
+    .last()
+    .fill("{similarity_score}");
+
+  await page
+    .getByTestId("popover-anchor-input-message")
+    .last()
+    .fill("datastax");
+  await page
+    .getByTestId("popover-anchor-input-message")
+    .first()
+    .fill(TEXTS.authDefaultCredential);
+
+  const firstApiKeyInput = page
+    .getByTestId("popover-anchor-input-openai_api_key")
+    .nth(0);
+  const secondApiKeyInput = page
+    .getByTestId("popover-anchor-input-openai_api_key")
+    .nth(1);
+
+  const isFirstInputVisible = await firstApiKeyInput.isVisible();
+  const isSecondInputVisible = await secondApiKeyInput.isVisible();
+
+  if (isFirstInputVisible) {
+    await firstApiKeyInput.fill(LOOPBACK_OPENAI_API_KEY);
+  }
+
+  if (isSecondInputVisible) {
+    await secondApiKeyInput.fill(LOOPBACK_OPENAI_API_KEY);
+  }
+
+  await page
+    .getByTestId("inputlist_str_filter_criteria_0")
+    .nth(0)
+    .fill("similarity_score");
+
+  await adjustScreenView(page);
+
+  await page.mouse.wheel(0, 500);
+
+  await page.locator(".react-flow__pane").click();
+
+  await adjustScreenView(page);
+
+  //connection 1
+  const openAiEmbeddingOutput_0 = await page
+    .getByTestId(
+      "handle-openaiembeddingscomponent-shownode-embedding model-right",
+    )
+    .nth(0);
+  await openAiEmbeddingOutput_0.hover();
+  await page.mouse.down();
+
+  const textEmbedderInput_0 = await page
+    .getByTestId("handle-textembeddercomponent-shownode-embedding model-left")
+    .nth(0);
+  await textEmbedderInput_0.hover();
+  await page.mouse.up();
+
+  //connection 2
+  const openAiEmbeddingOutput_1 = await page
+    .getByTestId(
+      "handle-openaiembeddingscomponent-shownode-embedding model-right",
+    )
+    .nth(0);
+  await openAiEmbeddingOutput_1.hover();
+  await page.mouse.down();
+  const textEmbedderInput_1 = await page
+    .getByTestId("handle-textembeddercomponent-shownode-embedding model-left")
+    .nth(1);
+  await textEmbedderInput_1.hover();
+  await page.mouse.up();
+
+  //connection 3
+  const textEmbedderOutput_0 = await page
+    .getByTestId("handle-textembeddercomponent-shownode-embedding data-right")
+    .nth(0);
+  await textEmbedderOutput_0.hover();
+  await page.mouse.down();
+  const embeddingSimilarityInput = await page
+    .getByTestId(
+      "handle-embeddingsimilaritycomponent-shownode-embedding vectors-left",
+    )
+    .nth(0);
+  await embeddingSimilarityInput.hover();
+  await page.mouse.up();
+
+  //connection 4
+  const textEmbedderOutput_1 = await page
+    .getByTestId("handle-textembeddercomponent-shownode-embedding data-right")
+    .nth(1);
+  await textEmbedderOutput_1.hover();
+  await page.mouse.down();
+  await embeddingSimilarityInput.hover();
+  await page.mouse.up();
+
+  //connection 5
+  const embeddingSimilarityOutput = await page
+    .getByTestId(
+      "handle-embeddingsimilaritycomponent-shownode-similarity data-right",
+    )
+    .nth(0);
+  await embeddingSimilarityOutput.hover();
+  await page.mouse.down();
+  const filterDataInput = await page
+    .getByTestId("handle-filterdata-shownode-json-left")
+    .nth(0);
+  await filterDataInput.hover();
+  await page.mouse.up();
+
+  //connection 6
+  const filterDataOutput = await page
+    .getByTestId("handle-filterdata-shownode-filtered data-right")
+    .nth(0);
+  await filterDataOutput.hover();
+  await page.mouse.down();
+  const parseDataInput = await page
+    .getByTestId("handle-parsedata-shownode-json-left")
+    .nth(0);
+  await parseDataInput.hover();
+  await page.mouse.up();
+
+  //connection 7
+  const parseDataOutput = await page
+    .getByTestId("handle-parsedata-shownode-message-right")
+    .nth(0);
+  await parseDataOutput.hover();
+  await page.mouse.down();
+  const textOutputInput = await page
+    .getByTestId("handle-textoutput-shownode-inputs-left")
+    .nth(0);
+  await textOutputInput.hover();
+  const flowId = new URL(page.url()).pathname.match(/\/flow\/([^/]+)/)?.[1];
+  if (!flowId) {
+    throw new Error(`Expected a flow URL, received ${page.url()}`);
+  }
+  const persistedGraph = page.waitForResponse((response) => {
+    const request = response.request();
+    if (
+      request.method() !== "PATCH" ||
+      new URL(response.url()).pathname !== `/api/v1/flows/${flowId}`
+    ) {
+      return false;
+    }
+    const body = request.postDataJSON() as
+      | { data?: { edges?: Array<{ source?: string; target?: string }> } }
+      | undefined;
+    const edges = body?.data?.edges ?? [];
+    return (
+      edges.length === 7 &&
+      edges.some(
+        (edge) =>
+          edge.source?.startsWith("ParseData-") &&
+          edge.target?.startsWith("TextOutput-"),
+      )
     );
+  });
+  await page.mouse.up();
+  await expect(page.locator(".react-flow__edge")).toHaveCount(7);
+  const graphResponse = await persistedGraph;
+  expect(
+    graphResponse.ok(),
+    `Persisting the complete similarity graph returned ${graphResponse.status()}`,
+  ).toBeTruthy();
 
-    await page
-      .getByText("OpenAI Embeddings", { exact: true })
-      .dragTo(page.locator('//*[@id="react-flow-id"]'), {
-        targetPosition: { x: 100, y: 100 },
-      });
+  await configureLoopbackOpenAI(page);
 
-    await zoomOut(page, 5);
-
-    await page.getByTestId("sidebar-search-input").click();
-    await page.getByTestId("sidebar-search-input").fill("text embedder");
-    await page.waitForSelector("text=Text Embedder", {
-      timeout: 1000,
-    });
-
-    await page
-      .getByTestId("embeddingsText Embedder")
-      .dragTo(page.locator('//*[@id="react-flow-id"]'), {
-        targetPosition: { x: 100, y: 400 },
-      });
-
-    //fourth component
-
-    await page
-      .getByTestId("embeddingsText Embedder")
-      .dragTo(page.locator('//*[@id="react-flow-id"]'), {
-        targetPosition: { x: 300, y: 400 },
-      });
-
-    //fifth component
-
-    await page.getByTestId("sidebar-search-input").click();
-    await page.getByTestId("sidebar-search-input").fill("embedding similarity");
-    await page.waitForSelector("text=Embedding Similarity", {
-      timeout: 1000,
-    });
-
-    await page
-      .getByTestId("embeddingsEmbedding Similarity")
-      .dragTo(page.locator('//*[@id="react-flow-id"]'), {
-        targetPosition: { x: 350, y: 100 },
-      });
-
-    //sisxth component
-
-    await page.getByTestId("sidebar-search-input").click();
-    await page.getByTestId("sidebar-search-input").fill("data to message");
-    await page.waitForSelector("text=Data to Message", {
-      timeout: 1000,
-    });
-
-    await page
-      .getByTestId("processingData to Message")
-      .dragTo(page.locator('//*[@id="react-flow-id"]'), {
-        targetPosition: { x: 50, y: 100 },
-      });
-
-    //seventh component
-
-    await page.getByTestId("sidebar-search-input").click();
-    await page.getByTestId("sidebar-search-input").fill(TEXTS.searchTextOutput);
-    await page.waitForSelector("text=Text Output", {
-      timeout: 1000,
-    });
-
-    await page
-      .getByTestId("input_outputText Output")
-      .dragTo(page.locator('//*[@id="react-flow-id"]'), {
-        targetPosition: { x: 500, y: 100 },
-      });
-
-    await page.getByTestId("sidebar-search-input").click();
-    await page.getByTestId("sidebar-search-input").fill("filter data");
-    await page.waitForSelector("text=Filter Data", {
-      timeout: 1000,
-    });
-
-    await page
-      .getByTestId("processingFilter Data")
-      .dragTo(page.locator('//*[@id="react-flow-id"]'), {
-        targetPosition: { x: 600, y: 200 },
-      });
-
-    await updateOldComponents(page);
-
-    await adjustScreenView(page);
-
-    await page
-      .getByTestId("textarea_str_template")
-      .last()
-      .fill("{similarity_score}");
-
-    await page
-      .getByTestId("popover-anchor-input-message")
-      .last()
-      .fill("datastax");
-    await page
-      .getByTestId("popover-anchor-input-message")
-      .first()
-      .fill(TEXTS.authDefaultCredential);
-
-    const firstApiKeyInput = page
-      .getByTestId("popover-anchor-input-openai_api_key")
-      .nth(0);
-    const secondApiKeyInput = page
-      .getByTestId("popover-anchor-input-openai_api_key")
-      .nth(1);
-
-    const isFirstInputVisible = await firstApiKeyInput.isVisible();
-    const isSecondInputVisible = await secondApiKeyInput.isVisible();
-
-    if (isFirstInputVisible) {
-      await firstApiKeyInput.fill(LOOPBACK_OPENAI_API_KEY);
-    }
-
-    if (isSecondInputVisible) {
-      await secondApiKeyInput.fill(LOOPBACK_OPENAI_API_KEY);
-    }
-
-    await page
-      .getByTestId("inputlist_str_filter_criteria_0")
-      .nth(0)
-      .fill("similarity_score");
-
-    await adjustScreenView(page);
-
-    await page.mouse.wheel(0, 500);
-
-    await page.locator(".react-flow__pane").click();
-
-    await adjustScreenView(page);
-
-    //connection 1
-    const openAiEmbeddingOutput_0 = await page
-      .getByTestId(
-        "handle-openaiembeddingscomponent-shownode-embedding model-right",
-      )
-      .nth(0);
-    await openAiEmbeddingOutput_0.hover();
-    await page.mouse.down();
-
-    const textEmbedderInput_0 = await page
-      .getByTestId("handle-textembeddercomponent-shownode-embedding model-left")
-      .nth(0);
-    await textEmbedderInput_0.hover();
-    await page.mouse.up();
-
-    //connection 2
-    const openAiEmbeddingOutput_1 = await page
-      .getByTestId(
-        "handle-openaiembeddingscomponent-shownode-embedding model-right",
-      )
-      .nth(0);
-    await openAiEmbeddingOutput_1.hover();
-    await page.mouse.down();
-    const textEmbedderInput_1 = await page
-      .getByTestId("handle-textembeddercomponent-shownode-embedding model-left")
-      .nth(1);
-    await textEmbedderInput_1.hover();
-    await page.mouse.up();
-
-    //connection 3
-    const textEmbedderOutput_0 = await page
-      .getByTestId("handle-textembeddercomponent-shownode-embedding data-right")
-      .nth(0);
-    await textEmbedderOutput_0.hover();
-    await page.mouse.down();
-    const embeddingSimilarityInput = await page
-      .getByTestId(
-        "handle-embeddingsimilaritycomponent-shownode-embedding vectors-left",
-      )
-      .nth(0);
-    await embeddingSimilarityInput.hover();
-    await page.mouse.up();
-
-    //connection 4
-    const textEmbedderOutput_1 = await page
-      .getByTestId("handle-textembeddercomponent-shownode-embedding data-right")
-      .nth(1);
-    await textEmbedderOutput_1.hover();
-    await page.mouse.down();
-    await embeddingSimilarityInput.hover();
-    await page.mouse.up();
-
-    //connection 5
-    const embeddingSimilarityOutput = await page
-      .getByTestId(
-        "handle-embeddingsimilaritycomponent-shownode-similarity data-right",
-      )
-      .nth(0);
-    await embeddingSimilarityOutput.hover();
-    await page.mouse.down();
-    const filterDataInput = await page
-      .getByTestId("handle-filterdata-shownode-json-left")
-      .nth(0);
-    await filterDataInput.hover();
-    await page.mouse.up();
-
-    //connection 6
-    const filterDataOutput = await page
-      .getByTestId("handle-filterdata-shownode-filtered data-right")
-      .nth(0);
-    await filterDataOutput.hover();
-    await page.mouse.down();
-    const parseDataInput = await page
-      .getByTestId("handle-parsedata-shownode-json-left")
-      .nth(0);
-    await parseDataInput.hover();
-    await page.mouse.up();
-
-    //connection 7
-    const parseDataOutput = await page
-      .getByTestId("handle-parsedata-shownode-message-right")
-      .nth(0);
-    await parseDataOutput.hover();
-    await page.mouse.down();
-    const textOutputInput = await page
-      .getByTestId("handle-textoutput-shownode-inputs-left")
-      .nth(0);
-    await textOutputInput.hover();
-    const flowId = new URL(page.url()).pathname.match(/\/flow\/([^/]+)/)?.[1];
-    if (!flowId) {
-      throw new Error(`Expected a flow URL, received ${page.url()}`);
-    }
-    const persistedGraph = page.waitForResponse((response) => {
-      const request = response.request();
-      if (
-        request.method() !== "PATCH" ||
-        new URL(response.url()).pathname !== `/api/v1/flows/${flowId}`
-      ) {
-        return false;
-      }
-      const body = request.postDataJSON() as
-        | { data?: { edges?: Array<{ source?: string; target?: string }> } }
-        | undefined;
-      const edges = body?.data?.edges ?? [];
-      return (
-        edges.length === 7 &&
-        edges.some(
-          (edge) =>
-            edge.source?.startsWith("ParseData-") &&
-            edge.target?.startsWith("TextOutput-"),
-        )
-      );
-    });
-    await page.mouse.up();
-    await expect(page.locator(".react-flow__edge")).toHaveCount(7);
-    const graphResponse = await persistedGraph;
-    expect(
-      graphResponse.ok(),
-      `Persisting the complete similarity graph returned ${graphResponse.status()}`,
-    ).toBeTruthy();
-
-    await configureLoopbackOpenAI(page);
-
-    const buildResponsePromise = page.waitForResponse((response) => {
-      const request = response.request();
-      return (
-        request.method() === "POST" &&
-        new URL(response.url()).pathname === "/api/v2/workflows"
-      );
-    });
-    await page.getByTestId("button_run_text output").click();
-    const buildResponse = await buildResponsePromise;
-    expect(buildResponse.ok(), "Similarity workflow request").toBeTruthy();
-    const buildPayload = buildResponse.request().postDataJSON() as {
-      data?: {
-        edges?: unknown[];
-        nodes?: Array<{
-          data?: {
-            type?: string;
-            node?: {
-              template?: Record<
-                string,
-                { load_from_db?: boolean; value?: unknown }
-              >;
-            };
+  const buildResponsePromise = page.waitForResponse((response) => {
+    const request = response.request();
+    return (
+      request.method() === "POST" &&
+      new URL(response.url()).pathname === "/api/v2/workflows"
+    );
+  });
+  await page.getByTestId("button_run_text output").click();
+  const buildResponse = await buildResponsePromise;
+  expect(buildResponse.ok(), "Similarity workflow request").toBeTruthy();
+  const buildPayload = buildResponse.request().postDataJSON() as {
+    data?: {
+      edges?: unknown[];
+      nodes?: Array<{
+        data?: {
+          type?: string;
+          node?: {
+            template?: Record<
+              string,
+              { load_from_db?: boolean; value?: unknown }
+            >;
           };
-        }>;
-      };
+        };
+      }>;
     };
-    expect(buildPayload.data?.edges).toHaveLength(7);
-    const embeddingNode = buildPayload.data?.nodes?.find((node) =>
-      /OpenAIEmbeddings/.test(node.data?.type ?? ""),
-    );
-    expect(
-      embeddingNode,
-      "Similarity workflow contains its OpenAI Embeddings node",
-    ).toBeTruthy();
-    expect(embeddingNode?.data?.node?.template?.openai_api_key).toMatchObject({
-      load_from_db: false,
-      value: LOOPBACK_OPENAI_API_KEY,
-    });
+  };
+  expect(buildPayload.data?.edges).toHaveLength(7);
+  const embeddingNode = buildPayload.data?.nodes?.find((node) =>
+    /OpenAIEmbeddings/.test(node.data?.type ?? ""),
+  );
+  expect(
+    embeddingNode,
+    "Similarity workflow contains its OpenAI Embeddings node",
+  ).toBeTruthy();
+  expect(embeddingNode?.data?.node?.template?.openai_api_key).toMatchObject({
+    load_from_db: false,
+    value: LOOPBACK_OPENAI_API_KEY,
+  });
 
-    await page.waitForSelector(`text=${TEXTS.toastBuiltSuccessfully}`, {
-      timeout: 120000,
-    });
+  await page.waitForSelector(`text=${TEXTS.toastBuiltSuccessfully}`, {
+    timeout: 120000,
+  });
 
-    await unselectNodes(page);
+  await unselectNodes(page);
 
-    // Data to Message, Filter Data, and Text Output are legacy components; their
-    // "Legacy" warning bars increase node height and can overlap the Text Output
-    // inspection button. Dismiss the bars so the button is clickable.
-    await dismissLegacyWarnings(page);
+  // Data to Message, Filter Data, and Text Output are legacy components; their
+  // "Legacy" warning bars increase node height and can overlap the Text Output
+  // inspection button. Dismiss the bars so the button is clickable.
+  await dismissLegacyWarnings(page);
 
-    await page
-      .getByTestId(/rf__node-TextOutput-[a-zA-Z0-9]{5}/)
-      .getByTestId("output-inspection-output text-textoutput")
-      .first()
-      .click();
-    const valueSimilarity = await page.getByTestId("textarea").textContent();
+  await page
+    .getByTestId(/rf__node-TextOutput-[a-zA-Z0-9]{5}/)
+    .getByTestId("output-inspection-output text-textoutput")
+    .first()
+    .click();
+  const valueSimilarity = await page.getByTestId("textarea").textContent();
 
-    expect(valueSimilarity).toContain("cosine_similarity");
-    const valueLength = valueSimilarity!.length;
-    expect(valueLength).toBeGreaterThan(20);
-  },
-);
+  expect(valueSimilarity).toContain("cosine_similarity");
+  const valueLength = valueSimilarity!.length;
+  expect(valueLength).toBeGreaterThan(20);
+});

@@ -139,7 +139,7 @@ An uninitialized bundle returns `503`.
     Reads still work. Writes return `409`.
     :::
 
-4. Replace the bundle with a `PUT` request that includes every list you want in effect. 
+4. Replace the bundle with a `PUT` request that includes every list you want in effect.
     Send the `revision` number copied from step 3 as `expected_revision`.
     Send `[]` for a list you want unrestricted.
 
