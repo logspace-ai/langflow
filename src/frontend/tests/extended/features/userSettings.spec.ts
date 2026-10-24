@@ -7,8 +7,9 @@ import { waitForFlowEditorReady } from "../../utils/flow/wait-for-flow-editor-re
 
 test(
   "should see general profile gradient",
-  { tag: ["@release", "@components"] },
-
+  {
+    tag: ["@release", "@components"],
+  },
   async ({ page }) => {
     await awaitBootstrapTest(page, {
       skipModal: true,
@@ -49,8 +50,9 @@ const FALLBACK_FIELDS = [
 
 test(
   "should interact with global variables",
-  { tag: ["@release", "@workspace", "@api"] },
-
+  {
+    tag: ["@release", "@workspace", "@api"],
+  },
   async ({ page }) => {
     const randomName = Math.random().toString(36).substring(2);
     const randomName2 = Math.random().toString(36).substring(2);
@@ -89,7 +91,9 @@ test(
     await page.getByText("Add New").click();
     await page.getByPlaceholder(TEXTS.placeholderVariableName).fill(randomName);
     await expect(page.getByText("Generic", { exact: true }).last()).toBeVisible(
-      { timeout: 10000 },
+      {
+        timeout: 10000,
+      },
     );
     await page.getByText("Generic", { exact: true }).last().click();
 
@@ -387,7 +391,9 @@ test(
 
 test(
   "should navigate back to flow from global variables",
-  { tag: ["@release", "@workspace"] },
+  {
+    tag: ["@release", "@workspace"],
+  },
   async ({ page }) => {
     await awaitBootstrapTest(page);
     await openStarterProject(page, TEXTS.templateBasicPrompting, {

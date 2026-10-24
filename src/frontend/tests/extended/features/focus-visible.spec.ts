@@ -101,7 +101,9 @@ async function expectFocusIndicator(
 
 test(
   "login page — every interactive element shows a visible focus indicator when tabbed to",
-  { tag: ["@release", "@workspace"] },
+  {
+    tag: ["@release", "@workspace"],
+  },
   async ({ page }) => {
     await page.goto("/login");
     await page.waitForLoadState("networkidle");

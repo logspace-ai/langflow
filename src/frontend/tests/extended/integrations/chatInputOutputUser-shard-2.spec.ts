@@ -11,7 +11,9 @@ import { seedLoopbackProvider } from "../../utils/seed-loopback-provider";
 
 test(
   "user must interact with chat with Input/Output",
-  { tag: ["@release", "@components"] },
+  {
+    tag: ["@release", "@components"],
+  },
   async ({ page }) => {
     await seedLoopbackProvider(page);
     await awaitBootstrapTest(page);

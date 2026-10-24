@@ -4,7 +4,9 @@ import { openStarterProject } from "../../utils/flow/open-starter-project";
 
 test(
   "should save Edit details from the home page after leaving a flow in-app",
-  { tag: ["@release", "@workspace"] },
+  {
+    tag: ["@release", "@workspace"],
+  },
   async ({ page }) => {
     await openStarterProject(page, TEXTS.templateBasicPrompting);
     const flowId = new URL(page.url()).pathname.match(/\/flow\/([^/]+)/)?.[1];

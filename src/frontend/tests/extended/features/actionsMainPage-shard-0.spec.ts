@@ -7,7 +7,9 @@ import { TEXTS } from "../../utils/constants/texts";
 
 test(
   "user should be able to download a flow or a component",
-  { tag: ["@release", "@workspace"] },
+  {
+    tag: ["@release", "@workspace"],
+  },
   async ({ page }) => {
     await awaitBootstrapTest(page);
 
@@ -73,7 +75,9 @@ test(
 
 test(
   "user should be able to upload a flow or a component",
-  { tag: ["@release", "@api", "@workspace"] },
+  {
+    tag: ["@release", "@api", "@workspace"],
+  },
   async ({ page }) => {
     await page.goto("/");
     await page.waitForSelector('[data-testid="mainpage_title"]', {
@@ -91,7 +95,9 @@ test(
 
 test(
   "user should be able to duplicate a flow or a component",
-  { tag: ["@release", "@workspace"] },
+  {
+    tag: ["@release", "@workspace"],
+  },
   async ({ page }) => {
     await awaitBootstrapTest(page);
 

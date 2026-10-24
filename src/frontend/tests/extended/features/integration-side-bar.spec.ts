@@ -8,7 +8,9 @@ test.beforeEach(async ({ page }, testInfo) => {
 
 test(
   "user should be able to see integrations in the sidebar when bundles is selected",
-  { tag: ["@release", "@api", "@workspace"] },
+  {
+    tag: ["@release", "@api", "@workspace"],
+  },
   async ({ page }) => {
     await openBlankFlow(page);
     await page.waitForSelector('[data-testid="shad-sidebar"]', {

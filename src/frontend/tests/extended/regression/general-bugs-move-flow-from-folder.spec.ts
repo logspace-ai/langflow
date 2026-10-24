@@ -6,7 +6,9 @@ import { renameFlow } from "../../utils/rename-flow";
 
 test(
   "moved flow must appear when destination project was visited while still empty",
-  { tag: ["@release"] },
+  {
+    tag: ["@release"],
+  },
   async ({ page }) => {
     /* Reproduces the real bug scenario:
      *

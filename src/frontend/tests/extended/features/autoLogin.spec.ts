@@ -9,12 +9,15 @@ test.beforeEach(async ({ page }, testInfo) => {
 
 test.describe(
   "Auto_login tests",
-  { tag: ["@release", "@api", "@database"] },
-
+  {
+    tag: ["@release", "@api", "@database"],
+  },
   () => {
     test(
       "auto_login sign in",
-      { tag: ["@release", "@api", "@database"] },
+      {
+        tag: ["@release", "@api", "@database"],
+      },
       async ({ page }) => {
         await awaitBootstrapTest(page, {
           skipModal: true,
@@ -25,7 +28,9 @@ test.describe(
 
     test(
       "auto_login block_admin",
-      { tag: ["@release", "@api", "@database"] },
+      {
+        tag: ["@release", "@api", "@database"],
+      },
       async ({ page }) => {
         await awaitBootstrapTest(page, {
           skipModal: true,

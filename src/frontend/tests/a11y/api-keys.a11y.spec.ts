@@ -278,7 +278,9 @@ test.describe("API keys route accessibility", () => {
 
   test(
     "keeps API keys route tab order usable",
-    { tag: ["@release", "@api"] },
+    {
+      tag: ["@release", "@api"],
+    },
     async ({ page }) => {
       await openApiKeysRoute(page);
 
@@ -352,7 +354,9 @@ test.describe("API keys route accessibility", () => {
 
   test(
     "opens API key name cells with Enter",
-    { tag: ["@release", "@api"] },
+    {
+      tag: ["@release", "@api"],
+    },
     async ({ page }) => {
       await openApiKeysRoute(page);
 
@@ -376,7 +380,9 @@ test.describe("API keys route accessibility", () => {
 
   test(
     "moves focus from the last API key header into the table body",
-    { tag: ["@release", "@api"] },
+    {
+      tag: ["@release", "@api"],
+    },
     async ({ page }) => {
       await openApiKeysRoute(page);
 
@@ -404,7 +410,9 @@ test.describe("API keys route accessibility", () => {
 
   test(
     "exits the table with a single Tab from the last cell",
-    { tag: ["@release", "@api"] },
+    {
+      tag: ["@release", "@api"],
+    },
     async ({ page }) => {
       await openApiKeysRoute(page);
 
@@ -441,7 +449,9 @@ test.describe("API keys route accessibility", () => {
 
   test(
     "re-enters the table on reverse tab from the delete control",
-    { tag: ["@release", "@api"] },
+    {
+      tag: ["@release", "@api"],
+    },
     async ({ page }) => {
       await openApiKeysRoute(page);
 
@@ -497,7 +507,9 @@ test.describe("API keys route accessibility", () => {
 
   test(
     "scans create API key modal form",
-    { tag: ["@release", "@api"] },
+    {
+      tag: ["@release", "@api"],
+    },
     async ({ page }) => {
       await openApiKeysRoute(page);
       await page.getByTestId("api-key-button-store").click();
@@ -512,7 +524,9 @@ test.describe("API keys route accessibility", () => {
 
   test(
     "scans generated API key modal state",
-    { tag: ["@release", "@api"] },
+    {
+      tag: ["@release", "@api"],
+    },
     async ({ page }) => {
       await openApiKeysRoute(page);
       await page.getByTestId("api-key-button-store").click();
@@ -546,7 +560,9 @@ test.describe("API keys route accessibility", () => {
 
   test(
     "scans selected API key table state",
-    { tag: ["@release", "@api"] },
+    {
+      tag: ["@release", "@api"],
+    },
     async ({ page }) => {
       await openApiKeysRoute(page);
       const firstRow = page
@@ -561,7 +577,9 @@ test.describe("API keys route accessibility", () => {
 
   test(
     "scans populated API keys table on mobile width",
-    { tag: ["@release", "@api"] },
+    {
+      tag: ["@release", "@api"],
+    },
     async ({ page }) => {
       await page.setViewportSize({ width: 390, height: 844 });
       await openApiKeysRoute(page);

@@ -197,7 +197,9 @@ test.describe("shared playground accessibility", () => {
 
   test(
     "scans the standalone shared playground in light and dark mode",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       const flowId = await publishChatFlowAndGetId(page);
       await openSharedPlayground(page, flowId);
@@ -226,7 +228,9 @@ test.describe("shared playground accessibility", () => {
 
   test(
     "scans the shared playground with a chat transcript",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       const flowId = await publishChatFlowAndGetId(page);
       await openSharedPlayground(page, flowId);
@@ -246,7 +250,9 @@ test.describe("shared playground accessibility", () => {
 
   test(
     "keyboard users can reach the message input and send button",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       const flowId = await publishChatFlowAndGetId(page);
       await openSharedPlayground(page, flowId);
@@ -320,7 +326,9 @@ test.describe("shared playground accessibility", () => {
 
   test(
     "shared playground does not trap keyboard focus",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       const flowId = await publishChatFlowAndGetId(page);
       await openSharedPlayground(page, flowId);

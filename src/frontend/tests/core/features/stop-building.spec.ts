@@ -12,7 +12,9 @@ import { zoomOut } from "../../utils/zoom-out";
 
 test(
   "user must be able to stop a building",
-  { tag: ["@release", "@workspace", "@api"] },
+  {
+    tag: ["@release", "@workspace", "@api"],
+  },
   async ({ page }) => {
     await awaitBootstrapTest(page);
     await page.getByTestId("blank-flow").click();

@@ -15,7 +15,9 @@ import { zoomOut } from "../../utils/zoom-out";
 
 test(
   "user must be able to check similarity between embedding texts",
-  { tag: ["@release", "@components"] },
+  {
+    tag: ["@release", "@components"],
+  },
   async ({ page }) => {
     await awaitBootstrapTest(page);
 

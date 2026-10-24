@@ -7,7 +7,9 @@ import { waitForFlowEditorReady } from "../../utils/flow/wait-for-flow-editor-re
 
 test(
   "user should be able to see multiple edges and interact with them",
-  { tag: ["@release", "@api", "@workspace"] },
+  {
+    tag: ["@release", "@api", "@workspace"],
+  },
   async ({ page }) => {
     await awaitBootstrapTest(page);
 

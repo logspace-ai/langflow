@@ -60,7 +60,9 @@ async function mockAnthropicModelCatalog(page: Page) {
 
 test(
   "user can select Anthropic before running Simple Agent through the loopback provider",
-  { tag: ["@release", "@components"] },
+  {
+    tag: ["@release", "@components"],
+  },
   async ({ page }) => {
     await seedLoopbackProvider(page);
     await mockAnthropicModelCatalog(page);

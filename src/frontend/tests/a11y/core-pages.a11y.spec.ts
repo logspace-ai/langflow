@@ -64,7 +64,9 @@ test.describe("core application accessibility", () => {
 
   test(
     "scans flow creation and playground states",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openBlankFlowForA11y(page);
       await disableAnimations(page);

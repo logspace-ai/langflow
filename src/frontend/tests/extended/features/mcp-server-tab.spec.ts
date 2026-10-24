@@ -8,7 +8,9 @@ import { openAddMcpServerModal } from "../../utils/open-add-mcp-server-modal";
 
 test(
   "user should be able to manage MCP server tools and configuration",
-  { tag: ["@release", "@workspace", "@components"] },
+  {
+    tag: ["@release", "@workspace", "@components"],
+  },
   async ({ page }) => {
     await openBlankFlow(page);
     await addComponentFromSidebar(page, {
@@ -98,7 +100,9 @@ test(
     await page.locator(".ag-row").first().locator(".ag-cell").first().click();
 
     await expect(page.locator('[data-testid="input_update_name"]')).toBeVisible(
-      { timeout: 10000 },
+      {
+        timeout: 10000,
+      },
     );
 
     await page.getByTestId("input_update_name").fill("mcp test name");

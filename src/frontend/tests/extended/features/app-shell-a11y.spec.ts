@@ -41,7 +41,9 @@ const ROUTE_TITLES = [
 
 test(
   "every route sets a document title that names the page",
-  { tag: ["@release", "@workspace"] },
+  {
+    tag: ["@release", "@workspace"],
+  },
   async ({ page }) => {
     await awaitBootstrapTest(page, { skipModal: true });
 
@@ -64,7 +66,9 @@ test(
 
 test(
   "switching to the Deployments tab retitles the page without a route change",
-  { tag: ["@release", "@workspace"] },
+  {
+    tag: ["@release", "@workspace"],
+  },
   async ({ page }) => {
     await awaitBootstrapTest(page, { skipModal: true });
     await page.goto("/flows");
@@ -88,7 +92,9 @@ test(
 
 test(
   "the flow editor titles the tab with the flow name",
-  { tag: ["@release", "@workspace"] },
+  {
+    tag: ["@release", "@workspace"],
+  },
   async ({ page }) => {
     await awaitBootstrapTest(page, { skipModal: true });
     await page.getByTestId("list-card").first().click();
@@ -108,7 +114,9 @@ test(
 
 test(
   "the html lang attribute follows the selected locale",
-  { tag: ["@release", "@workspace"] },
+  {
+    tag: ["@release", "@workspace"],
+  },
   async ({ page }) => {
     await awaitBootstrapTest(page, { skipModal: true });
     await page.goto("/settings/general");
@@ -132,7 +140,9 @@ test(
 
 test(
   "each route exposes exactly one main landmark",
-  { tag: ["@release", "@workspace"] },
+  {
+    tag: ["@release", "@workspace"],
+  },
   async ({ page }) => {
     await awaitBootstrapTest(page, { skipModal: true });
 
@@ -148,7 +158,9 @@ test(
 
 test(
   "the templates modal does not nest a second main landmark",
-  { tag: ["@release", "@workspace"] },
+  {
+    tag: ["@release", "@workspace"],
+  },
   async ({ page }) => {
     // Opens a new flow and the templates modal on top of the flow canvas,
     // which already owns the page's single <main>.

@@ -11,7 +11,9 @@ import {
 
 test(
   "an admin copies the database, stops a copy and copies again",
-  { tag: ["@release", "@workspace", "@api"] },
+  {
+    tag: ["@release", "@workspace", "@api"],
+  },
   async ({ page }) => {
     // A copy needs changes paused, which refuses every change to the instance, so this walk can't share a server with other specs.
     test.skip(Boolean(NO_DESTINATION), NO_DESTINATION);
@@ -76,7 +78,9 @@ test(
 
 test(
   "an admin tries the copies of knowledge bases and files, then makes them",
-  { tag: ["@release", "@workspace", "@api"] },
+  {
+    tag: ["@release", "@workspace", "@api"],
+  },
   async ({ page }) => {
     test.skip(Boolean(NO_DESTINATION), NO_DESTINATION);
     await awaitBootstrapTest(page, { skipModal: true });
@@ -153,7 +157,9 @@ test(
 
 test(
   "an admin accepts a file that has nothing to copy",
-  { tag: ["@release", "@workspace", "@api"] },
+  {
+    tag: ["@release", "@workspace", "@api"],
+  },
   async ({ page }) => {
     test.skip(Boolean(NO_DESTINATION), NO_DESTINATION);
     await awaitBootstrapTest(page, { skipModal: true });

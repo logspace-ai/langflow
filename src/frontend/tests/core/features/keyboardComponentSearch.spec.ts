@@ -4,7 +4,9 @@ import { waitForFlowEditorReady } from "../../utils/flow/wait-for-flow-editor-re
 
 test(
   "user can search and add components using keyboard shortcuts",
-  { tag: ["@release", "@workspace"] },
+  {
+    tag: ["@release", "@workspace"],
+  },
   async ({ page }) => {
     // Navigate to homepage and handle initial modal
     await awaitBootstrapTest(page);

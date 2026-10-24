@@ -8,7 +8,9 @@ import { renameFlow } from "../../utils/rename-flow";
 
 test(
   "should be able to share a component on the store by clicking on the share button on the canvas (requires store API key)",
-  { tag: ["@release", "@api"] },
+  {
+    tag: ["@release", "@api"],
+  },
   async ({ page }) => {
     skipIfMissing.storeApiKey();
     loadDotenvIfLocal(__dirname);

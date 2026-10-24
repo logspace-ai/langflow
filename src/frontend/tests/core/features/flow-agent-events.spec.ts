@@ -4,7 +4,9 @@ import { awaitBootstrapTest } from "../../utils/await-bootstrap-test";
 test.describe("Flow Agent Events", () => {
   test(
     "should show agent working banner when events are posted and dismiss on settle",
-    { tag: ["@release", "@api"] },
+    {
+      tag: ["@release", "@api"],
+    },
     async ({ page }) => {
       await awaitBootstrapTest(page);
 

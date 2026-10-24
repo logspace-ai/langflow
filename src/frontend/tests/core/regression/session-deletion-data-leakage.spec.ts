@@ -78,7 +78,9 @@ test.describe("Session Deletion Data Leakage Fix", () => {
 
   test(
     "should prevent data leakage when default session is deleted and recreated",
-    { tag: ["@release"] },
+    {
+      tag: ["@release"],
+    },
     async ({ page }) => {
       await seedLoopbackProvider(page);
       await awaitBootstrapTest(page);
@@ -143,7 +145,9 @@ test.describe("Session Deletion Data Leakage Fix", () => {
 
   test(
     "should clear LLM context when session is deleted",
-    { tag: ["@release"] },
+    {
+      tag: ["@release"],
+    },
     async ({ page }) => {
       await seedLoopbackProvider(page);
       await awaitBootstrapTest(page);

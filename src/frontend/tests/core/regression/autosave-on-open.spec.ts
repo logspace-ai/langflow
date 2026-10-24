@@ -36,7 +36,9 @@ function trackFlowWrites(page: Page): { count: () => number } {
 
 test(
   "opening a flow does not save it",
-  { tag: ["@release", "@workspace"] },
+  {
+    tag: ["@release", "@workspace"],
+  },
   async ({ page }) => {
     const writes = trackFlowWrites(page);
 
@@ -53,7 +55,9 @@ test(
 
 test(
   "an edit is still saved after the open no longer saves",
-  { tag: ["@release", "@workspace"] },
+  {
+    tag: ["@release", "@workspace"],
+  },
   async ({ page }) => {
     await openStarterProject(page, "Basic Prompting");
     await adjustScreenView(page);

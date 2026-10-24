@@ -49,7 +49,9 @@ async function verifyTextareaValue(
 
 test(
   "any changes on the node must be saved on user interaction",
-  { tag: ["@release", "@components"] },
+  {
+    tag: ["@release", "@components"],
+  },
   async ({ page }) => {
     const randomValues = Array.from({ length: 4 }, () =>
       Math.random().toString(36).substring(2, 8),

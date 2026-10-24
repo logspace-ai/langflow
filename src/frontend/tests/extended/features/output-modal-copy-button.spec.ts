@@ -6,7 +6,9 @@ import { openBlankFlow } from "../../utils/flow/open-blank-flow";
 test.describe("Output Modal Copy Button", () => {
   test(
     "user should be able to copy text output from component output modal",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openBlankFlow(page);
 

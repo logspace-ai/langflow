@@ -11,7 +11,9 @@ const NEW_DESCRIPTION = "LE2272 distinctive description";
 // approval_actions — and the autosave then persisted the loss.
 test(
   "tool action edits survive a custom_component/update response that lands late",
-  { tag: ["@release", "@components"] },
+  {
+    tag: ["@release", "@components"],
+  },
   async ({ page }) => {
     await awaitBootstrapTest(page);
 

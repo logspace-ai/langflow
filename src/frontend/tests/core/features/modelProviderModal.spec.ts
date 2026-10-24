@@ -5,7 +5,9 @@ import { navigateSettingsPages } from "../../utils/go-to-settings";
 test.describe("ModelProviderModal", () => {
   test(
     "should open model provider page from settings",
-    { tag: ["@release", "@components", "@workspace"] },
+    {
+      tag: ["@release", "@components", "@workspace"],
+    },
     async ({ page }) => {
       await awaitBootstrapTest(page, { skipModal: true });
 
@@ -31,7 +33,9 @@ test.describe("ModelProviderModal", () => {
 
   test(
     "should display provider list in page",
-    { tag: ["@release", "@components", "@workspace"] },
+    {
+      tag: ["@release", "@components", "@workspace"],
+    },
     async ({ page }) => {
       await awaitBootstrapTest(page, { skipModal: true });
 
@@ -54,7 +58,9 @@ test.describe("ModelProviderModal", () => {
 
   test(
     "should show provider details when a provider is selected",
-    { tag: ["@release", "@components", "@workspace"] },
+    {
+      tag: ["@release", "@components", "@workspace"],
+    },
     async ({ page }) => {
       await awaitBootstrapTest(page, { skipModal: true });
 
@@ -90,7 +96,9 @@ test.describe("ModelProviderModal", () => {
 
   test(
     "should navigate back from model provider page",
-    { tag: ["@release", "@components", "@workspace"] },
+    {
+      tag: ["@release", "@components", "@workspace"],
+    },
     async ({ page }) => {
       await awaitBootstrapTest(page, { skipModal: true });
 
@@ -117,7 +125,9 @@ test.describe("ModelProviderModal", () => {
 
   test(
     "should display model selection panel for enabled provider",
-    { tag: ["@release", "@components", "@workspace"] },
+    {
+      tag: ["@release", "@components", "@workspace"],
+    },
     async ({ page }) => {
       await awaitBootstrapTest(page, { skipModal: true });
 
@@ -155,7 +165,9 @@ test.describe("ModelProviderModal", () => {
 
   test(
     "should have accessible page structure",
-    { tag: ["@release", "@components", "@workspace"] },
+    {
+      tag: ["@release", "@components", "@workspace"],
+    },
     async ({ page }) => {
       await awaitBootstrapTest(page, { skipModal: true });
 
@@ -181,7 +193,9 @@ test.describe("ModelProviderModal", () => {
 
   test(
     "should navigate to model provider page multiple times",
-    { tag: ["@release", "@components", "@workspace"] },
+    {
+      tag: ["@release", "@components", "@workspace"],
+    },
     async ({ page }) => {
       await awaitBootstrapTest(page, { skipModal: true });
 

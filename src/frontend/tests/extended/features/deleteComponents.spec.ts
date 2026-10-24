@@ -5,7 +5,9 @@ import { skipIfMissing } from "../../utils/env/skip-if-missing";
 
 test(
   "should delete a component (requires store API key)",
-  { tag: ["@release", "@api"] },
+  {
+    tag: ["@release", "@api"],
+  },
   async ({ page }) => {
     skipIfMissing.storeApiKey();
     loadDotenvIfLocal(__dirname);

@@ -1,5 +1,5 @@
-import TimeoutErrorComponent from "@/components/common/timeoutErrorComponent";
 import { useTranslation } from "react-i18next";
+import TimeoutErrorComponent from "@/components/common/timeoutErrorComponent";
 import CustomFetchErrorComponent from "@/customization/components/custom-fetch-error-component";
 
 export function GenericErrorComponent({ healthCheckTimeout, fetching, retry }) {

@@ -58,7 +58,9 @@ async function persistedModelName(page: Page): Promise<string | undefined> {
 
 test(
   "keeps a model picked while the flow-open model refresh is in flight",
-  { tag: ["@release", "@components"] },
+  {
+    tag: ["@release", "@components"],
+  },
   async ({ page }) => {
     const refresh = await holdMountRefresh(page);
 
@@ -98,7 +100,9 @@ test(
 
 test(
   "applies a delayed flow-open model refresh when no model was picked",
-  { tag: ["@release", "@components"] },
+  {
+    tag: ["@release", "@components"],
+  },
   async ({ page }) => {
     const refresh = await holdMountRefresh(page);
 

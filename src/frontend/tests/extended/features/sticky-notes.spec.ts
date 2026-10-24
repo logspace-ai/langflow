@@ -10,8 +10,9 @@ test.beforeEach(async ({ page }, testInfo) => {
 
 test(
   "user should be able to interact with sticky notes",
-  { tag: ["@release", "@workspace"] },
-
+  {
+    tag: ["@release", "@workspace"],
+  },
   async ({ page }) => {
     const randomTitle = Math.random()
       .toString(36)

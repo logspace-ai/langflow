@@ -3,7 +3,9 @@ import { openStarterProject } from "../../utils/flow/open-starter-project";
 
 test(
   "Instagram Copywriter",
-  { tag: ["@release", "@starter-projects"] },
+  {
+    tag: ["@release", "@starter-projects"],
+  },
   async ({ page }) => {
     await page.goto("/");
     await openStarterProject(page, "Instagram Copywriter");

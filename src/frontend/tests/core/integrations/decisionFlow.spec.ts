@@ -14,8 +14,9 @@ import { zoomOut } from "../../utils/zoom-out";
 
 test(
   "should create a flow with decision",
-  { tag: ["@release", "@components"] },
-
+  {
+    tag: ["@release", "@components"],
+  },
   async ({ page }) => {
     await awaitBootstrapTest(page);
 

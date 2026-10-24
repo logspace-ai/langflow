@@ -10,7 +10,9 @@ import { unselectNodes } from "../../utils/unselect-nodes";
 
 test(
   "user should not be able to hide connected inputs",
-  { tag: ["@release", "@api", "@database"] },
+  {
+    tag: ["@release", "@api", "@database"],
+  },
   async ({ page }) => {
     await awaitBootstrapTest(page);
 
@@ -67,7 +69,9 @@ test(
 
 test(
   "user should see why a connected input cannot be hidden",
-  { tag: ["@release", "@api", "@database"] },
+  {
+    tag: ["@release", "@api", "@database"],
+  },
   async ({ page }) => {
     await awaitBootstrapTest(page);
 

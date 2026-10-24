@@ -22,7 +22,9 @@ async function navigateToProvidersTab(
 
 test(
   "Empty state shows Add Environment button",
-  { tag: ["@release", "@workspace", "@api"] },
+  {
+    tag: ["@release", "@workspace", "@api"],
+  },
   async ({ page }) => {
     await page.route("**/api/v1/deployments/providers*", (route) => {
       route.fulfill({
@@ -48,7 +50,9 @@ test(
 
 test(
   "New Environment button opens modal with save disabled on empty form",
-  { tag: ["@release", "@workspace", "@api"] },
+  {
+    tag: ["@release", "@workspace", "@api"],
+  },
   async ({ page }) => {
     await page.route("**/api/v1/deployments/providers*", (route) => {
       route.fulfill({
@@ -77,7 +81,9 @@ test(
 
 test(
   "Save button becomes enabled after filling all required fields",
-  { tag: ["@release", "@workspace", "@api"] },
+  {
+    tag: ["@release", "@workspace", "@api"],
+  },
   async ({ page }) => {
     await page.route("**/api/v1/deployments/providers*", (route) => {
       route.fulfill({
@@ -111,7 +117,9 @@ test(
 
 test(
   "Save calls POST and modal closes",
-  { tag: ["@release", "@workspace", "@api"] },
+  {
+    tag: ["@release", "@workspace", "@api"],
+  },
   async ({ page }) => {
     let postCalled = false;
 
@@ -171,7 +179,9 @@ test(
 
 test(
   "Delete triggers confirmation dialog then calls DELETE",
-  { tag: ["@release", "@workspace", "@api"] },
+  {
+    tag: ["@release", "@workspace", "@api"],
+  },
   async ({ page }) => {
     await page.route("**/api/v1/deployments*", (route) => {
       route.fulfill({
@@ -226,7 +236,9 @@ test(
 
 test(
   "Cancel delete dismisses confirmation without calling DELETE",
-  { tag: ["@release", "@workspace", "@api"] },
+  {
+    tag: ["@release", "@workspace", "@api"],
+  },
   async ({ page }) => {
     let deleteRequestCount = 0;
 

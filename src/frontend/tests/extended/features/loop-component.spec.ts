@@ -9,7 +9,9 @@ import { zoomOut } from "../../utils/zoom-out";
 
 test(
   "should process loop with update data correctly",
-  { tag: ["@release", "@workspace", "@components"] },
+  {
+    tag: ["@release", "@workspace", "@components"],
+  },
   async ({ page }) => {
     await openBlankFlow(page);
 

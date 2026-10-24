@@ -26,7 +26,9 @@ async function toggleNodeState(page: Page, action: "minimize" | "expand") {
 
 test(
   "user must be able to minimize and expand a node how many times as they want",
-  { tag: ["@release", "@components"] },
+  {
+    tag: ["@release", "@components"],
+  },
   async ({ page }) => {
     await awaitBootstrapTest(page);
     await page.getByTestId("blank-flow").click();

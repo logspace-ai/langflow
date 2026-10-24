@@ -9,7 +9,9 @@ import { seedLoopbackProvider } from "../../utils/seed-loopback-provider";
 
 test(
   "user must not experience message duplication in mathematical expressions with agent component",
-  { tag: ["@release", "@components", "@workspace"] },
+  {
+    tag: ["@release", "@components", "@workspace"],
+  },
   async ({ page }) => {
     await seedLoopbackProvider(page);
     await awaitBootstrapTest(page);

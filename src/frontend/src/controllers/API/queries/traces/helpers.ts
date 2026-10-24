@@ -91,4 +91,5 @@ function convertTrace(apiTrace: TraceApiResponse): Trace | null {
     spans: apiTrace.spans.map(convertSpan),
   };
 }
-export { sanitizeParams, sanitizeString, convertTrace, convertSpan };
+
+export { convertSpan, convertTrace, sanitizeParams, sanitizeString };

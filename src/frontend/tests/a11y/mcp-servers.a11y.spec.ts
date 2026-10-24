@@ -134,7 +134,9 @@ async function openActionsMenu(page: LangflowPage, serverName: string) {
 test.describe("MCP servers route accessibility", () => {
   test(
     "scans populated server list",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openMcpServersRoute(page);
       await expect(page.getByTestId("mcp_server_name_0")).toHaveText(
@@ -165,7 +167,9 @@ test.describe("MCP servers route accessibility", () => {
 
   test(
     "scans server list with connection errors",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openMcpServersRoute(page, erroredServers);
       await expect(page.getByText("Timeout", { exact: true })).toBeVisible({
@@ -179,7 +183,9 @@ test.describe("MCP servers route accessibility", () => {
 
   test(
     "scans server list in loading status",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openMcpServersRoute(page, loadingServers);
       await expect(page.getByText("Loading...")).toBeVisible({
@@ -192,7 +198,9 @@ test.describe("MCP servers route accessibility", () => {
 
   test(
     "scans row actions menu open",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openMcpServersRoute(page);
       await openActionsMenu(page, "filesystem");
@@ -209,7 +217,9 @@ test.describe("MCP servers route accessibility", () => {
 
   test(
     "scans add server modal on JSON tab",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openMcpServersRoute(page);
       await page.getByTestId("add-mcp-server-button-page").click();
@@ -225,7 +235,9 @@ test.describe("MCP servers route accessibility", () => {
 
   test(
     "scans add server modal on STDIO tab",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openMcpServersRoute(page);
       await page.getByTestId("add-mcp-server-button-page").click();
@@ -242,7 +254,9 @@ test.describe("MCP servers route accessibility", () => {
 
   test(
     "scans add server modal on HTTP tab",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openMcpServersRoute(page);
       await page.getByTestId("add-mcp-server-button-page").click();
@@ -260,7 +274,9 @@ test.describe("MCP servers route accessibility", () => {
 
   test(
     "scans add server modal validation error",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openMcpServersRoute(page);
       await page.getByTestId("add-mcp-server-button-page").click();
@@ -271,7 +287,9 @@ test.describe("MCP servers route accessibility", () => {
       await page.getByTestId("add-mcp-server-button").click();
       await expect(
         page.getByText("Name and command are required."),
-      ).toBeVisible({ timeout: TIMEOUTS.standard });
+      ).toBeVisible({
+        timeout: TIMEOUTS.standard,
+      });
 
       await page.runA11yScan("settings-mcp-servers-add-modal-error");
     },
@@ -295,7 +313,9 @@ test.describe("MCP servers route accessibility", () => {
 
   test(
     "scans delete confirmation modal",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openMcpServersRoute(page);
       await openActionsMenu(page, "filesystem");
@@ -313,7 +333,9 @@ test.describe("MCP servers route accessibility", () => {
 
   test(
     "scans populated list on a mobile viewport",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await page.setViewportSize({ width: 390, height: 844 });
       await openMcpServersRoute(page);
@@ -325,7 +347,9 @@ test.describe("MCP servers route accessibility", () => {
 
   test(
     "names the add and edit dialogs by their visible title",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openMcpServersRoute(page);
       await page.getByTestId("add-mcp-server-button-page").click();
@@ -349,7 +373,9 @@ test.describe("MCP servers route accessibility", () => {
 
   test(
     "labels every add-server field with its visible label",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openMcpServersRoute(page);
       await page.getByTestId("add-mcp-server-button-page").click();
@@ -391,7 +417,9 @@ test.describe("MCP servers route accessibility", () => {
 
   test(
     "gives the list add/remove icon buttons accessible names",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openMcpServersRoute(page);
       await page.getByTestId("add-mcp-server-button-page").click();
@@ -423,7 +451,9 @@ test.describe("MCP servers route accessibility", () => {
 
   test(
     "removing an argument row does not submit the form",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openMcpServersRoute(page);
       await page.getByTestId("add-mcp-server-button-page").click();
@@ -449,7 +479,9 @@ test.describe("MCP servers route accessibility", () => {
 
   test(
     "announces the add-server validation error",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openMcpServersRoute(page);
       await page.getByTestId("add-mcp-server-button-page").click();
@@ -468,7 +500,9 @@ test.describe("MCP servers route accessibility", () => {
 
   test(
     "exposes the server connection error to assistive tech",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openMcpServersRoute(page, erroredServers);
       // The detail otherwise lives only in a hover tooltip.
@@ -482,7 +516,9 @@ test.describe("MCP servers route accessibility", () => {
 
   test(
     "opens the row actions menu by keyboard and restores focus on Escape",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openMcpServersRoute(page);
       const trigger = page.getByTestId("mcp-server-menu-button-filesystem");
@@ -508,7 +544,9 @@ test.describe("MCP servers route accessibility", () => {
 
   test(
     "tabs through the page controls in visual order",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openMcpServersRoute(page);
 
@@ -537,7 +575,9 @@ test.describe("MCP servers route accessibility", () => {
 
   test(
     "keeps Tab and Shift+Tab inside the add server modal",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openMcpServersRoute(page);
       await page.getByTestId("add-mcp-server-button-page").click();
@@ -575,7 +615,9 @@ test.describe("MCP servers route accessibility", () => {
 
   test(
     "orders the add modal tabs before the fields and footer",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openMcpServersRoute(page);
       await page.getByTestId("add-mcp-server-button-page").click();
@@ -617,7 +659,9 @@ test.describe("MCP servers route accessibility", () => {
 
   test(
     "never focuses an inactive tab panel",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openMcpServersRoute(page);
       await page.getByTestId("add-mcp-server-button-page").click();
@@ -664,7 +708,9 @@ test.describe("MCP servers route accessibility", () => {
 
   test(
     "keeps disabled type tabs out of the edit modal tab order",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openMcpServersRoute(page);
       await openActionsMenu(page, "filesystem");
@@ -686,7 +732,9 @@ test.describe("MCP servers route accessibility", () => {
 
   test(
     "labels the header value option control in English",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openMcpServersRoute(page);
       await page.getByTestId("add-mcp-server-button-page").click();
@@ -708,7 +756,9 @@ test.describe("MCP servers route accessibility", () => {
 
   test(
     "announces the pending server load as a status region",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       // Hold the list request open so the page stays in its loading state.
       let release: () => void = () => {};
@@ -744,7 +794,9 @@ test.describe("MCP servers route accessibility", () => {
 
   test(
     "exposes the server list with list semantics",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openMcpServersRoute(page);
       const list = page.getByRole("list", { name: "Added MCP Servers" });

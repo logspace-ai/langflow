@@ -59,7 +59,9 @@ async function clickEdit(
 
 test(
   "editing a server deleted elsewhere reports it is gone instead of opening an empty form",
-  { tag: ["@release", "@mcp"] },
+  {
+    tag: ["@release", "@mcp"],
+  },
   async ({ page }) => {
     const name = `stale-edit-${Date.now()}`;
     await openServersPageListing(page, name);
@@ -80,7 +82,9 @@ test(
 
 test(
   "saving an edit after the server was deleted does not re-create it",
-  { tag: ["@release", "@mcp"] },
+  {
+    tag: ["@release", "@mcp"],
+  },
   async ({ page }) => {
     const name = `stale-save-${Date.now()}`;
     await openServersPageListing(page, name);

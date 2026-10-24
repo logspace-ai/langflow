@@ -6,7 +6,9 @@ import { TEXTS } from "../../utils/constants/texts";
 
 test(
   "user can open component dropdown menu by right-clicking on nodes",
-  { tag: ["@release", "@components"] },
+  {
+    tag: ["@release", "@components"],
+  },
   async ({ page }) => {
     await awaitBootstrapTest(page);
 
@@ -105,7 +107,9 @@ test(
 
 test(
   "right-clicking inside a modal opened from a node leaves the node alone",
-  { tag: ["@release", "@components"] },
+  {
+    tag: ["@release", "@components"],
+  },
   async ({ page }) => {
     await awaitBootstrapTest(page);
 

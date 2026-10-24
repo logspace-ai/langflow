@@ -111,7 +111,9 @@ test.describe("Model picker canvas accessibility", () => {
 
   test(
     "focus lands on the previously-selected model, arrow keys move focus, and Tab escapes to Refresh",
-    { tag: ["@release", "@components", "@workspace"] },
+    {
+      tag: ["@release", "@components", "@workspace"],
+    },
     async ({ page }) => {
       await mockModelCatalog(page);
       await openBlankFlowForModelInput(page);

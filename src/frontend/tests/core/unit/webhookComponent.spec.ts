@@ -10,7 +10,9 @@ import {
 
 test(
   "user should be able to create an api key within a webhook component",
-  { tag: ["@release", "@workspace"] },
+  {
+    tag: ["@release", "@workspace"],
+  },
   async ({ page }) => {
     const _randomApiKeyDescription =
       Math.random().toString(36).substring(2, 15) +
@@ -68,7 +70,9 @@ test(
 
 test(
   "user should be able to poll a webhook",
-  { tag: ["@release", "@workspace"] },
+  {
+    tag: ["@release", "@workspace"],
+  },
   async ({ page, request }) => {
     await page.route("**/api/v1/config", (route) => {
       route.fulfill({

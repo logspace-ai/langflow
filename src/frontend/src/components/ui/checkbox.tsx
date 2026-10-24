@@ -64,4 +64,4 @@ const CheckBoxDiv = ({
   </div>
 );
 
-export { Checkbox, CheckBoxDiv };
+export { CheckBoxDiv, Checkbox };

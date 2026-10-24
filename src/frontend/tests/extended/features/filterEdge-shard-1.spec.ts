@@ -6,7 +6,9 @@ import { addComponentFromSidebar } from "../../utils/flow/add-component-from-sid
 
 test(
   "user must see on handle click the possibility connections - RetrievalQA",
-  { tag: ["@release", "@api", "@components"] },
+  {
+    tag: ["@release", "@api", "@components"],
+  },
   async ({ page }) => {
     await awaitBootstrapTest(page);
 

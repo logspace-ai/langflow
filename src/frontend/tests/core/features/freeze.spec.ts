@@ -7,7 +7,9 @@ import {
 
 test(
   "user must be able to freeze a component with the current graph state",
-  { tag: ["@release", "@workspace", "@components"] },
+  {
+    tag: ["@release", "@workspace", "@components"],
+  },
   async ({ page }) => {
     await createTextInputOutputFlow(page);
     expect(await runTextInputOutputFlow(page, "hello world")).toBe(

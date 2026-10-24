@@ -170,7 +170,9 @@ async function openApplyToFieldsPopover(page: LangflowPage) {
 test.describe("Global variables route accessibility", () => {
   test(
     "scans populated global variables table",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openGlobalVariablesRoute(page);
       await expect(page.getByText("OPENAI_API_KEY")).toBeVisible();
@@ -191,7 +193,9 @@ test.describe("Global variables route accessibility", () => {
 
   test(
     "scans empty global variables table",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openGlobalVariablesRoute(page, []);
       await expect(page.getByText("No Data Available")).toBeVisible({
@@ -209,7 +213,9 @@ test.describe("Global variables route accessibility", () => {
 
   test(
     "scans invalid provider credentials alert",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openGlobalVariablesRoute(page, invalidProviderVariables);
       await expect(
@@ -224,7 +230,9 @@ test.describe("Global variables route accessibility", () => {
 
   test(
     "scans create modal credential default with disabled submit",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openGlobalVariablesRoute(page);
       await openCreateModal(page);
@@ -248,7 +256,9 @@ test.describe("Global variables route accessibility", () => {
 
   test(
     "scans create modal generic type tab",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openGlobalVariablesRoute(page);
       await openCreateModal(page);
@@ -270,7 +280,9 @@ test.describe("Global variables route accessibility", () => {
 
   test(
     "scans create modal with password value visible",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openGlobalVariablesRoute(page);
       await openCreateModal(page);
@@ -294,7 +306,9 @@ test.describe("Global variables route accessibility", () => {
 
   test(
     "scans create modal apply-to-fields popover open",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openGlobalVariablesRoute(page);
       await openCreateModal(page);
@@ -311,7 +325,9 @@ test.describe("Global variables route accessibility", () => {
 
   test(
     "scans create modal with apply-to-fields selected",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openGlobalVariablesRoute(page);
       await openCreateModal(page);
@@ -336,7 +352,9 @@ test.describe("Global variables route accessibility", () => {
 
   test(
     "scans page after create modal closes",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openGlobalVariablesRoute(page);
       await openCreateModal(page);
@@ -351,7 +369,9 @@ test.describe("Global variables route accessibility", () => {
 
   test(
     "scans edit generic variable modal",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openGlobalVariablesRoute(page);
       await page.locator('.ag-cell:has-text("DEFAULT_MODEL")').first().click();
@@ -377,7 +397,9 @@ test.describe("Global variables route accessibility", () => {
 
   test(
     "scans edit credential variable modal",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openGlobalVariablesRoute(page);
       await page.locator('.ag-cell:has-text("OPENAI_API_KEY")').first().click();
@@ -399,7 +421,9 @@ test.describe("Global variables route accessibility", () => {
 
   test(
     "scans edit modal apply-to-fields popover open",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openGlobalVariablesRoute(page);
       await page.locator('.ag-cell:has-text("DEFAULT_MODEL")').first().click();
@@ -417,7 +441,9 @@ test.describe("Global variables route accessibility", () => {
 
   test(
     "scans selected row with delete enabled",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openGlobalVariablesRoute(page);
       const firstRow = page
@@ -433,7 +459,9 @@ test.describe("Global variables route accessibility", () => {
 
   test(
     "scans multi-row selected table state",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openGlobalVariablesRoute(page);
       const rows = page.locator(".ag-center-cols-container .ag-row");
@@ -449,7 +477,9 @@ test.describe("Global variables route accessibility", () => {
 
   test(
     "opens edit modal from a focused row with Enter",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openGlobalVariablesRoute(page);
 
@@ -496,7 +526,9 @@ test.describe("Global variables route accessibility", () => {
 
   test(
     "restores focus to the last table cell after edit modal closes",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openGlobalVariablesRoute(page);
 
@@ -537,7 +569,9 @@ test.describe("Global variables route accessibility", () => {
 
   test(
     "toggles row selection with Space without opening the edit modal",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openGlobalVariablesRoute(page);
 
@@ -583,7 +617,9 @@ test.describe("Global variables route accessibility", () => {
 
   test(
     "create modal is named by its visible title",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openGlobalVariablesRoute(page);
       await openCreateModal(page);
@@ -597,7 +633,9 @@ test.describe("Global variables route accessibility", () => {
 
   test(
     "tabs from Name directly onto the Value input",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openGlobalVariablesRoute(page);
       await openCreateModal(page);
@@ -622,7 +660,9 @@ test.describe("Global variables route accessibility", () => {
 
   test(
     "restores focus to Apply to Fields after Esc closes the popover",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openGlobalVariablesRoute(page);
       await openCreateModal(page);

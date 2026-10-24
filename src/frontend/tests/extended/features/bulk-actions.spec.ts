@@ -11,7 +11,9 @@ import { waitForMainPageReady } from "../../utils/flow/wait-for-main-page-ready"
 
 test(
   "user should be able to select flows with different methods and perform bulk actions",
-  { tag: ["@release", "@workspace"] },
+  {
+    tag: ["@release", "@workspace"],
+  },
   async ({ page }) => {
     const returnToHome = async () => {
       await page.goto("/");

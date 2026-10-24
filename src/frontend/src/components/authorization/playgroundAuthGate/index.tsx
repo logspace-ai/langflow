@@ -11,8 +11,8 @@ import useAuthStore from "@/stores/authStore";
 import type { Users } from "@/types/api";
 import { computePlaygroundAuthState } from "./authState";
 
-export { computePlaygroundAuthState };
 export type { PlaygroundAuthState } from "./authState";
+export { computePlaygroundAuthState };
 
 export function PlaygroundAuthGate({
   children,

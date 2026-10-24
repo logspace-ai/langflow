@@ -43,7 +43,9 @@ async function dragAgentOntoCanvas(page: import("@playwright/test").Page) {
 
 test(
   "Agent ships with Calculator and Current Date toggles enabled by default (S1/S3)",
-  { tag: ["@release", "@workspace", "@components"] },
+  {
+    tag: ["@release", "@workspace", "@components"],
+  },
   async ({ page }) => {
     await dragAgentOntoCanvas(page);
 
@@ -91,7 +93,9 @@ test(
 
 test(
   "Agent default system prompt contains {current_date} and {model_name} placeholders (S5)",
-  { tag: ["@release", "@workspace", "@components"] },
+  {
+    tag: ["@release", "@workspace", "@components"],
+  },
   async ({ page }) => {
     await dragAgentOntoCanvas(page);
 

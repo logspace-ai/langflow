@@ -9,7 +9,9 @@ import {
 
 test(
   "user should not be able to upload a file larger than the limit",
-  { tag: ["@release", "@api", "@database"] },
+  {
+    tag: ["@release", "@api", "@database"],
+  },
   async ({ page }) => {
     const maxFileSizeUpload = 0.001;
     await page.route("**/api/v1/config", (route) => {

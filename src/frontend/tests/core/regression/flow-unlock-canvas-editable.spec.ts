@@ -25,7 +25,9 @@ async function saveLockFromSettings(page: Page, locked: boolean) {
 
 test(
   "should make the canvas editable right after unlocking a reloaded locked flow",
-  { tag: ["@release"] },
+  {
+    tag: ["@release"],
+  },
   async ({ page }) => {
     await openStarterProject(page, TEXTS.templateBasicPrompting);
     const flowId = flowIdFrom(page);

@@ -82,7 +82,9 @@ async function dragFirstNode(page: Page): Promise<void> {
 
 test(
   "a refused save raises the banner and stops autosaving",
-  { tag: ["@release", "@workspace"] },
+  {
+    tag: ["@release", "@workspace"],
+  },
   async ({ page }) => {
     await openStarterProject(page, "Basic Prompting");
     await adjustScreenView(page);
@@ -118,7 +120,9 @@ test(
 
 test(
   "duplicating carries my work and leaves the original alone",
-  { tag: ["@release", "@workspace"] },
+  {
+    tag: ["@release", "@workspace"],
+  },
   async ({ page }) => {
     await openStarterProject(page, "Basic Prompting");
     await adjustScreenView(page);
@@ -163,7 +167,9 @@ test(
 
 test(
   "running without editing is never treated as a conflict",
-  { tag: ["@release", "@workspace"] },
+  {
+    tag: ["@release", "@workspace"],
+  },
   async ({ page }) => {
     await openStarterProject(page, "Basic Prompting");
     await adjustScreenView(page);
@@ -190,7 +196,9 @@ test(
 
 test(
   "work restored after a reload is still recognised as stale",
-  { tag: ["@release", "@workspace"] },
+  {
+    tag: ["@release", "@workspace"],
+  },
   async ({ page }) => {
     await openStarterProject(page, "Basic Prompting");
     await adjustScreenView(page);
@@ -224,7 +232,9 @@ test(
 
 test(
   "the source flow still detects conflicts after duplicating and going back",
-  { tag: ["@release", "@workspace"] },
+  {
+    tag: ["@release", "@workspace"],
+  },
   async ({ page }) => {
     await openStarterProject(page, "Basic Prompting");
     await adjustScreenView(page);
@@ -273,7 +283,9 @@ test(
 
 test(
   "overwriting keeps my merge and files their version in history",
-  { tag: ["@release", "@workspace"] },
+  {
+    tag: ["@release", "@workspace"],
+  },
   async ({ page }) => {
     await openStarterProject(page, "Basic Prompting");
     await adjustScreenView(page);
@@ -324,7 +336,9 @@ test(
 
 test(
   "overwriting with their change selected keeps it on the canvas",
-  { tag: ["@release", "@workspace"] },
+  {
+    tag: ["@release", "@workspace"],
+  },
   async ({ page }) => {
     await openStarterProject(page, "Basic Prompting");
     await adjustScreenView(page);
@@ -379,7 +393,9 @@ test(
 
 test(
   "a save landing while the dialog is open refreshes it instead of dead-ending",
-  { tag: ["@release", "@workspace"] },
+  {
+    tag: ["@release", "@workspace"],
+  },
   async ({ page }) => {
     await openStarterProject(page, "Basic Prompting");
     await adjustScreenView(page);

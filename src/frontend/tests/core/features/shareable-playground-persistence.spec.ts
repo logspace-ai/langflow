@@ -46,7 +46,9 @@ async function setupAutoLoginOff(page: Page): Promise<void> {
 
 test(
   "shareable playground: logged-in user messages persist after page refresh",
-  { tag: ["@release", "@api", "@database"] },
+  {
+    tag: ["@release", "@api", "@database"],
+  },
   async ({ page, context }) => {
     skipIfMissing.autoLoginDisabled();
 
@@ -85,7 +87,9 @@ test(
 
 test(
   "shareable playground: default session appears first",
-  { tag: ["@release", "@api", "@database"] },
+  {
+    tag: ["@release", "@api", "@database"],
+  },
   async ({ page, context }) => {
     skipIfMissing.autoLoginDisabled();
 
@@ -116,7 +120,9 @@ test(
 
 test(
   "shareable playground: delete session persists after refresh",
-  { tag: ["@release", "@api", "@database"] },
+  {
+    tag: ["@release", "@api", "@database"],
+  },
   async ({ page, context }) => {
     skipIfMissing.autoLoginDisabled();
 
@@ -164,7 +170,9 @@ test(
 
 test(
   "shareable playground: rename session persists after refresh",
-  { tag: ["@release", "@api", "@database"] },
+  {
+    tag: ["@release", "@api", "@database"],
+  },
   async ({ page, context }) => {
     skipIfMissing.autoLoginDisabled();
 

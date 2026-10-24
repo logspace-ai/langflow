@@ -20,7 +20,9 @@ test.beforeEach(async ({ page }, testInfo) => {
 
 test(
   "user must be able to send an image on chat using advanced tool on ChatInputComponent",
-  { tag: ["@release", "@components"] },
+  {
+    tag: ["@release", "@components"],
+  },
   async ({ page }) => {
     await seedLoopbackProvider(page);
     await awaitBootstrapTest(page);

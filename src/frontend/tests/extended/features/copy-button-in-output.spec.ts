@@ -4,7 +4,9 @@ import { openBlankFlow } from "../../utils/flow/open-blank-flow";
 
 test(
   "user should be able to copy JSON from output",
-  { tag: ["@release", "@workspace"] },
+  {
+    tag: ["@release", "@workspace"],
+  },
   async ({ page }) => {
     await openBlankFlow(page);
     await page.waitForSelector('[data-testid="disclosure-data sources"]', {

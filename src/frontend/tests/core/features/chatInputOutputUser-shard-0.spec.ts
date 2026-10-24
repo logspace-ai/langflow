@@ -11,7 +11,9 @@ import { seedLoopbackProvider } from "../../utils/seed-loopback-provider";
 
 test(
   "user must be able to send an image on chat",
-  { tag: ["@release", "@workspace", "@components"] },
+  {
+    tag: ["@release", "@workspace", "@components"],
+  },
   async ({ page }) => {
     await seedLoopbackProvider(page);
     await awaitBootstrapTest(page);

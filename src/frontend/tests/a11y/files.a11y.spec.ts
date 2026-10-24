@@ -95,7 +95,9 @@ async function openActionsMenu(page: LangflowPage) {
 test.describe("files route accessibility", () => {
   test(
     "scans populated files table",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openFilesRoute(page);
       await expect(page.getByText("quarterly-report")).toBeVisible({
@@ -122,7 +124,9 @@ test.describe("files route accessibility", () => {
 
   test(
     "scans populated files table on mobile width",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await page.setViewportSize({ width: 390, height: 844 });
       await openFilesRoute(page);
@@ -136,7 +140,9 @@ test.describe("files route accessibility", () => {
 
   test(
     "scans upload-in-progress state",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openFilesRoute(page, [{ ...populatedFiles[0], progress: 0.5 }]);
       await expect(page.getByText("50%")).toBeVisible({
@@ -149,7 +155,9 @@ test.describe("files route accessibility", () => {
 
   test(
     "scans upload-failed (error) state",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openFilesRoute(page, [{ ...populatedFiles[0], progress: -1 }]);
       await expect(page.getByText(/Upload failed/i)).toBeVisible({
@@ -166,7 +174,9 @@ test.describe("files route accessibility", () => {
 
   test(
     "scans selected files table state",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openFilesRoute(page);
       const firstRow = page
@@ -186,7 +196,9 @@ test.describe("files route accessibility", () => {
 
   test(
     "bulk delete control is a single tab stop (no nested trigger button)",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openFilesRoute(page);
       const firstRow = page
@@ -219,7 +231,9 @@ test.describe("files route accessibility", () => {
   // is recorded. Delete that baseline file to resurface the violation.
   test(
     "scans open row actions menu",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openFilesRoute(page);
       await openActionsMenu(page);
@@ -232,7 +246,9 @@ test.describe("files route accessibility", () => {
 
   test(
     "scans delete confirmation modal",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openFilesRoute(page);
       await openActionsMenu(page);
@@ -247,7 +263,9 @@ test.describe("files route accessibility", () => {
 
   test(
     "scans inline rename editing state",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openFilesRoute(page);
       await openActionsMenu(page);
@@ -262,7 +280,9 @@ test.describe("files route accessibility", () => {
 
   test(
     "rename moves focus into the cell editor input",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openFilesRoute(page);
       await openActionsMenu(page);
@@ -287,7 +307,9 @@ test.describe("files route accessibility", () => {
 
   test(
     "opens row actions menu with the keyboard and restores focus on close",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openFilesRoute(page);
       await disableAnimations(page);
@@ -347,7 +369,9 @@ test.describe("files route accessibility", () => {
 
   test(
     "shows a visible focus ring on grid cells for keyboard but not mouse",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openFilesRoute(page);
 
@@ -390,7 +414,9 @@ test.describe("files route accessibility", () => {
 
   test(
     "returns focus to the upload button after the file picker closes (keyboard)",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openFilesRoute(page);
 
@@ -419,7 +445,9 @@ test.describe("files route accessibility", () => {
 
   test(
     "does not steal focus back to the upload button on mouse activation",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openFilesRoute(page);
 

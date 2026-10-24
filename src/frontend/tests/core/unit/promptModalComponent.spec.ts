@@ -61,7 +61,9 @@ async function verifyPromptVariables(
 
 test(
   "PromptTemplateComponent - Variable Extraction",
-  { tag: ["@release", "@workspace"] },
+  {
+    tag: ["@release", "@workspace"],
+  },
   async ({ page }) => {
     await openBlankFlow(page);
     await page.getByTestId("sidebar-search-input").click();
@@ -330,7 +332,10 @@ test(
 
 test(
   "PromptTemplateComponent - Double Brackets Variable Extraction",
-  { tag: ["@release", "@workspace"], timeout: 60000 },
+  {
+    tag: ["@release", "@workspace"],
+    timeout: 60000,
+  },
   async ({ page }) => {
     await openBlankFlow(page);
     await page.getByTestId("sidebar-search-input").click();
@@ -422,7 +427,10 @@ test(
 
 test(
   "PromptTemplateComponent - Double Brackets Multiple Variables",
-  { tag: ["@release", "@workspace"], timeout: 60000 },
+  {
+    tag: ["@release", "@workspace"],
+    timeout: 60000,
+  },
   async ({ page }) => {
     await openBlankFlow(page);
     await page.getByTestId("sidebar-search-input").click();
@@ -542,7 +550,10 @@ test(
 
 test(
   "PromptTemplateComponent - Synchronized State",
-  { tag: ["@release", "@workspace"], timeout: 60000 },
+  {
+    tag: ["@release", "@workspace"],
+    timeout: 60000,
+  },
   async ({ page }) => {
     await openBlankFlow(page);
     await page.getByTestId("sidebar-search-input").click();

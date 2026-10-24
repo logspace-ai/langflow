@@ -8,7 +8,9 @@ import { sendPlaygroundMessage } from "../utils/playground/send-playground-messa
 
 test(
   "live OpenAI Basic Prompting reaches terminal success with output",
-  { tag: ["@release", "@starter-projects"] },
+  {
+    tag: ["@release", "@starter-projects"],
+  },
   async ({ page }) => {
     loadDotenvIfLocal(__dirname);
     skipIfMissing.openAiKey();

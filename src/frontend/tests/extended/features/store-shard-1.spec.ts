@@ -6,7 +6,9 @@ import { skipIfMissing } from "../../utils/env/skip-if-missing";
 
 test.skip(
   "should like and add components and flows (requires store API key)",
-  { tag: ["@release"] },
+  {
+    tag: ["@release"],
+  },
   async ({ page }) => {
     skipIfMissing.storeApiKey();
     loadDotenvIfLocal(__dirname);
@@ -79,7 +81,9 @@ test.skip(
 
 test.skip(
   "should find a searched Component on Store (requires store API key)",
-  { tag: ["@release"] },
+  {
+    tag: ["@release"],
+  },
   async ({ page }) => {
     skipIfMissing.storeApiKey();
     loadDotenvIfLocal(__dirname);

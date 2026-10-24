@@ -108,7 +108,9 @@ test.describe("Messages settings route accessibility", () => {
 
   test(
     "scans the populated messages table",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openMessagesRoute(page);
       await expect(page.getByText(firstMessageText)).toBeVisible();
@@ -123,7 +125,9 @@ test.describe("Messages settings route accessibility", () => {
 
   test(
     "exposes one named messages grid with a roving row tab stop",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openMessagesRoute(page);
       const grid = page.getByRole("treegrid", { name: "Messages" });
@@ -145,7 +149,9 @@ test.describe("Messages settings route accessibility", () => {
 
   test(
     "truncates message text without vertically clipping emoji",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openMessagesRoute(page);
       const textTrigger = messageRow(page, firstMessageText).locator(
@@ -187,7 +193,9 @@ test.describe("Messages settings route accessibility", () => {
 
   test(
     "toggles message selection with Space without opening the text viewer",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openMessagesRoute(page);
       const row = messageRow(page, firstMessageText);
@@ -208,7 +216,9 @@ test.describe("Messages settings route accessibility", () => {
 
   test(
     "leaves and re-enters the messages grid without a keyboard trap",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openMessagesRoute(page);
       const row = messageRow(page, firstMessageText);
@@ -243,7 +253,9 @@ test.describe("Messages settings route accessibility", () => {
 
   test(
     "scans the empty messages state",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openMessagesRoute(page, []);
       await expect(page.getByText("No Data Available")).toBeVisible({
@@ -256,7 +268,9 @@ test.describe("Messages settings route accessibility", () => {
 
   test(
     "scans the named loading state",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       let releaseResponse = () => {};
       const responseGate = new Promise<void>((resolve) => {
@@ -292,7 +306,9 @@ test.describe("Messages settings route accessibility", () => {
 
   test(
     "scans a selected message row",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openMessagesRoute(page);
       const row = messageRow(page, firstMessageText);
@@ -306,7 +322,9 @@ test.describe("Messages settings route accessibility", () => {
 
   test(
     "scans the text viewer opened from the keyboard",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openMessagesRoute(page);
       const textCell = messageRow(page, firstMessageText).locator(
@@ -329,7 +347,9 @@ test.describe("Messages settings route accessibility", () => {
 
   test(
     "restores focus to the text cell after the viewer closes",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openMessagesRoute(page);
       const textCell = messageRow(page, firstMessageText).locator(
@@ -369,7 +389,9 @@ test.describe("Messages settings route accessibility", () => {
 
   test(
     "scans the populated messages table on mobile",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await page.setViewportSize({ width: 320, height: 800 });
       await openMessagesRoute(page);

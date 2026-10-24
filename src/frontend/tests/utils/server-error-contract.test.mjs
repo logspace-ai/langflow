@@ -125,7 +125,9 @@ test("bounds sanitized diagnostics", () => {
 
 test(
   "bounds an unresolved response body with a sanitized diagnostic",
-  { timeout: 250 },
+  {
+    timeout: 250,
+  },
   async () => {
     const result = await readResponseBodyWithTimeout(
       { text: () => new Promise(() => {}) },

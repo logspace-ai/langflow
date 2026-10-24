@@ -36,7 +36,9 @@ async function openRoute(page: LangflowPage, path: string) {
 test.describe("data-rich route accessibility", () => {
   test(
     "scans MCP tab with published actions",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await page.route("**/api/v1/mcp/project/**", async (route) => {
         const url = new URL(route.request().url());
@@ -92,7 +94,9 @@ test.describe("data-rich route accessibility", () => {
 
   test(
     "scans MCP servers page with configured servers",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await page.route("**/api/v2/mcp/servers?**", async (route) => {
         await route.fulfill({

@@ -10,7 +10,9 @@ import { seedLoopbackProvider } from "../../utils/seed-loopback-provider";
 
 test(
   "user should be able to use chat memory as expected",
-  { tag: ["@release", "@workspace", "@components"] },
+  {
+    tag: ["@release", "@workspace", "@components"],
+  },
   async ({ page }) => {
     await seedLoopbackProvider(page);
     await awaitBootstrapTest(page);

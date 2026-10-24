@@ -43,7 +43,9 @@ test.describe("Invalid JSON Upload Error Handling", () => {
 
   test(
     "should show error popup when uploading invalid JSON via upload button",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await awaitBootstrapTest(page);
 
@@ -84,7 +86,9 @@ test.describe("Invalid JSON Upload Error Handling", () => {
 
   test(
     "should show error popup when uploading invalid JSON via drag and drop",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await awaitBootstrapTest(page);
 

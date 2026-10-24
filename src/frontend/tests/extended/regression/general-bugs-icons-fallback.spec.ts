@@ -3,7 +3,9 @@ import { awaitBootstrapTest } from "../../utils/await-bootstrap-test";
 
 test(
   "user must be able to see icons fallback if the icon is not found",
-  { tag: ["@release", "@components"] },
+  {
+    tag: ["@release", "@components"],
+  },
   async ({ page }) => {
     await awaitBootstrapTest(page);
 

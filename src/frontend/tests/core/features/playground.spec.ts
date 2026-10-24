@@ -13,7 +13,9 @@ import { zoomOut } from "../../utils/zoom-out";
 
 test(
   "fresh start playground",
-  { tag: ["@release", "@workspace", "@api"] },
+  {
+    tag: ["@release", "@workspace", "@api"],
+  },
   async ({ page }) => {
     loadDotenvIfLocal(__dirname);
 

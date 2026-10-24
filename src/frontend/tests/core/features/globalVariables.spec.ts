@@ -6,7 +6,9 @@ import { skipIfComponentUnavailable } from "../../utils/skip-if-component-unavai
 
 test(
   "user must be able to save or delete a global variable",
-  { tag: ["@release", "@workspace", "@api"] },
+  {
+    tag: ["@release", "@workspace", "@api"],
+  },
   async ({ page }) => {
     await page.setViewportSize({ width: 1920, height: 1080 });
     await awaitBootstrapTest(page);

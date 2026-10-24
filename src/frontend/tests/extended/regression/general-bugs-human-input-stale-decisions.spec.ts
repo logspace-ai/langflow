@@ -10,7 +10,9 @@ const NEW_ACTION = "Request Changes";
 // the reverted value. Same family as LE-2272.
 test(
   "a custom User Action survives a decisions refresh response that lands late",
-  { tag: ["@release", "@components"] },
+  {
+    tag: ["@release", "@components"],
+  },
   async ({ page }) => {
     await awaitBootstrapTest(page);
 

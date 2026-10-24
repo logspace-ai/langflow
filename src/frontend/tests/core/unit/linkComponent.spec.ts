@@ -6,7 +6,9 @@ import { extractAndCleanCode } from "../../utils/extract-and-clean-code";
 // TODO: This test might not be needed anymore
 test(
   "user should interact with link component",
-  { tag: ["@release", "@workspace"] },
+  {
+    tag: ["@release", "@workspace"],
+  },
   async ({ context, page }) => {
     await awaitBootstrapTest(page);
 

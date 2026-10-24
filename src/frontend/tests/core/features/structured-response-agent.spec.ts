@@ -31,7 +31,9 @@ test.beforeEach(async ({ page }, testInfo) => {
 
 test(
   "manual scenarios A–G prerequisite — Agent exposes structured_response output handle alongside response",
-  { tag: ["@release", "@workspace", "@components"] },
+  {
+    tag: ["@release", "@workspace", "@components"],
+  },
   async ({ page }) => {
     await awaitBootstrapTest(page);
     await selectStarterTemplate(page, TEXTS.templateSimpleAgent);
@@ -62,7 +64,9 @@ test(
 
 test(
   "manual scenarios A/D/E/F/G setup — inspection panel exposes Output Schema and Output Format Instructions",
-  { tag: ["@release", "@workspace", "@components"] },
+  {
+    tag: ["@release", "@workspace", "@components"],
+  },
   async ({ page }) => {
     await awaitBootstrapTest(page);
     await selectStarterTemplate(page, TEXTS.templateSimpleAgent);
@@ -82,7 +86,9 @@ test(
     // fields were filtered out of the inspection panel and the feature was
     // unreachable (LE-1810: the panel lists them as manageable parameters).
     await expect(page.getByTestId("inspector-param-output_schema")).toBeVisible(
-      { timeout: 10000 },
+      {
+        timeout: 10000,
+      },
     );
     await expect(
       page.getByTestId("inspector-param-format_instructions"),
@@ -92,7 +98,9 @@ test(
 
 test(
   "scenarios A–C wiring — switching the agent dropdown to Structured Response keeps the downstream edge",
-  { tag: ["@release", "@workspace", "@components"] },
+  {
+    tag: ["@release", "@workspace", "@components"],
+  },
   async ({ page }) => {
     await awaitBootstrapTest(page);
     await selectStarterTemplate(page, TEXTS.templateSimpleAgent);

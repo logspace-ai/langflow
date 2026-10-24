@@ -5,8 +5,9 @@ import { TEXTS } from "../../utils/constants/texts";
 
 test(
   "user can add components by hovering and clicking the plus icon",
-  { tag: ["@release", "@components", "@workspace"] },
-
+  {
+    tag: ["@release", "@components", "@workspace"],
+  },
   async ({ page }) => {
     // Navigate to homepage and handle initial modal
     await awaitBootstrapTest(page);

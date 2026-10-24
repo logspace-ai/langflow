@@ -6,7 +6,9 @@ import { sendPlaygroundMessage } from "../../utils/playground/send-playground-me
 
 test(
   "shareable playground: bot messages display token usage",
-  { tag: ["@release", "@workspace", "@api"] },
+  {
+    tag: ["@release", "@workspace", "@api"],
+  },
   async ({ page, context }) => {
     const { playgroundPage } =
       await publishBasicPromptingAndOpenShareablePlayground(page, context);

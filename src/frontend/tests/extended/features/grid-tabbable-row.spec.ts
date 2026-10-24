@@ -143,7 +143,9 @@ test(
 
 test(
   "messages grid stays keyboard-enterable and arrow-navigable after scrolling",
-  { tag: ["@release", "@workspace"] },
+  {
+    tag: ["@release", "@workspace"],
+  },
   async ({ page }) => {
     await page.route("**/api/v1/monitor/messages*", async (route: Route) => {
       if (route.request().method() !== "GET") return route.continue();

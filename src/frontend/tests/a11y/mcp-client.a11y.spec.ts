@@ -33,7 +33,9 @@ async function openMcpClientRoute(page: LangflowPage) {
 test.describe("MCP client route accessibility", () => {
   test(
     "scans the default (Bob) agent tab",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openMcpClientRoute(page);
       await expect(
@@ -47,7 +49,9 @@ test.describe("MCP client route accessibility", () => {
 
   test(
     "scans the Claude Code agent tab",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openMcpClientRoute(page);
       await page.getByRole("tab", { name: "Claude Code" }).click();
@@ -61,7 +65,9 @@ test.describe("MCP client route accessibility", () => {
 
   test(
     "scans the copied confirmation state",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openMcpClientRoute(page);
       await page.getByTestId("copy-json-button").click();
@@ -75,7 +81,9 @@ test.describe("MCP client route accessibility", () => {
 
   test(
     "scans on a mobile viewport",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await page.setViewportSize({ width: 390, height: 844 });
       await openMcpClientRoute(page);
@@ -87,7 +95,9 @@ test.describe("MCP client route accessibility", () => {
 
   test(
     "exposes the agent switcher as a tablist with a labelled panel",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openMcpClientRoute(page);
 
@@ -118,7 +128,9 @@ test.describe("MCP client route accessibility", () => {
 
   test(
     "moves selection with arrow keys and a roving tab stop",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openMcpClientRoute(page);
 
@@ -145,7 +157,9 @@ test.describe("MCP client route accessibility", () => {
 
   test(
     "names the copy controls and keeps them keyboard operable",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await openMcpClientRoute(page);
 

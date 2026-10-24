@@ -6,7 +6,9 @@ import { openBlankFlow } from "../../utils/flow/open-blank-flow";
 
 test(
   "user should be able to see errors on popups when raise an error",
-  { tag: ["@release", "@workspace", "@components"] },
+  {
+    tag: ["@release", "@workspace", "@components"],
+  },
   async ({ page }) => {
     const customComponentCodeWithRaiseErrorMessage = `
 # from langflow.field_typing import Data

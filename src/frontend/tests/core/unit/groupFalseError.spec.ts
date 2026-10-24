@@ -22,7 +22,9 @@ import { TIMEOUTS } from "../../utils/constants/timeouts";
  */
 test(
   "a grouped node must not raise a false update error",
-  { tag: ["@release", "@workspace"] },
+  {
+    tag: ["@release", "@workspace"],
+  },
   async ({ page }) => {
     await awaitBootstrapTest(page, { skipModal: true });
 

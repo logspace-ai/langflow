@@ -9,7 +9,9 @@ import { renameFlow } from "../../utils/rename-flow";
 
 test(
   "flow state should be properly cleaned up between user sessions",
-  { tag: ["@release", "@api", "@database"] },
+  {
+    tag: ["@release", "@api", "@database"],
+  },
   async ({ page }) => {
     test.skip(
       process.platform === "win32",

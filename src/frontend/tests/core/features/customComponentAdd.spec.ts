@@ -5,8 +5,9 @@ import { TEXTS } from "../../utils/constants/texts";
 
 test(
   "custom component code button should be pink when adding custom component",
-  { tag: ["@release", "@components"] },
-
+  {
+    tag: ["@release", "@components"],
+  },
   async ({ page }) => {
     await awaitBootstrapTest(page);
 

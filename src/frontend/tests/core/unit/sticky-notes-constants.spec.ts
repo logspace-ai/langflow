@@ -2,8 +2,9 @@ import { expect, test } from "../../fixtures";
 
 test(
   "sticky notes constants should be properly defined",
-  { tag: ["@release", "@workspace"] },
-
+  {
+    tag: ["@release", "@workspace"],
+  },
   async ({ page }) => {
     const constants = await page.evaluate(() => ({
       expectedMinWidth: 280,
@@ -21,8 +22,9 @@ test(
 
 test(
   "sticky notes should use text-base font size",
-  { tag: ["@release", "@workspace"] },
-
+  {
+    tag: ["@release", "@workspace"],
+  },
   async ({ page }) => {
     const textSize = await page.evaluate(() => {
       const testEl = document.createElement("div");

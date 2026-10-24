@@ -240,7 +240,9 @@ test.describe("auth page accessibility", () => {
     for (const state of AUTH_STATES) {
       test(
         `scans ${state.label} (${theme.name})`,
-        { tag: ["@release", "@workspace"] },
+        {
+          tag: ["@release", "@workspace"],
+        },
         async ({ page }) => {
           await theme.force(page);
           await state.drive(page);

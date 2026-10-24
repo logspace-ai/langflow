@@ -6,7 +6,9 @@ import { sendPlaygroundMessage } from "../../utils/playground/send-playground-me
 
 test(
   "shareable playground: auto-login user can send message and get response",
-  { tag: ["@release", "@workspace", "@api"] },
+  {
+    tag: ["@release", "@workspace", "@api"],
+  },
   async ({ page, context }) => {
     const { playgroundPage } =
       await publishBasicPromptingAndOpenShareablePlayground(page, context);
@@ -26,7 +28,9 @@ test(
 
 test(
   "shareable playground: streaming works",
-  { tag: ["@release", "@workspace", "@api"] },
+  {
+    tag: ["@release", "@workspace", "@api"],
+  },
   async ({ page, context }) => {
     const { playgroundPage } =
       await publishBasicPromptingAndOpenShareablePlayground(page, context);
@@ -46,7 +50,9 @@ test(
 
 test(
   "shareable playground: session management works",
-  { tag: ["@release", "@workspace", "@api"] },
+  {
+    tag: ["@release", "@workspace", "@api"],
+  },
   async ({ page, context }) => {
     const { playgroundPage } =
       await publishBasicPromptingAndOpenShareablePlayground(page, context);

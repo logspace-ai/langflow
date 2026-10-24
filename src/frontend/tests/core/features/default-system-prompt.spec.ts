@@ -30,7 +30,9 @@ const SECTION_HEADERS = [
 // ---------------------------------------------------------------------------
 test(
   "Agent component shows the 7-section default template when dropped on canvas",
-  { tag: ["@release", "@workspace"] },
+  {
+    tag: ["@release", "@workspace"],
+  },
   async ({ page }) => {
     await awaitBootstrapTest(page);
 
@@ -80,7 +82,9 @@ test(
 // ---------------------------------------------------------------------------
 test(
   "Tool Calling Agent component shows the 7-section default template when dropped on canvas",
-  { tag: ["@release", "@workspace"] },
+  {
+    tag: ["@release", "@workspace"],
+  },
   async ({ page }) => {
     await awaitBootstrapTest(page);
 

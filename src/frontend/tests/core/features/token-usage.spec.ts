@@ -7,7 +7,9 @@ import { seedLoopbackProvider } from "../../utils/seed-loopback-provider";
 test.describe("Token Usage Tracking", () => {
   test(
     "node badge should show token count after running an LLM flow",
-    { tag: ["@release", "@workspace", "@components"] },
+    {
+      tag: ["@release", "@workspace", "@components"],
+    },
     async ({ page }) => {
       await seedLoopbackProvider(page);
       await awaitBootstrapTest(page);
@@ -53,7 +55,9 @@ test.describe("Token Usage Tracking", () => {
 
   test(
     "chat message should show token count alongside run duration",
-    { tag: ["@release", "@workspace", "@components"] },
+    {
+      tag: ["@release", "@workspace", "@components"],
+    },
     async ({ page }) => {
       await seedLoopbackProvider(page);
       await awaitBootstrapTest(page);

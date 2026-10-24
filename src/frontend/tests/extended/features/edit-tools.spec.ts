@@ -4,7 +4,9 @@ import { openBlankFlow } from "../../utils/flow/open-blank-flow";
 
 test(
   "user should be able to edit tools",
-  { tag: ["@release", "@components"] },
+  {
+    tag: ["@release", "@components"],
+  },
   async ({ page }) => {
     await openBlankFlow(page);
 

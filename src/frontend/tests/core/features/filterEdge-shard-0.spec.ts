@@ -5,7 +5,9 @@ import { awaitBootstrapTest } from "../../utils/await-bootstrap-test";
 
 test(
   "user must see on handle hover a tooltip with possibility connections",
-  { tag: ["@release", "@components", "@api"] },
+  {
+    tag: ["@release", "@components", "@api"],
+  },
   async ({ page }) => {
     await awaitBootstrapTest(page);
 

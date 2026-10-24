@@ -5,7 +5,9 @@ import { extractAndCleanCode } from "../../utils/extract-and-clean-code";
 
 test(
   "user must be able to use component as tool shortcut only if has tool mode is True",
-  { tag: ["@release", "@components"] },
+  {
+    tag: ["@release", "@components"],
+  },
   async ({ page }) => {
     await awaitBootstrapTest(page);
 

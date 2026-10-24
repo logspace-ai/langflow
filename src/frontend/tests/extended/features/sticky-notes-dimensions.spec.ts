@@ -13,8 +13,9 @@ test.beforeEach(async ({ page }, testInfo) => {
 
 test(
   "sticky notes should have consistent 280x140px dimensions",
-  { tag: ["@release", "@workspace"] },
-
+  {
+    tag: ["@release", "@workspace"],
+  },
   async ({ page }) => {
     await openBlankFlow(page);
 
@@ -43,8 +44,9 @@ test(
 
 test(
   "sticky notes should maintain size with content",
-  { tag: ["@release", "@workspace"] },
-
+  {
+    tag: ["@release", "@workspace"],
+  },
   async ({ page }) => {
     await openBlankFlow(page);
 
@@ -100,8 +102,9 @@ test(
 
 test(
   "sticky notes should have larger readable text",
-  { tag: ["@release", "@workspace"] },
-
+  {
+    tag: ["@release", "@workspace"],
+  },
   async ({ page }) => {
     await openBlankFlow(page);
 
@@ -156,8 +159,9 @@ test(
 
 test(
   "sticky notes should handle overflow with scrollbars",
-  { tag: ["@release", "@workspace"] },
-
+  {
+    tag: ["@release", "@workspace"],
+  },
   async ({ page }) => {
     await openBlankFlow(page);
 
@@ -222,8 +226,9 @@ test(
 
 test(
   "sticky notes should respect resize constraints",
-  { tag: ["@release", "@workspace"] },
-
+  {
+    tag: ["@release", "@workspace"],
+  },
   async ({ page }) => {
     await openBlankFlow(page);
 

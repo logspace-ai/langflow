@@ -12,7 +12,9 @@ const NODE_SELECTOR = '[data-testid^="rf__node-"]';
 // a round trip that is only milliseconds wide on localhost.
 test(
   "add component control refuses the click while the permission check is pending",
-  { tag: ["@release", "@workspace"] },
+  {
+    tag: ["@release", "@workspace"],
+  },
   async ({ page }) => {
     await awaitBootstrapTest(page);
 

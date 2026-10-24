@@ -18,7 +18,9 @@ import { openBlankFlow } from "../../utils/flow/open-blank-flow";
  */
 test(
   "sidebar add button and drag handle stay inside the row for long component names",
-  { tag: ["@release", "@components", "@workspace"] },
+  {
+    tag: ["@release", "@components", "@workspace"],
+  },
   async ({ page }) => {
     await page.setViewportSize({ width: 1470, height: 704 });
     await openBlankFlow(page);

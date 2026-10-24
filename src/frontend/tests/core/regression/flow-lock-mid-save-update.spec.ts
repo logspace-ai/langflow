@@ -50,7 +50,9 @@ async function holdNodeUpdates(page: Page) {
 
 test(
   "should keep a lock saved while a node update lands mid-save",
-  { tag: ["@release", "@api"] },
+  {
+    tag: ["@release", "@api"],
+  },
   async ({ page }) => {
     const updates = await holdNodeUpdates(page);
 

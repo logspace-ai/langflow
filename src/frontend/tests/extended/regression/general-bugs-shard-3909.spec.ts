@@ -4,7 +4,9 @@ import { TEXTS } from "../../utils/constants/texts";
 
 test(
   "user must be able to create a new flow clicking on New Flow button",
-  { tag: ["@release"] },
+  {
+    tag: ["@release"],
+  },
   async ({ page }) => {
     await awaitBootstrapTest(page);
 

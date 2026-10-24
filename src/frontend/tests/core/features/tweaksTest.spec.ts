@@ -14,8 +14,9 @@ import { skipIfComponentUnavailable } from "../../utils/skip-if-component-unavai
 
 test(
   "curl_api_generation",
-  { tag: ["@release", "@workspace", "@api"] },
-
+  {
+    tag: ["@release", "@workspace", "@api"],
+  },
   async ({ page, context }) => {
     await awaitBootstrapTest(page);
 

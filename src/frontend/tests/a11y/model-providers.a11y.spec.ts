@@ -279,7 +279,9 @@ async function openModelProvidersRoute(page: LangflowPage) {
 test.describe("Model providers route accessibility", () => {
   test(
     "scans populated provider list default state",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await mockProviderCatalog(page);
       await mockGlobalVariables(page);
@@ -294,7 +296,9 @@ test.describe("Model providers route accessibility", () => {
 
   test(
     "scans provider list loading state",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       // The catalog is stalled far past the teardown drain window on purpose:
       // the loading state has to still be on screen when the scan runs.
@@ -318,7 +322,9 @@ test.describe("Model providers route accessibility", () => {
 
   test(
     "scans provider search empty state",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await mockProviderCatalog(page);
       await mockGlobalVariables(page);
@@ -332,7 +338,9 @@ test.describe("Model providers route accessibility", () => {
 
   test(
     "scans configured provider selected with credential form",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await mockProviderCatalog(page);
       await mockGlobalVariables(page);
@@ -350,7 +358,9 @@ test.describe("Model providers route accessibility", () => {
 
   test(
     "scans masked secret field entering editing state",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await mockProviderCatalog(page);
       await mockGlobalVariables(page);
@@ -369,7 +379,9 @@ test.describe("Model providers route accessibility", () => {
 
   test(
     "scans deprecated models disclosure expanded state",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await mockProviderCatalog(page);
       await mockGlobalVariables(page);
@@ -385,7 +397,9 @@ test.describe("Model providers route accessibility", () => {
 
   test(
     "scans model search empty state",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await mockProviderCatalog(page);
       await mockGlobalVariables(page);
@@ -400,7 +414,9 @@ test.describe("Model providers route accessibility", () => {
 
   test(
     "scans model toggle switch flipped state",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await mockProviderCatalog(page);
       await mockGlobalVariables(page);
@@ -418,7 +434,9 @@ test.describe("Model providers route accessibility", () => {
 
   test(
     "scans invalid credential validation error state",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await mockProviderCatalog(page);
       await mockGlobalVariables(page, []);
@@ -442,7 +460,9 @@ test.describe("Model providers route accessibility", () => {
 
   test(
     "scans successful credential save confirmation state",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await mockProviderCatalog(page);
       await mockGlobalVariables(page, []);
@@ -454,7 +474,9 @@ test.describe("Model providers route accessibility", () => {
         .fill("sk-ant-a11y-valid-redacted"); // pragma: allowlist secret
       await page.getByRole("button", { name: "Save", exact: true }).click();
       await expect(page.getByText("Anthropic Configuration Saved")).toBeVisible(
-        { timeout: TIMEOUTS.standard },
+        {
+          timeout: TIMEOUTS.standard,
+        },
       );
 
       await page.runA11yScan("settings-model-providers-validation-success");
@@ -463,7 +485,9 @@ test.describe("Model providers route accessibility", () => {
 
   test(
     "scans disconnect confirmation warning state",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await mockProviderCatalog(page);
       await mockGlobalVariables(page);
@@ -482,7 +506,9 @@ test.describe("Model providers route accessibility", () => {
 
   test(
     "scans provider without required configuration",
-    { tag: ["@release", "@workspace"] },
+    {
+      tag: ["@release", "@workspace"],
+    },
     async ({ page }) => {
       await mockProviderCatalog(page);
       await mockGlobalVariables(page);

@@ -76,7 +76,9 @@ async function runChatOutput(page: Page): Promise<WorkflowEvent[]> {
 
 test(
   "freeze must work correctly",
-  { tag: ["@release", "@api", "@components"] },
+  {
+    tag: ["@release", "@api", "@components"],
+  },
   async ({ page }) => {
     const promptText = "answer as you are a dog";
     const newPromptText = "answer as you are a bird";

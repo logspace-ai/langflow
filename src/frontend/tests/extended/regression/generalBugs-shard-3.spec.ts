@@ -55,7 +55,9 @@ test(
 
 test(
   "playground button should be enabled or disabled",
-  { tag: ["@release", "@api", "@workspace"] },
+  {
+    tag: ["@release", "@api", "@workspace"],
+  },
   async ({ page }) => {
     await openBlankFlow(page);
 

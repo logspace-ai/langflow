@@ -5,7 +5,9 @@ import { zoomOut } from "../../utils/zoom-out";
 
 test(
   "should create edge between components",
-  { tag: ["@release", "@workspace"] },
+  {
+    tag: ["@release", "@workspace"],
+  },
   async ({ page }) => {
     await awaitBootstrapTest(page);
 
@@ -84,7 +86,9 @@ test(
 
 test(
   "should delete edge on context menu delete click",
-  { tag: ["@release", "@workspace"] },
+  {
+    tag: ["@release", "@workspace"],
+  },
   async ({ page }) => {
     await awaitBootstrapTest(page);
 

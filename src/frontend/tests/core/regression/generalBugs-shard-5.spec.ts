@@ -53,7 +53,9 @@ async function addComponentAtPosition(
 
 test(
   "should be able to see output preview from grouped components and connect components with a single click",
-  { tag: ["@release", "@workspace", "@components"] },
+  {
+    tag: ["@release", "@workspace", "@components"],
+  },
   async ({ page }) => {
     const randomName = Math.random().toString(36).substring(2);
     const secondRandomName = Math.random().toString(36).substring(2);
