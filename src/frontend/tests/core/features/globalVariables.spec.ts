@@ -4,65 +4,74 @@ import { awaitBootstrapTest } from "../../utils/await-bootstrap-test";
 import { TEXTS } from "../../utils/constants/texts";
 import { skipIfComponentUnavailable } from "../../utils/skip-if-component-unavailable";
 
-test("user must be able to save or delete a global variable", {
-  tag: ["@release", "@workspace", "@api"],
-}, async ({ page }) => {
-  await page.setViewportSize({ width: 1920, height: 1080 });
-  await awaitBootstrapTest(page);
+test(
+  "user must be able to save or delete a global variable",
+  {
+    tag: ["@release", "@workspace", "@api"],
+  },
+  async ({ page }) => {
+    await page.setViewportSize({ width: 1920, height: 1080 });
+    await awaitBootstrapTest(page);
 
-  await page.waitForSelector('[data-testid="blank-flow"]', {
-    timeout: 30000,
-  });
-  await page.getByTestId("blank-flow").click();
-  await page.getByTestId("sidebar-search-input").click();
-  await page
-    .getByTestId("sidebar-search-input")
-    .fill(TEXTS.providerOpenAiSearch);
-
-  await skipIfComponentUnavailable(page.getByTestId("openaiOpenAI"), "OpenAI");
-
-  await page
-    .getByTestId("openaiOpenAI")
-    .hover()
-    .then(async () => {
-      await page.getByTestId("add-component-button-openai").last().click();
+    await page.waitForSelector('[data-testid="blank-flow"]', {
+      timeout: 30000,
     });
+    await page.getByTestId("blank-flow").click();
+    await page.getByTestId("sidebar-search-input").click();
+    await page
+      .getByTestId("sidebar-search-input")
+      .fill(TEXTS.providerOpenAiSearch);
 
-  await adjustScreenView(page, { numberOfZoomOut: 2 });
+    await skipIfComponentUnavailable(
+      page.getByTestId("openaiOpenAI"),
+      "OpenAI",
+    );
 
-  const genericName = Math.random().toString();
-  const credentialName = Math.random().toString();
+    await page
+      .getByTestId("openaiOpenAI")
+      .hover()
+      .then(async () => {
+        await page.getByTestId("add-component-button-openai").last().click();
+      });
 
-  await page.getByText("OpenAI", { exact: true }).last().click();
+    await adjustScreenView(page, { numberOfZoomOut: 2 });
 
-  await page.getByTestId("icon-Globe").nth(0).click();
-  await page.getByText("Add New Variable", { exact: true }).click();
-  await page.getByPlaceholder(TEXTS.placeholderVariableName).fill(genericName);
-  await page.getByText("Generic", { exact: true }).first().isVisible();
-  await page
-    .getByPlaceholder("Enter a value for the variable...")
-    .fill("This is a test of generic variable value");
-  await page.getByText("Save Variable", { exact: true }).click();
-  expect(page.getByText(genericName, { exact: true })).not.toBeNull();
-  await page.getByText(genericName, { exact: true }).isVisible();
+    const genericName = Math.random().toString();
+    const credentialName = Math.random().toString();
 
-  await page.getByText("Add New Variable", { exact: true }).click();
-  await page
-    .getByPlaceholder(TEXTS.placeholderVariableName)
-    .fill(credentialName);
-  await page.getByTestId("credential-tab").click();
-  await page
-    .getByPlaceholder("Enter a value for the variable...")
-    .fill("This is a test of credential variable value");
-  await page.getByText("Save Variable", { exact: true }).click();
-  expect(page.getByText(credentialName, { exact: true })).not.toBeNull();
-  await page.getByText(credentialName, { exact: true }).isVisible();
+    await page.getByText("OpenAI", { exact: true }).last().click();
 
-  await page
-    .getByText(credentialName, { exact: true })
-    .hover()
-    .then(async () => {
-      await page.getByTestId("icon-Trash2").last().click();
-      await page.getByText(TEXTS.delete, { exact: true }).nth(1).click();
-    });
-});
+    await page.getByTestId("icon-Globe").nth(0).click();
+    await page.getByText("Add New Variable", { exact: true }).click();
+    await page
+      .getByPlaceholder(TEXTS.placeholderVariableName)
+      .fill(genericName);
+    await page.getByText("Generic", { exact: true }).first().isVisible();
+    await page
+      .getByPlaceholder("Enter a value for the variable...")
+      .fill("This is a test of generic variable value");
+    await page.getByText("Save Variable", { exact: true }).click();
+    expect(page.getByText(genericName, { exact: true })).not.toBeNull();
+    await page.getByText(genericName, { exact: true }).isVisible();
+
+    await page.getByText("Add New Variable", { exact: true }).click();
+    await page
+      .getByPlaceholder(TEXTS.placeholderVariableName)
+      .fill(credentialName);
+    await page.getByTestId("credential-tab").click();
+    await page
+      .getByPlaceholder("Enter a value for the variable...")
+      .fill("This is a test of credential variable value");
+    await page.getByText("Save Variable", { exact: true }).click();
+    expect(page.getByText(credentialName, { exact: true })).not.toBeNull();
+    await page.getByText(credentialName, { exact: true }).isVisible();
+
+    await page
+      .getByText(credentialName, { exact: true })
+      .hover()
+      .then(async () => {
+        await page.getByTestId("icon-Trash2").last().click();
+        await page.getByText(TEXTS.delete, { exact: true }).nth(1).click();
+      });
+  },
+);

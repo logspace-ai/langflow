@@ -277,199 +277,249 @@ async function openModelProvidersRoute(page: LangflowPage) {
 }
 
 test.describe("Model providers route accessibility", () => {
-  test("scans populated provider list default state", {
-    tag: ["@release", "@workspace"],
-  }, async ({ page }) => {
-    await mockProviderCatalog(page);
-    await mockGlobalVariables(page);
-    await openModelProvidersRoute(page);
-    await expect(page.getByTestId("provider-item-OpenAI")).toBeVisible();
-    await expect(page.getByTestId("provider-item-Anthropic")).toBeVisible();
-    await expect(page.getByTestId("provider-item-Ollama")).toBeVisible();
+  test(
+    "scans populated provider list default state",
+    {
+      tag: ["@release", "@workspace"],
+    },
+    async ({ page }) => {
+      await mockProviderCatalog(page);
+      await mockGlobalVariables(page);
+      await openModelProvidersRoute(page);
+      await expect(page.getByTestId("provider-item-OpenAI")).toBeVisible();
+      await expect(page.getByTestId("provider-item-Anthropic")).toBeVisible();
+      await expect(page.getByTestId("provider-item-Ollama")).toBeVisible();
 
-    await page.runA11yScan("settings-model-providers-data-rich");
-  });
+      await page.runA11yScan("settings-model-providers-data-rich");
+    },
+  );
 
-  test("scans provider list loading state", {
-    tag: ["@release", "@workspace"],
-  }, async ({ page }) => {
-    // The catalog is stalled far past the teardown drain window on purpose:
-    // the loading state has to still be on screen when the scan runs.
-    await mockProviderCatalog(page, { providersDelayMs: 6000 });
-    page.expectPendingRequest({ method: "GET", path: "/api/v1/models" });
-    await mockGlobalVariables(page);
-    await awaitBootstrapTest(page, { skipModal: true });
-    await page.goto("/settings/model-providers");
-    await disableAnimations(page);
-    await expect(page.getByTestId("settings_menu_header")).toContainText(
-      "Model Providers",
-      { timeout: TIMEOUTS.standard },
-    );
-    await expect(page.getByTestId("provider-list-loading")).toBeVisible({
-      timeout: TIMEOUTS.short,
-    });
+  test(
+    "scans provider list loading state",
+    {
+      tag: ["@release", "@workspace"],
+    },
+    async ({ page }) => {
+      // The catalog is stalled far past the teardown drain window on purpose:
+      // the loading state has to still be on screen when the scan runs.
+      await mockProviderCatalog(page, { providersDelayMs: 6000 });
+      page.expectPendingRequest({ method: "GET", path: "/api/v1/models" });
+      await mockGlobalVariables(page);
+      await awaitBootstrapTest(page, { skipModal: true });
+      await page.goto("/settings/model-providers");
+      await disableAnimations(page);
+      await expect(page.getByTestId("settings_menu_header")).toContainText(
+        "Model Providers",
+        { timeout: TIMEOUTS.standard },
+      );
+      await expect(page.getByTestId("provider-list-loading")).toBeVisible({
+        timeout: TIMEOUTS.short,
+      });
 
-    await page.runA11yScan("settings-model-providers-loading");
-  });
+      await page.runA11yScan("settings-model-providers-loading");
+    },
+  );
 
-  test("scans provider search empty state", {
-    tag: ["@release", "@workspace"],
-  }, async ({ page }) => {
-    await mockProviderCatalog(page);
-    await mockGlobalVariables(page);
-    await openModelProvidersRoute(page);
-    await page.getByTestId("provider-search-input").fill("zzz-no-match");
-    await expect(page.getByTestId("provider-list-empty")).toBeVisible();
+  test(
+    "scans provider search empty state",
+    {
+      tag: ["@release", "@workspace"],
+    },
+    async ({ page }) => {
+      await mockProviderCatalog(page);
+      await mockGlobalVariables(page);
+      await openModelProvidersRoute(page);
+      await page.getByTestId("provider-search-input").fill("zzz-no-match");
+      await expect(page.getByTestId("provider-list-empty")).toBeVisible();
 
-    await page.runA11yScan("settings-model-providers-search-empty");
-  });
+      await page.runA11yScan("settings-model-providers-search-empty");
+    },
+  );
 
-  test("scans configured provider selected with credential form", {
-    tag: ["@release", "@workspace"],
-  }, async ({ page }) => {
-    await mockProviderCatalog(page);
-    await mockGlobalVariables(page);
-    await openModelProvidersRoute(page);
-    await page.getByTestId("provider-item-OpenAI").click();
-    await expect(
-      page.getByTestId("provider-variable-input-OPENAI_API_KEY"),
-    ).toBeVisible();
-    await expect(page.getByTestId("model-provider-selection")).toBeVisible();
-    await expect(page.getByTestId("llm-toggle-gpt-4.1")).toBeVisible();
+  test(
+    "scans configured provider selected with credential form",
+    {
+      tag: ["@release", "@workspace"],
+    },
+    async ({ page }) => {
+      await mockProviderCatalog(page);
+      await mockGlobalVariables(page);
+      await openModelProvidersRoute(page);
+      await page.getByTestId("provider-item-OpenAI").click();
+      await expect(
+        page.getByTestId("provider-variable-input-OPENAI_API_KEY"),
+      ).toBeVisible();
+      await expect(page.getByTestId("model-provider-selection")).toBeVisible();
+      await expect(page.getByTestId("llm-toggle-gpt-4.1")).toBeVisible();
 
-    await page.runA11yScan("settings-model-providers-provider-selected");
-  });
+      await page.runA11yScan("settings-model-providers-provider-selected");
+    },
+  );
 
-  test("scans masked secret field entering editing state", {
-    tag: ["@release", "@workspace"],
-  }, async ({ page }) => {
-    await mockProviderCatalog(page);
-    await mockGlobalVariables(page);
-    await openModelProvidersRoute(page);
-    await page.getByTestId("provider-item-OpenAI").click();
-    const secretInput = page.getByTestId(
-      "provider-variable-input-OPENAI_API_KEY",
-    );
-    await expect(secretInput).toBeVisible();
-    await secretInput.click();
-    await expect(secretInput).toHaveAttribute("type", "password");
+  test(
+    "scans masked secret field entering editing state",
+    {
+      tag: ["@release", "@workspace"],
+    },
+    async ({ page }) => {
+      await mockProviderCatalog(page);
+      await mockGlobalVariables(page);
+      await openModelProvidersRoute(page);
+      await page.getByTestId("provider-item-OpenAI").click();
+      const secretInput = page.getByTestId(
+        "provider-variable-input-OPENAI_API_KEY",
+      );
+      await expect(secretInput).toBeVisible();
+      await secretInput.click();
+      await expect(secretInput).toHaveAttribute("type", "password");
 
-    await page.runA11yScan("settings-model-providers-secret-editing");
-  });
+      await page.runA11yScan("settings-model-providers-secret-editing");
+    },
+  );
 
-  test("scans deprecated models disclosure expanded state", {
-    tag: ["@release", "@workspace"],
-  }, async ({ page }) => {
-    await mockProviderCatalog(page);
-    await mockGlobalVariables(page);
-    await openModelProvidersRoute(page);
-    await page.getByTestId("provider-item-OpenAI").click();
-    await expect(page.getByTestId("llm-deprecated-summary")).toBeVisible();
-    await page.getByTestId("llm-deprecated-summary").click();
-    await expect(page.getByTestId("llm-toggle-gpt-3.5-turbo")).toBeVisible();
+  test(
+    "scans deprecated models disclosure expanded state",
+    {
+      tag: ["@release", "@workspace"],
+    },
+    async ({ page }) => {
+      await mockProviderCatalog(page);
+      await mockGlobalVariables(page);
+      await openModelProvidersRoute(page);
+      await page.getByTestId("provider-item-OpenAI").click();
+      await expect(page.getByTestId("llm-deprecated-summary")).toBeVisible();
+      await page.getByTestId("llm-deprecated-summary").click();
+      await expect(page.getByTestId("llm-toggle-gpt-3.5-turbo")).toBeVisible();
 
-    await page.runA11yScan("settings-model-providers-deprecated-expanded");
-  });
+      await page.runA11yScan("settings-model-providers-deprecated-expanded");
+    },
+  );
 
-  test("scans model search empty state", {
-    tag: ["@release", "@workspace"],
-  }, async ({ page }) => {
-    await mockProviderCatalog(page);
-    await mockGlobalVariables(page);
-    await openModelProvidersRoute(page);
-    await page.getByTestId("provider-item-OpenAI").click();
-    await page.getByTestId("model-search-input").fill("zzz-no-match");
-    await expect(page.getByTestId("model-search-empty")).toBeVisible();
+  test(
+    "scans model search empty state",
+    {
+      tag: ["@release", "@workspace"],
+    },
+    async ({ page }) => {
+      await mockProviderCatalog(page);
+      await mockGlobalVariables(page);
+      await openModelProvidersRoute(page);
+      await page.getByTestId("provider-item-OpenAI").click();
+      await page.getByTestId("model-search-input").fill("zzz-no-match");
+      await expect(page.getByTestId("model-search-empty")).toBeVisible();
 
-    await page.runA11yScan("settings-model-providers-model-search-empty");
-  });
+      await page.runA11yScan("settings-model-providers-model-search-empty");
+    },
+  );
 
-  test("scans model toggle switch flipped state", {
-    tag: ["@release", "@workspace"],
-  }, async ({ page }) => {
-    await mockProviderCatalog(page);
-    await mockGlobalVariables(page);
-    await openModelProvidersRoute(page);
-    await page.getByTestId("provider-item-OpenAI").click();
-    const toggle = page.getByTestId("llm-toggle-gpt-4.1");
-    await expect(toggle).toHaveAttribute("aria-checked", "true");
-    await toggle.click();
-    await expect(toggle).toHaveAttribute("aria-checked", "false");
-    await expect(toggle).toHaveAttribute("aria-label", "Enable gpt-4.1");
+  test(
+    "scans model toggle switch flipped state",
+    {
+      tag: ["@release", "@workspace"],
+    },
+    async ({ page }) => {
+      await mockProviderCatalog(page);
+      await mockGlobalVariables(page);
+      await openModelProvidersRoute(page);
+      await page.getByTestId("provider-item-OpenAI").click();
+      const toggle = page.getByTestId("llm-toggle-gpt-4.1");
+      await expect(toggle).toHaveAttribute("aria-checked", "true");
+      await toggle.click();
+      await expect(toggle).toHaveAttribute("aria-checked", "false");
+      await expect(toggle).toHaveAttribute("aria-label", "Enable gpt-4.1");
 
-    await page.runA11yScan("settings-model-providers-model-toggled");
-  });
+      await page.runA11yScan("settings-model-providers-model-toggled");
+    },
+  );
 
-  test("scans invalid credential validation error state", {
-    tag: ["@release", "@workspace"],
-  }, async ({ page }) => {
-    await mockProviderCatalog(page);
-    await mockGlobalVariables(page, []);
-    await mockValidateProvider(page, {
-      valid: false,
-      error: "The provided API key is invalid.",
-    });
-    await openModelProvidersRoute(page);
-    await page.getByTestId("provider-item-Anthropic").click();
-    await page
-      .getByTestId("provider-variable-input-ANTHROPIC_API_KEY") // pragma: allowlist secret
-      .fill("sk-ant-a11y-invalid-redacted"); // pragma: allowlist secret
-    await page.getByRole("button", { name: "Save", exact: true }).click();
-    await expect(page.getByText("Validation Failed")).toBeVisible({
-      timeout: TIMEOUTS.standard,
-    });
+  test(
+    "scans invalid credential validation error state",
+    {
+      tag: ["@release", "@workspace"],
+    },
+    async ({ page }) => {
+      await mockProviderCatalog(page);
+      await mockGlobalVariables(page, []);
+      await mockValidateProvider(page, {
+        valid: false,
+        error: "The provided API key is invalid.",
+      });
+      await openModelProvidersRoute(page);
+      await page.getByTestId("provider-item-Anthropic").click();
+      await page
+        .getByTestId("provider-variable-input-ANTHROPIC_API_KEY") // pragma: allowlist secret
+        .fill("sk-ant-a11y-invalid-redacted"); // pragma: allowlist secret
+      await page.getByRole("button", { name: "Save", exact: true }).click();
+      await expect(page.getByText("Validation Failed")).toBeVisible({
+        timeout: TIMEOUTS.standard,
+      });
 
-    await page.runA11yScan("settings-model-providers-validation-error");
-  });
+      await page.runA11yScan("settings-model-providers-validation-error");
+    },
+  );
 
-  test("scans successful credential save confirmation state", {
-    tag: ["@release", "@workspace"],
-  }, async ({ page }) => {
-    await mockProviderCatalog(page);
-    await mockGlobalVariables(page, []);
-    await mockValidateProvider(page, { valid: true, error: null });
-    await openModelProvidersRoute(page);
-    await page.getByTestId("provider-item-Anthropic").click();
-    await page
-      .getByTestId("provider-variable-input-ANTHROPIC_API_KEY") // pragma: allowlist secret
-      .fill("sk-ant-a11y-valid-redacted"); // pragma: allowlist secret
-    await page.getByRole("button", { name: "Save", exact: true }).click();
-    await expect(page.getByText("Anthropic Configuration Saved")).toBeVisible({
-      timeout: TIMEOUTS.standard,
-    });
+  test(
+    "scans successful credential save confirmation state",
+    {
+      tag: ["@release", "@workspace"],
+    },
+    async ({ page }) => {
+      await mockProviderCatalog(page);
+      await mockGlobalVariables(page, []);
+      await mockValidateProvider(page, { valid: true, error: null });
+      await openModelProvidersRoute(page);
+      await page.getByTestId("provider-item-Anthropic").click();
+      await page
+        .getByTestId("provider-variable-input-ANTHROPIC_API_KEY") // pragma: allowlist secret
+        .fill("sk-ant-a11y-valid-redacted"); // pragma: allowlist secret
+      await page.getByRole("button", { name: "Save", exact: true }).click();
+      await expect(page.getByText("Anthropic Configuration Saved")).toBeVisible(
+        {
+          timeout: TIMEOUTS.standard,
+        },
+      );
 
-    await page.runA11yScan("settings-model-providers-validation-success");
-  });
+      await page.runA11yScan("settings-model-providers-validation-success");
+    },
+  );
 
-  test("scans disconnect confirmation warning state", {
-    tag: ["@release", "@workspace"],
-  }, async ({ page }) => {
-    await mockProviderCatalog(page);
-    await mockGlobalVariables(page);
-    await openModelProvidersRoute(page);
-    await page.getByTestId("provider-item-OpenAI").click();
-    await page.getByRole("button", { name: "Disconnect" }).click();
-    await expect(
-      page.getByText(
-        "Disconnecting an API key will disable all of the provider's models being used in a flow.",
-      ),
-    ).toBeVisible();
+  test(
+    "scans disconnect confirmation warning state",
+    {
+      tag: ["@release", "@workspace"],
+    },
+    async ({ page }) => {
+      await mockProviderCatalog(page);
+      await mockGlobalVariables(page);
+      await openModelProvidersRoute(page);
+      await page.getByTestId("provider-item-OpenAI").click();
+      await page.getByRole("button", { name: "Disconnect" }).click();
+      await expect(
+        page.getByText(
+          "Disconnecting an API key will disable all of the provider's models being used in a flow.",
+        ),
+      ).toBeVisible();
 
-    await page.runA11yScan("settings-model-providers-disconnect-warning");
-  });
+      await page.runA11yScan("settings-model-providers-disconnect-warning");
+    },
+  );
 
-  test("scans provider without required configuration", {
-    tag: ["@release", "@workspace"],
-  }, async ({ page }) => {
-    await mockProviderCatalog(page);
-    await mockGlobalVariables(page);
-    await openModelProvidersRoute(page);
-    await page.getByTestId("provider-item-Ollama").click();
-    await expect(
-      page.getByRole("button", { name: "Activate Ollama" }),
-    ).toBeVisible();
-    await expect(page.getByText("No models available")).toBeVisible();
+  test(
+    "scans provider without required configuration",
+    {
+      tag: ["@release", "@workspace"],
+    },
+    async ({ page }) => {
+      await mockProviderCatalog(page);
+      await mockGlobalVariables(page);
+      await openModelProvidersRoute(page);
+      await page.getByTestId("provider-item-Ollama").click();
+      await expect(
+        page.getByRole("button", { name: "Activate Ollama" }),
+      ).toBeVisible();
+      await expect(page.getByText("No models available")).toBeVisible();
 
-    await page.runA11yScan("settings-model-providers-no-config-required");
-  });
+      await page.runA11yScan("settings-model-providers-no-config-required");
+    },
+  );
 });

@@ -29,93 +29,111 @@ test.beforeEach(async ({ page }, testInfo) => {
  * the release gate.
  */
 
-test("manual scenarios A–G prerequisite — Agent exposes structured_response output handle alongside response", {
-  tag: ["@release", "@workspace", "@components"],
-}, async ({ page }) => {
-  await awaitBootstrapTest(page);
-  await selectStarterTemplate(page, TEXTS.templateSimpleAgent);
+test(
+  "manual scenarios A–G prerequisite — Agent exposes structured_response output handle alongside response",
+  {
+    tag: ["@release", "@workspace", "@components"],
+  },
+  async ({ page }) => {
+    await awaitBootstrapTest(page);
+    await selectStarterTemplate(page, TEXTS.templateSimpleAgent);
 
-  // The Agent declares two outputs (Response, Structured Response). On the
-  // canvas they share a single combobox-style dropdown keyed by the
-  // component name — the testid resolves to "dropdown-output-undefined"
-  // because Simple Agent's cached node ships with `data.node.key === null`.
-  const outputDropdown = page.getByTestId("dropdown-output-undefined").first();
-  await expect(outputDropdown).toBeVisible({ timeout: 30000 });
+    // The Agent declares two outputs (Response, Structured Response). On the
+    // canvas they share a single combobox-style dropdown keyed by the
+    // component name — the testid resolves to "dropdown-output-undefined"
+    // because Simple Agent's cached node ships with `data.node.key === null`.
+    const outputDropdown = page
+      .getByTestId("dropdown-output-undefined")
+      .first();
+    await expect(outputDropdown).toBeVisible({ timeout: 30000 });
 
-  // The dropdown shows the currently selected output (Response by default).
-  await expect(outputDropdown).toContainText("Response", { timeout: 10000 });
+    // The dropdown shows the currently selected output (Response by default).
+    await expect(outputDropdown).toContainText("Response", { timeout: 10000 });
 
-  // Opening it must list the Structured Response option — without Slice 10
-  // the user could not wire the orchestrator path.
-  await outputDropdown.click();
-  await expect(
-    page.getByTestId("dropdown-item-output-undefined-structured response"),
-  ).toBeVisible({ timeout: 10000 });
-  await expect(
-    page.getByTestId("dropdown-item-output-undefined-response"),
-  ).toBeVisible({ timeout: 10000 });
-});
+    // Opening it must list the Structured Response option — without Slice 10
+    // the user could not wire the orchestrator path.
+    await outputDropdown.click();
+    await expect(
+      page.getByTestId("dropdown-item-output-undefined-structured response"),
+    ).toBeVisible({ timeout: 10000 });
+    await expect(
+      page.getByTestId("dropdown-item-output-undefined-response"),
+    ).toBeVisible({ timeout: 10000 });
+  },
+);
 
-test("manual scenarios A/D/E/F/G setup — inspection panel exposes Output Schema and Output Format Instructions", {
-  tag: ["@release", "@workspace", "@components"],
-}, async ({ page }) => {
-  await awaitBootstrapTest(page);
-  await selectStarterTemplate(page, TEXTS.templateSimpleAgent);
+test(
+  "manual scenarios A/D/E/F/G setup — inspection panel exposes Output Schema and Output Format Instructions",
+  {
+    tag: ["@release", "@workspace", "@components"],
+  },
+  async ({ page }) => {
+    await awaitBootstrapTest(page);
+    await selectStarterTemplate(page, TEXTS.templateSimpleAgent);
 
-  // Focus the Agent node so the inspection panel reflects its fields.
-  const agentNode = page
-    .locator(".react-flow__node")
-    .filter({ has: page.getByTestId("title-Agent") })
-    .first();
-  await agentNode.click();
+    // Focus the Agent node so the inspection panel reflects its fields.
+    const agentNode = page
+      .locator(".react-flow__node")
+      .filter({ has: page.getByTestId("title-Agent") })
+      .first();
+    await agentNode.click();
 
-  await openParametersPanel(page);
+    await openParametersPanel(page);
 
-  // Both fields must be reachable so the user can add the schema and
-  // format instructions to the node for scenarios A, E, F, G — and clear
-  // the schema for scenario D. Before the hidden-fields.ts fix these
-  // fields were filtered out of the inspection panel and the feature was
-  // unreachable (LE-1810: the panel lists them as manageable parameters).
-  await expect(page.getByTestId("inspector-param-output_schema")).toBeVisible({
-    timeout: 10000,
-  });
-  await expect(
-    page.getByTestId("inspector-param-format_instructions"),
-  ).toBeVisible({ timeout: 10000 });
-});
+    // Both fields must be reachable so the user can add the schema and
+    // format instructions to the node for scenarios A, E, F, G — and clear
+    // the schema for scenario D. Before the hidden-fields.ts fix these
+    // fields were filtered out of the inspection panel and the feature was
+    // unreachable (LE-1810: the panel lists them as manageable parameters).
+    await expect(page.getByTestId("inspector-param-output_schema")).toBeVisible(
+      {
+        timeout: 10000,
+      },
+    );
+    await expect(
+      page.getByTestId("inspector-param-format_instructions"),
+    ).toBeVisible({ timeout: 10000 });
+  },
+);
 
-test("scenarios A–C wiring — switching the agent dropdown to Structured Response keeps the downstream edge", {
-  tag: ["@release", "@workspace", "@components"],
-}, async ({ page }) => {
-  await awaitBootstrapTest(page);
-  await selectStarterTemplate(page, TEXTS.templateSimpleAgent);
+test(
+  "scenarios A–C wiring — switching the agent dropdown to Structured Response keeps the downstream edge",
+  {
+    tag: ["@release", "@workspace", "@components"],
+  },
+  async ({ page }) => {
+    await awaitBootstrapTest(page);
+    await selectStarterTemplate(page, TEXTS.templateSimpleAgent);
 
-  await adjustScreenView(page);
+    await adjustScreenView(page);
 
-  const outputDropdown = page.getByTestId("dropdown-output-undefined").first();
-  await expect(outputDropdown).toBeVisible({ timeout: 30000 });
+    const outputDropdown = page
+      .getByTestId("dropdown-output-undefined")
+      .first();
+    await expect(outputDropdown).toBeVisible({ timeout: 30000 });
 
-  // Switch the agent's selected output to Structured Response — this is
-  // the user gesture every "structured" manual scenario starts from.
-  await outputDropdown.click();
-  await page
-    .getByTestId("dropdown-item-output-undefined-structured response")
-    .click({ force: true });
+    // Switch the agent's selected output to Structured Response — this is
+    // the user gesture every "structured" manual scenario starts from.
+    await outputDropdown.click();
+    await page
+      .getByTestId("dropdown-item-output-undefined-structured response")
+      .click({ force: true });
 
-  // After the swap the dropdown trigger reflects the new selection.
-  await expect(outputDropdown).toContainText("Structured Response", {
-    timeout: 10000,
-  });
+    // After the swap the dropdown trigger reflects the new selection.
+    await expect(outputDropdown).toContainText("Structured Response", {
+      timeout: 10000,
+    });
 
-  // The downstream Chat Output edge must remain intact — the swap reroutes
-  // the same edge through json_response. Re-opening the dropdown must
-  // still surface both options so the user can revert if needed.
-  await unselectNodes(page);
-  await outputDropdown.click();
-  await expect(
-    page.getByTestId("dropdown-item-output-undefined-response"),
-  ).toBeVisible({ timeout: 10000 });
-  await expect(
-    page.getByTestId("dropdown-item-output-undefined-structured response"),
-  ).toBeVisible({ timeout: 10000 });
-});
+    // The downstream Chat Output edge must remain intact — the swap reroutes
+    // the same edge through json_response. Re-opening the dropdown must
+    // still surface both options so the user can revert if needed.
+    await unselectNodes(page);
+    await outputDropdown.click();
+    await expect(
+      page.getByTestId("dropdown-item-output-undefined-response"),
+    ).toBeVisible({ timeout: 10000 });
+    await expect(
+      page.getByTestId("dropdown-item-output-undefined-structured response"),
+    ).toBeVisible({ timeout: 10000 });
+  },
+);

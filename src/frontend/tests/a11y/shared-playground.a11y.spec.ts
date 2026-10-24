@@ -195,136 +195,154 @@ async function collectTabStops(page: LangflowPage, steps: number) {
 test.describe("shared playground accessibility", () => {
   test.describe.configure({ mode: "serial" });
 
-  test("scans the standalone shared playground in light and dark mode", {
-    tag: ["@release", "@workspace"],
-  }, async ({ page }) => {
-    const flowId = await publishChatFlowAndGetId(page);
-    await openSharedPlayground(page, flowId);
+  test(
+    "scans the standalone shared playground in light and dark mode",
+    {
+      tag: ["@release", "@workspace"],
+    },
+    async ({ page }) => {
+      const flowId = await publishChatFlowAndGetId(page);
+      await openSharedPlayground(page, flowId);
 
-    // WCAG 2.4.2: PlaygroundPage sets document.title from the flow name; an
-    // empty title leaves shared links unidentifiable in tabs and history.
-    await expect
-      .poll(() => page.title(), { timeout: TIMEOUTS.medium })
-      .not.toBe("");
+      // WCAG 2.4.2: PlaygroundPage sets document.title from the flow name; an
+      // empty title leaves shared links unidentifiable in tabs and history.
+      await expect
+        .poll(() => page.title(), { timeout: TIMEOUTS.medium })
+        .not.toBe("");
 
-    await page.runA11yScan("shared-playground-empty");
+      await page.runA11yScan("shared-playground-empty");
 
-    await forceDarkTheme(page);
-    await page.reload();
-    await expect(page.locator("body")).toHaveClass(/dark/);
-    await expect(page.getByTestId(TID.inputChatPlayground)).toBeVisible({
-      timeout: TIMEOUTS.long,
-    });
-    await disableAnimations(page);
+      await forceDarkTheme(page);
+      await page.reload();
+      await expect(page.locator("body")).toHaveClass(/dark/);
+      await expect(page.getByTestId(TID.inputChatPlayground)).toBeVisible({
+        timeout: TIMEOUTS.long,
+      });
+      await disableAnimations(page);
 
-    await page.runA11yScan("shared-playground-empty-dark", {
-      colorScheme: "dark",
-    });
-  });
+      await page.runA11yScan("shared-playground-empty-dark", {
+        colorScheme: "dark",
+      });
+    },
+  );
 
-  test("scans the shared playground with a chat transcript", {
-    tag: ["@release", "@workspace"],
-  }, async ({ page }) => {
-    const flowId = await publishChatFlowAndGetId(page);
-    await openSharedPlayground(page, flowId);
+  test(
+    "scans the shared playground with a chat transcript",
+    {
+      tag: ["@release", "@workspace"],
+    },
+    async ({ page }) => {
+      const flowId = await publishChatFlowAndGetId(page);
+      await openSharedPlayground(page, flowId);
 
-    await page.getByTestId(TID.inputChatPlayground).fill("Accessibility test");
-    await page.getByTestId(TID.buttonSend).last().click();
-    await expect(page.getByTestId(TID.chatMessage).first()).toHaveText(
-      "Accessibility test",
-      { timeout: TIMEOUTS.componentMount },
-    );
-
-    await page.runA11yScan("shared-playground-with-message");
-  });
-
-  test("keyboard users can reach the message input and send button", {
-    tag: ["@release", "@workspace"],
-  }, async ({ page }) => {
-    const flowId = await publishChatFlowAndGetId(page);
-    await openSharedPlayground(page, flowId);
-
-    // WCAG 2.1.1 / 2.4.3: the chat composer is the only way to use a shared
-    // playground, so it must be reachable by tabbing rather than by pointer.
-    const stops = await collectTabStops(page, 20);
-    const reachedInput = stops.some(
-      (stop) =>
-        stop.testId === TID.inputChatPlayground ||
-        stop.label === TEXTS.placeholderSendMessage,
-    );
-    expect(
-      reachedInput,
-      `Tab never reached the chat input. Stops: ${JSON.stringify(stops)}`,
-    ).toBe(true);
-
-    // The send control must also be a real tab stop, not a click-only icon.
-    // It is *not* adjacent to the textarea: the real composer order is
-    // textarea -> "Attach file (...)" button -> send button, so walk a few
-    // stops forward rather than assuming adjacency. Send is only enabled once
-    // the composer has content, hence the fill first.
-    await page.getByTestId(TID.inputChatPlayground).fill("Keyboard check");
-    await page.getByTestId(TID.inputChatPlayground).focus();
-
-    const composerStops: Array<{
-      testId: string;
-      name: string;
-      disabled: boolean;
-    }> = [];
-    for (let i = 0; i < COMPOSER_TAB_BUDGET; i++) {
-      await page.keyboard.press("Tab");
-      composerStops.push(
-        await page.evaluate(() => {
-          const el = document.activeElement as HTMLElement | null;
-          return {
-            testId: el?.getAttribute("data-testid") ?? "",
-            name:
-              el?.getAttribute("aria-label") ??
-              (el?.textContent ?? "").trim().slice(0, 60),
-            disabled: el?.hasAttribute("disabled") ?? true,
-          };
-        }),
+      await page
+        .getByTestId(TID.inputChatPlayground)
+        .fill("Accessibility test");
+      await page.getByTestId(TID.buttonSend).last().click();
+      await expect(page.getByTestId(TID.chatMessage).first()).toHaveText(
+        "Accessibility test",
+        { timeout: TIMEOUTS.componentMount },
       );
-      if (composerStops.at(-1)?.testId === TID.buttonSend) break;
-    }
 
-    const sendStop = composerStops.find(
-      (stop) => stop.testId === TID.buttonSend,
-    );
-    expect(
-      sendStop,
-      `Send button was not reachable within ${COMPOSER_TAB_BUDGET} tabs of the chat input. Stops: ${JSON.stringify(composerStops)}`,
-    ).toBeDefined();
-    expect(
-      sendStop?.disabled,
-      `Send button is a tab stop but is disabled with text in the composer. Stops: ${JSON.stringify(composerStops)}`,
-    ).toBe(false);
+      await page.runA11yScan("shared-playground-with-message");
+    },
+  );
 
-    // WCAG 4.1.2: every control a keyboard user is forced through on the way
-    // to Send must expose an accessible name, or the ordering above is just
-    // a sequence of unlabelled stops to a screen reader.
-    for (const stop of composerStops) {
+  test(
+    "keyboard users can reach the message input and send button",
+    {
+      tag: ["@release", "@workspace"],
+    },
+    async ({ page }) => {
+      const flowId = await publishChatFlowAndGetId(page);
+      await openSharedPlayground(page, flowId);
+
+      // WCAG 2.1.1 / 2.4.3: the chat composer is the only way to use a shared
+      // playground, so it must be reachable by tabbing rather than by pointer.
+      const stops = await collectTabStops(page, 20);
+      const reachedInput = stops.some(
+        (stop) =>
+          stop.testId === TID.inputChatPlayground ||
+          stop.label === TEXTS.placeholderSendMessage,
+      );
       expect(
-        stop.name,
-        `Composer tab stop has no accessible name: ${JSON.stringify(stop)}`,
-      ).not.toBe("");
-    }
-  });
+        reachedInput,
+        `Tab never reached the chat input. Stops: ${JSON.stringify(stops)}`,
+      ).toBe(true);
 
-  test("shared playground does not trap keyboard focus", {
-    tag: ["@release", "@workspace"],
-  }, async ({ page }) => {
-    const flowId = await publishChatFlowAndGetId(page);
-    await openSharedPlayground(page, flowId);
+      // The send control must also be a real tab stop, not a click-only icon.
+      // It is *not* adjacent to the textarea: the real composer order is
+      // textarea -> "Attach file (...)" button -> send button, so walk a few
+      // stops forward rather than assuming adjacency. Send is only enabled once
+      // the composer has content, hence the fill first.
+      await page.getByTestId(TID.inputChatPlayground).fill("Keyboard check");
+      await page.getByTestId(TID.inputChatPlayground).focus();
 
-    // WCAG 2.1.2: the playground renders as a full-screen modal shell. Focus
-    // may legitimately cycle within it, but it must not stick to one element.
-    const stops = await collectTabStops(page, 20);
-    const distinct = new Set(
-      stops.map((stop) => `${stop.tag}:${stop.testId}:${stop.label}`),
-    );
-    expect(
-      distinct.size,
-      `Focus appears trapped. Stops: ${JSON.stringify(stops)}`,
-    ).toBeGreaterThan(1);
-  });
+      const composerStops: Array<{
+        testId: string;
+        name: string;
+        disabled: boolean;
+      }> = [];
+      for (let i = 0; i < COMPOSER_TAB_BUDGET; i++) {
+        await page.keyboard.press("Tab");
+        composerStops.push(
+          await page.evaluate(() => {
+            const el = document.activeElement as HTMLElement | null;
+            return {
+              testId: el?.getAttribute("data-testid") ?? "",
+              name:
+                el?.getAttribute("aria-label") ??
+                (el?.textContent ?? "").trim().slice(0, 60),
+              disabled: el?.hasAttribute("disabled") ?? true,
+            };
+          }),
+        );
+        if (composerStops.at(-1)?.testId === TID.buttonSend) break;
+      }
+
+      const sendStop = composerStops.find(
+        (stop) => stop.testId === TID.buttonSend,
+      );
+      expect(
+        sendStop,
+        `Send button was not reachable within ${COMPOSER_TAB_BUDGET} tabs of the chat input. Stops: ${JSON.stringify(composerStops)}`,
+      ).toBeDefined();
+      expect(
+        sendStop?.disabled,
+        `Send button is a tab stop but is disabled with text in the composer. Stops: ${JSON.stringify(composerStops)}`,
+      ).toBe(false);
+
+      // WCAG 4.1.2: every control a keyboard user is forced through on the way
+      // to Send must expose an accessible name, or the ordering above is just
+      // a sequence of unlabelled stops to a screen reader.
+      for (const stop of composerStops) {
+        expect(
+          stop.name,
+          `Composer tab stop has no accessible name: ${JSON.stringify(stop)}`,
+        ).not.toBe("");
+      }
+    },
+  );
+
+  test(
+    "shared playground does not trap keyboard focus",
+    {
+      tag: ["@release", "@workspace"],
+    },
+    async ({ page }) => {
+      const flowId = await publishChatFlowAndGetId(page);
+      await openSharedPlayground(page, flowId);
+
+      // WCAG 2.1.2: the playground renders as a full-screen modal shell. Focus
+      // may legitimately cycle within it, but it must not stick to one element.
+      const stops = await collectTabStops(page, 20);
+      const distinct = new Set(
+        stops.map((stop) => `${stop.tag}:${stop.testId}:${stop.label}`),
+      );
+      expect(
+        distinct.size,
+        `Focus appears trapped. Stops: ${JSON.stringify(stops)}`,
+      ).toBeGreaterThan(1);
+    },
+  );
 });

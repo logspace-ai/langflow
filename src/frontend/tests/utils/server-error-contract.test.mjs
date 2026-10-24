@@ -123,23 +123,27 @@ test("bounds sanitized diagnostics", () => {
   assert.equal(sanitizeResponseExcerpt("x".repeat(20), 8), "xxxxxxxx");
 });
 
-test("bounds an unresolved response body with a sanitized diagnostic", {
-  timeout: 250,
-}, async () => {
-  const result = await readResponseBodyWithTimeout(
-    { text: () => new Promise(() => {}) },
-    {
-      timeoutMs: 5,
-      label: "POST /api/v2/files?password=super-secret",
-    },
-  );
+test(
+  "bounds an unresolved response body with a sanitized diagnostic",
+  {
+    timeout: 250,
+  },
+  async () => {
+    const result = await readResponseBodyWithTimeout(
+      { text: () => new Promise(() => {}) },
+      {
+        timeoutMs: 5,
+        label: "POST /api/v2/files?password=super-secret",
+      },
+    );
 
-  assert.deepEqual(result, {
-    status: "timeout",
-    diagnostic:
-      "Timed out after 5ms reading response body for POST /api/v2/files?password=[REDACTED]",
-  });
-});
+    assert.deepEqual(result, {
+      status: "timeout",
+      diagnostic:
+        "Timed out after 5ms reading response body for POST /api/v2/files?password=[REDACTED]",
+    });
+  },
+);
 
 test("drains a request that finishes after teardown begins", async () => {
   const tracker = createPendingRequestTracker();

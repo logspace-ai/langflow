@@ -56,61 +56,69 @@ async function persistedModelName(page: Page): Promise<string | undefined> {
   return value?.[0]?.name;
 }
 
-test("keeps a model picked while the flow-open model refresh is in flight", {
-  tag: ["@release", "@components"],
-}, async ({ page }) => {
-  const refresh = await holdMountRefresh(page);
+test(
+  "keeps a model picked while the flow-open model refresh is in flight",
+  {
+    tag: ["@release", "@components"],
+  },
+  async ({ page }) => {
+    const refresh = await holdMountRefresh(page);
 
-  await openStarterProject(page, "Basic Prompting");
-  await expect.poll(refresh.held).toBeGreaterThan(0);
+    await openStarterProject(page, "Basic Prompting");
+    await expect.poll(refresh.held).toBeGreaterThan(0);
 
-  const trigger = page.getByTestId("model_model").first();
-  await expect(trigger).toBeVisible({ timeout: 30000 });
-  const initialModel = (await trigger.innerText()).trim();
-  await trigger.click();
+    const trigger = page.getByTestId("model_model").first();
+    await expect(trigger).toBeVisible({ timeout: 30000 });
+    const initialModel = (await trigger.innerText()).trim();
+    await trigger.click();
 
-  const alternative = page
-    .locator('[cmdk-item][data-testid$="-option"]')
-    .filter({ hasNotText: initialModel })
-    .last();
-  await expect(alternative).toBeVisible({ timeout: 30000 });
-  const pickedModel = (await alternative.innerText()).split("\n")[0].trim();
-  const pickUpdated = page.waitForResponse(
-    (response) =>
-      response.url().includes("/api/v1/custom_component/update") &&
-      JSON.stringify(
-        response.request().postDataJSON()?.field_value ?? "",
-      ).includes(pickedModel),
-  );
-  await alternative.click();
-  await expect(trigger).toContainText(pickedModel);
-  await pickUpdated;
+    const alternative = page
+      .locator('[cmdk-item][data-testid$="-option"]')
+      .filter({ hasNotText: initialModel })
+      .last();
+    await expect(alternative).toBeVisible({ timeout: 30000 });
+    const pickedModel = (await alternative.innerText()).split("\n")[0].trim();
+    const pickUpdated = page.waitForResponse(
+      (response) =>
+        response.url().includes("/api/v1/custom_component/update") &&
+        JSON.stringify(
+          response.request().postDataJSON()?.field_value ?? "",
+        ).includes(pickedModel),
+    );
+    await alternative.click();
+    await expect(trigger).toContainText(pickedModel);
+    await pickUpdated;
 
-  await refresh.release();
+    await refresh.release();
 
-  await expect(trigger).toContainText(pickedModel);
-  await expect
-    .poll(() => persistedModelName(page), { timeout: 15000 })
-    .toBe(pickedModel);
-});
+    await expect(trigger).toContainText(pickedModel);
+    await expect
+      .poll(() => persistedModelName(page), { timeout: 15000 })
+      .toBe(pickedModel);
+  },
+);
 
-test("applies a delayed flow-open model refresh when no model was picked", {
-  tag: ["@release", "@components"],
-}, async ({ page }) => {
-  const refresh = await holdMountRefresh(page);
+test(
+  "applies a delayed flow-open model refresh when no model was picked",
+  {
+    tag: ["@release", "@components"],
+  },
+  async ({ page }) => {
+    const refresh = await holdMountRefresh(page);
 
-  await openStarterProject(page, "Basic Prompting");
-  await expect.poll(refresh.held).toBeGreaterThan(0);
+    await openStarterProject(page, "Basic Prompting");
+    await expect.poll(refresh.held).toBeGreaterThan(0);
 
-  const trigger = page.getByTestId("model_model").first();
-  await expect(trigger).toBeVisible({ timeout: 30000 });
+    const trigger = page.getByTestId("model_model").first();
+    await expect(trigger).toBeVisible({ timeout: 30000 });
 
-  await refresh.release();
+    await refresh.release();
 
-  await expect(trigger).not.toContainText("Select a model");
-  // Opening a flow never writes it back: the refreshed model stays local
-  // until the user edits. Longer than the 5s autosave debounce, so a write
-  // the refresh triggered would have landed.
-  await page.waitForTimeout(6000);
-  expect(await persistedModelName(page)).toBeUndefined();
-});
+    await expect(trigger).not.toContainText("Select a model");
+    // Opening a flow never writes it back: the refreshed model stays local
+    // until the user edits. Longer than the 5s autosave debounce, so a write
+    // the refresh triggered would have landed.
+    await page.waitForTimeout(6000);
+    expect(await persistedModelName(page)).toBeUndefined();
+  },
+);

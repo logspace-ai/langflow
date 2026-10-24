@@ -13,237 +13,243 @@ import {
 import { submitLoginAndRequireSuccess } from "../../utils/login-langflow";
 import { renameFlow } from "../../utils/rename-flow";
 
-test("when auto_login is false, admin can CRUD user's and should see just your own flows", {
-  tag: ["@release", "@api", "@database"],
-}, async ({ page }) => {
-  await page.route("**/api/v1/auto_login", (route) => {
-    route.fulfill({
-      status: 403,
-      contentType: "application/json",
-      body: JSON.stringify({
-        detail: {
-          message: "Auto login is disabled.",
-          auto_login: false,
-        },
-      }),
-    });
-  });
-
-  await page.addInitScript(() => {
-    window.process = window.process || {};
-
-    const newEnv = { ...window.process.env, LANGFLOW_AUTO_LOGIN: "false" };
-
-    Object.defineProperty(window.process, "env", {
-      value: newEnv,
-      writable: true,
-      configurable: true,
+test(
+  "when auto_login is false, admin can CRUD user's and should see just your own flows",
+  {
+    tag: ["@release", "@api", "@database"],
+  },
+  async ({ page }) => {
+    await page.route("**/api/v1/auto_login", (route) => {
+      route.fulfill({
+        status: 403,
+        contentType: "application/json",
+        body: JSON.stringify({
+          detail: {
+            message: "Auto login is disabled.",
+            auto_login: false,
+          },
+        }),
+      });
     });
 
-    sessionStorage.setItem("testMockAutoLogin", "true");
-  });
+    await page.addInitScript(() => {
+      window.process = window.process || {};
 
-  const randomName = Math.random().toString(36).substring(5);
-  const randomPassword = Math.random().toString(36).substring(5);
-  const secondRandomName = Math.random().toString(36).substring(5);
-  const randomFlowName = Math.random().toString(36).substring(5);
-  const secondRandomFlowName = Math.random().toString(36).substring(5);
+      const newEnv = { ...window.process.env, LANGFLOW_AUTO_LOGIN: "false" };
 
-  await page.goto("/");
+      Object.defineProperty(window.process, "env", {
+        value: newEnv,
+        writable: true,
+        configurable: true,
+      });
 
-  await expect(page.getByRole("button", { name: TEXTS.signIn })).toBeVisible({
-    timeout: 30000,
-  });
+      sessionStorage.setItem("testMockAutoLogin", "true");
+    });
 
-  await page
-    .getByPlaceholder(TEXTS.placeholderUsername)
-    .fill(TEXTS.authDefaultCredential);
-  await page
-    .getByPlaceholder(TEXTS.placeholderPassword)
-    .fill(TEXTS.authDefaultPassword);
+    const randomName = Math.random().toString(36).substring(5);
+    const randomPassword = Math.random().toString(36).substring(5);
+    const secondRandomName = Math.random().toString(36).substring(5);
+    const randomFlowName = Math.random().toString(36).substring(5);
+    const secondRandomFlowName = Math.random().toString(36).substring(5);
 
-  await page.evaluate(() => {
-    sessionStorage.removeItem("testMockAutoLogin");
-  });
+    await page.goto("/");
 
-  await submitLoginAndRequireSuccess(page);
+    await expect(page.getByRole("button", { name: TEXTS.signIn })).toBeVisible({
+      timeout: 30000,
+    });
 
-  await page.waitForSelector('[data-testid="mainpage_title"]', {
-    timeout: 30000,
-  });
+    await page
+      .getByPlaceholder(TEXTS.placeholderUsername)
+      .fill(TEXTS.authDefaultCredential);
+    await page
+      .getByPlaceholder(TEXTS.placeholderPassword)
+      .fill(TEXTS.authDefaultPassword);
 
-  await waitForNewProjectButton(page);
+    await page.evaluate(() => {
+      sessionStorage.removeItem("testMockAutoLogin");
+    });
 
-  // OSS Admin Page UI was removed; exercise the same admin user APIs
-  // against the authenticated superuser session instead.
-  const created = await createActiveUserViaApi(page, {
-    username: randomName,
-    password: randomPassword,
-  });
-  await deleteUserViaApi(page, created.id);
+    await submitLoginAndRequireSuccess(page);
 
-  const recreated = await createActiveUserViaApi(page, {
-    username: randomName,
-    password: randomPassword,
-  });
-  const renamed = await updateUserViaApi(page, recreated.id, {
-    username: secondRandomName,
-  });
-  expect(renamed.username).toBe(secondRandomName);
+    await page.waitForSelector('[data-testid="mainpage_title"]', {
+      timeout: 30000,
+    });
 
-  //user must see just your own flows
-  await waitForNewProjectButton(page);
+    await waitForNewProjectButton(page);
 
-  await openTemplatesModal(page, {
-    fromEmptyPage: await page
-      .getByTestId("new_project_btn_empty_page")
-      .isVisible(),
-  });
+    // OSS Admin Page UI was removed; exercise the same admin user APIs
+    // against the authenticated superuser session instead.
+    const created = await createActiveUserViaApi(page, {
+      username: randomName,
+      password: randomPassword,
+    });
+    await deleteUserViaApi(page, created.id);
 
-  await page.getByTestId("side_nav_options_all-templates").click();
-  await page
-    .getByRole("heading", { name: TEXTS.templateBasicPrompting })
-    .click();
+    const recreated = await createActiveUserViaApi(page, {
+      username: randomName,
+      password: randomPassword,
+    });
+    const renamed = await updateUserViaApi(page, recreated.id, {
+      username: secondRandomName,
+    });
+    expect(renamed.username).toBe(secondRandomName);
 
-  await adjustScreenView(page, { numberOfZoomOut: 1 });
+    //user must see just your own flows
+    await waitForNewProjectButton(page);
 
-  await renameFlow(page, { flowName: randomFlowName });
+    await openTemplatesModal(page, {
+      fromEmptyPage: await page
+        .getByTestId("new_project_btn_empty_page")
+        .isVisible(),
+    });
 
-  await page.waitForSelector('[data-testid="sidebar-search-input"]', {
-    timeout: 100000,
-    state: "visible",
-  });
+    await page.getByTestId("side_nav_options_all-templates").click();
+    await page
+      .getByRole("heading", { name: TEXTS.templateBasicPrompting })
+      .click();
 
-  await page.waitForSelector('[data-testid="sidebar-search-input"]', {
-    timeout: 1500,
-  });
+    await adjustScreenView(page, { numberOfZoomOut: 1 });
 
-  await page.getByTestId("icon-ChevronLeft").first().click();
+    await renameFlow(page, { flowName: randomFlowName });
 
-  await page.waitForSelector('[data-testid="search-store-input"]:enabled', {
-    timeout: 30000,
-    state: "visible",
-  });
+    await page.waitForSelector('[data-testid="sidebar-search-input"]', {
+      timeout: 100000,
+      state: "visible",
+    });
 
-  await expect(page.getByText(randomFlowName, { exact: true })).toBeVisible({
-    timeout: 2000,
-  });
+    await page.waitForSelector('[data-testid="sidebar-search-input"]', {
+      timeout: 1500,
+    });
 
-  await page.waitForSelector("[data-testid='user-profile-settings']", {
-    timeout: 1500,
-  });
+    await page.getByTestId("icon-ChevronLeft").first().click();
 
-  await page.getByTestId("user-profile-settings").click();
+    await page.waitForSelector('[data-testid="search-store-input"]:enabled', {
+      timeout: 30000,
+      state: "visible",
+    });
 
-  await page.evaluate(() => {
-    sessionStorage.setItem("testMockAutoLogin", "true");
-  });
+    await expect(page.getByText(randomFlowName, { exact: true })).toBeVisible({
+      timeout: 2000,
+    });
 
-  await page.getByText(TEXTS.logout, { exact: true }).click();
+    await page.waitForSelector("[data-testid='user-profile-settings']", {
+      timeout: 1500,
+    });
 
-  await expect(page.getByRole("button", { name: TEXTS.signIn })).toBeVisible({
-    timeout: 30000,
-  });
+    await page.getByTestId("user-profile-settings").click();
 
-  await page.getByPlaceholder(TEXTS.placeholderUsername).fill(secondRandomName);
-  await page.getByPlaceholder(TEXTS.placeholderPassword).fill(randomPassword);
+    await page.evaluate(() => {
+      sessionStorage.setItem("testMockAutoLogin", "true");
+    });
 
-  await submitLoginAndRequireSuccess(page);
+    await page.getByText(TEXTS.logout, { exact: true }).click();
 
-  await page.evaluate(() => {
-    sessionStorage.removeItem("testMockAutoLogin");
-  });
+    await expect(page.getByRole("button", { name: TEXTS.signIn })).toBeVisible({
+      timeout: 30000,
+    });
 
-  await waitForNewProjectButton(page);
+    await page
+      .getByPlaceholder(TEXTS.placeholderUsername)
+      .fill(secondRandomName);
+    await page.getByPlaceholder(TEXTS.placeholderPassword).fill(randomPassword);
 
-  expect(
-    (
-      await page.waitForSelector("text=Welcome to LangFlow", {
-        timeout: 30000,
-      })
-    ).isVisible(),
-  );
+    await submitLoginAndRequireSuccess(page);
 
-  await page.waitForTimeout(2000);
+    await page.evaluate(() => {
+      sessionStorage.removeItem("testMockAutoLogin");
+    });
 
-  await openTemplatesModal(page, {
-    fromEmptyPage: await page
-      .getByTestId("new_project_btn_empty_page")
-      .isVisible(),
-  });
+    await waitForNewProjectButton(page);
 
-  await page.getByTestId("side_nav_options_all-templates").click();
-  await page
-    .getByRole("heading", { name: TEXTS.templateBasicPrompting })
-    .click();
+    expect(
+      (
+        await page.waitForSelector("text=Welcome to LangFlow", {
+          timeout: 30000,
+        })
+      ).isVisible(),
+    );
 
-  await adjustScreenView(page, { numberOfZoomOut: 2 });
+    await page.waitForTimeout(2000);
 
-  await renameFlow(page, { flowName: secondRandomFlowName });
+    await openTemplatesModal(page, {
+      fromEmptyPage: await page
+        .getByTestId("new_project_btn_empty_page")
+        .isVisible(),
+    });
 
-  await page.waitForSelector('[data-testid="sidebar-search-input"]', {
-    timeout: 100000,
-  });
+    await page.getByTestId("side_nav_options_all-templates").click();
+    await page
+      .getByRole("heading", { name: TEXTS.templateBasicPrompting })
+      .click();
 
-  await page.getByTestId("icon-ChevronLeft").first().click();
+    await adjustScreenView(page, { numberOfZoomOut: 2 });
 
-  await page.waitForSelector('[data-testid="search-store-input"]:enabled', {
-    timeout: 30000,
-  });
+    await renameFlow(page, { flowName: secondRandomFlowName });
 
-  await expect(
-    page.getByText(secondRandomFlowName, { exact: true }),
-  ).toBeVisible({
-    timeout: 2000,
-  });
+    await page.waitForSelector('[data-testid="sidebar-search-input"]', {
+      timeout: 100000,
+    });
 
-  await expect(page.getByText(randomFlowName, { exact: true })).toBeVisible({
-    timeout: 2000,
-    visible: false,
-  });
+    await page.getByTestId("icon-ChevronLeft").first().click();
 
-  await page.getByTestId("user-profile-settings").click();
+    await page.waitForSelector('[data-testid="search-store-input"]:enabled', {
+      timeout: 30000,
+    });
 
-  await page.evaluate(() => {
-    sessionStorage.setItem("testMockAutoLogin", "true");
-  });
+    await expect(
+      page.getByText(secondRandomFlowName, { exact: true }),
+    ).toBeVisible({
+      timeout: 2000,
+    });
 
-  await page.getByText(TEXTS.logout, { exact: true }).click();
+    await expect(page.getByText(randomFlowName, { exact: true })).toBeVisible({
+      timeout: 2000,
+      visible: false,
+    });
 
-  await expect(page.getByRole("button", { name: TEXTS.signIn })).toBeVisible({
-    timeout: 30000,
-  });
+    await page.getByTestId("user-profile-settings").click();
 
-  await page
-    .getByPlaceholder(TEXTS.placeholderUsername)
-    .fill(TEXTS.authDefaultCredential);
-  await page
-    .getByPlaceholder(TEXTS.placeholderPassword)
-    .fill(TEXTS.authDefaultPassword);
+    await page.evaluate(() => {
+      sessionStorage.setItem("testMockAutoLogin", "true");
+    });
 
-  await page.evaluate(() => {
-    sessionStorage.removeItem("testMockAutoLogin");
-  });
+    await page.getByText(TEXTS.logout, { exact: true }).click();
 
-  await submitLoginAndRequireSuccess(page);
+    await expect(page.getByRole("button", { name: TEXTS.signIn })).toBeVisible({
+      timeout: 30000,
+    });
 
-  await page.waitForSelector('[data-testid="mainpage_title"]', {
-    timeout: 30000,
-  });
+    await page
+      .getByPlaceholder(TEXTS.placeholderUsername)
+      .fill(TEXTS.authDefaultCredential);
+    await page
+      .getByPlaceholder(TEXTS.placeholderPassword)
+      .fill(TEXTS.authDefaultPassword);
 
-  await page.waitForSelector('[data-testid="search-store-input"]:enabled', {
-    timeout: 30000,
-  });
+    await page.evaluate(() => {
+      sessionStorage.removeItem("testMockAutoLogin");
+    });
 
-  expect(
-    await page.getByText(secondRandomFlowName, { exact: true }).isVisible(),
-  ).toBe(false);
+    await submitLoginAndRequireSuccess(page);
 
-  await expect(page.getByText(randomFlowName, { exact: true })).toBeVisible({
-    timeout: 2000,
-  });
+    await page.waitForSelector('[data-testid="mainpage_title"]', {
+      timeout: 30000,
+    });
 
-  await page.evaluate(() => {
-    sessionStorage.removeItem("testMockAutoLogin");
-  });
-});
+    await page.waitForSelector('[data-testid="search-store-input"]:enabled', {
+      timeout: 30000,
+    });
+
+    expect(
+      await page.getByText(secondRandomFlowName, { exact: true }).isVisible(),
+    ).toBe(false);
+
+    await expect(page.getByText(randomFlowName, { exact: true })).toBeVisible({
+      timeout: 2000,
+    });
+
+    await page.evaluate(() => {
+      sessionStorage.removeItem("testMockAutoLogin");
+    });
+  },
+);

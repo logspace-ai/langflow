@@ -7,47 +7,52 @@ import {
 } from "../../utils/open-advanced-options";
 import { skipIfComponentUnavailable } from "../../utils/skip-if-component-unavailable";
 
-test("FloatComponent", { tag: ["@release", "@workspace"] }, async ({
-  page,
-}) => {
-  await openBlankFlow(page);
-  await page.getByTestId("sidebar-search-input").click();
-  await page.getByTestId("sidebar-search-input").fill("nvidia");
-  await skipIfComponentUnavailable(page.getByTestId("nvidiaNVIDIA"), "NVIDIA");
+test(
+  "FloatComponent",
+  { tag: ["@release", "@workspace"] },
+  async ({ page }) => {
+    await openBlankFlow(page);
+    await page.getByTestId("sidebar-search-input").click();
+    await page.getByTestId("sidebar-search-input").fill("nvidia");
+    await skipIfComponentUnavailable(
+      page.getByTestId("nvidiaNVIDIA"),
+      "NVIDIA",
+    );
 
-  await page.waitForSelector('[data-testid="nvidiaNVIDIA"]', {
-    timeout: 30000,
-  });
-
-  await page
-    .getByTestId("nvidiaNVIDIA")
-    .hover()
-    .then(async () => {
-      // Wait for the API request to complete after clicking the add button
-      const responsePromise = page.waitForResponse(
-        (response) =>
-          response.url().includes("/api/v1/custom_component/update") &&
-          response.status() === 200,
-      );
-      await page.getByTestId("add-component-button-nvidia").click();
-      await responsePromise; // Wait for the request to complete
+    await page.waitForSelector('[data-testid="nvidiaNVIDIA"]', {
+      timeout: 30000,
     });
 
-  //add
+    await page
+      .getByTestId("nvidiaNVIDIA")
+      .hover()
+      .then(async () => {
+        // Wait for the API request to complete after clicking the add button
+        const responsePromise = page.waitForResponse(
+          (response) =>
+            response.url().includes("/api/v1/custom_component/update") &&
+            response.status() === 200,
+        );
+        await page.getByTestId("add-component-button-nvidia").click();
+        await responsePromise; // Wait for the request to complete
+      });
 
-  await page.getByTestId("title-NVIDIA").click();
+    //add
 
-  // LE-1810: the parameters panel adds the hidden field to the node; the
-  // value is edited on the node itself.
-  await addParameterToNode(page, "seed");
+    await page.getByTestId("title-NVIDIA").click();
 
-  await closeParametersPanel(page);
+    // LE-1810: the parameters panel adds the hidden field to the node; the
+    // value is edited on the node itself.
+    await addParameterToNode(page, "seed");
 
-  await adjustScreenView(page);
+    await closeParametersPanel(page);
 
-  const seedInput = page.getByTestId("int_int_seed");
-  await seedInput.fill("3");
-  await expect(seedInput).toHaveValue("3");
-  await seedInput.fill("-3");
-  await expect(seedInput).toHaveValue("-3");
-});
+    await adjustScreenView(page);
+
+    const seedInput = page.getByTestId("int_int_seed");
+    await seedInput.fill("3");
+    await expect(seedInput).toHaveValue("3");
+    await seedInput.fill("-3");
+    await expect(seedInput).toHaveValue("-3");
+  },
+);

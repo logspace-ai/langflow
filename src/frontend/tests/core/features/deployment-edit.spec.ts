@@ -101,129 +101,159 @@ async function expectFlowsStep(page: Parameters<typeof test>[2]["page"]) {
   await expect(page.getByRole("heading", { name: /^Flows$/i })).toBeVisible();
 }
 
-test("Opens edit stepper from actions menu", {
-  tag: ["@release", "@workspace", "@api"],
-}, async ({ page }) => {
-  await setupRoutes(page);
-  await navigateToDeployments(page);
+test(
+  "Opens edit stepper from actions menu",
+  {
+    tag: ["@release", "@workspace", "@api"],
+  },
+  async ({ page }) => {
+    await setupRoutes(page);
+    await navigateToDeployments(page);
 
-  await page.getByTestId("deployment-row-dep-1").waitFor({ state: "visible" });
-  await page.getByTestId("actions-deployment-dep-1").click();
-  await page.getByRole("menuitem", { name: "Update" }).click();
+    await page
+      .getByTestId("deployment-row-dep-1")
+      .waitFor({ state: "visible" });
+    await page.getByTestId("actions-deployment-dep-1").click();
+    await page.getByRole("menuitem", { name: "Update" }).click();
 
-  await page.waitForSelector('[data-testid="stepper-modal-title"]');
+    await page.waitForSelector('[data-testid="stepper-modal-title"]');
 
-  await expect(page.getByTestId("stepper-modal-title")).toBeVisible();
-  await expect(page.getByTestId("deployment-stepper-next")).toBeVisible();
-});
+    await expect(page.getByTestId("stepper-modal-title")).toBeVisible();
+    await expect(page.getByTestId("deployment-stepper-next")).toBeVisible();
+  },
+);
 
-test("Edit mode skips provider step — starts at Type", {
-  tag: ["@release", "@workspace", "@api"],
-}, async ({ page }) => {
-  await setupRoutes(page);
-  await navigateToDeployments(page);
+test(
+  "Edit mode skips provider step — starts at Type",
+  {
+    tag: ["@release", "@workspace", "@api"],
+  },
+  async ({ page }) => {
+    await setupRoutes(page);
+    await navigateToDeployments(page);
 
-  await page.getByTestId("deployment-row-dep-1").waitFor({ state: "visible" });
-  await openEditDialog(page);
+    await page
+      .getByTestId("deployment-row-dep-1")
+      .waitFor({ state: "visible" });
+    await openEditDialog(page);
 
-  // Wait for stepper body to render (parallel fetches must complete)
-  await expectDeploymentTypeStep(page);
+    // Wait for stepper body to render (parallel fetches must complete)
+    await expectDeploymentTypeStep(page);
 
-  await expect(page.getByText("Deployment Type")).toBeVisible();
+    await expect(page.getByText("Deployment Type")).toBeVisible();
 
-  // Provider step heading should NOT be visible
-  await expect(page.getByText("Choose Provider")).not.toBeVisible();
+    // Provider step heading should NOT be visible
+    await expect(page.getByText("Choose Provider")).not.toBeVisible();
 
-  // Navigation buttons should be present
-  await expect(page.getByTestId("deployment-stepper-next")).toBeVisible();
-  await expect(page.getByRole("button", { name: "Back" })).toBeVisible();
-});
+    // Navigation buttons should be present
+    await expect(page.getByTestId("deployment-stepper-next")).toBeVisible();
+    await expect(page.getByRole("button", { name: "Back" })).toBeVisible();
+  },
+);
 
-test("Name field pre-populated in edit mode", {
-  tag: ["@release", "@workspace", "@api"],
-}, async ({ page }) => {
-  await setupRoutes(page);
-  await navigateToDeployments(page);
+test(
+  "Name field pre-populated in edit mode",
+  {
+    tag: ["@release", "@workspace", "@api"],
+  },
+  async ({ page }) => {
+    await setupRoutes(page);
+    await navigateToDeployments(page);
 
-  await page.getByTestId("deployment-row-dep-1").waitFor({ state: "visible" });
-  await openEditDialog(page);
+    await page
+      .getByTestId("deployment-row-dep-1")
+      .waitFor({ state: "visible" });
+    await openEditDialog(page);
 
-  // Wait for stepper body to render
-  await expectDeploymentTypeStep(page);
+    // Wait for stepper body to render
+    await expectDeploymentTypeStep(page);
 
-  const nameInput = page.getByPlaceholder("e.g., Sales Bot");
-  await expect(nameInput).toHaveValue("Test Deployment");
-});
+    const nameInput = page.getByPlaceholder("e.g., Sales Bot");
+    await expect(nameInput).toHaveValue("Test Deployment");
+  },
+);
 
-test("Submitting PATCH closes modal", {
-  tag: ["@release", "@workspace", "@api"],
-}, async ({ page }) => {
-  await setupRoutes(page);
-  await navigateToDeployments(page);
+test(
+  "Submitting PATCH closes modal",
+  {
+    tag: ["@release", "@workspace", "@api"],
+  },
+  async ({ page }) => {
+    await setupRoutes(page);
+    await navigateToDeployments(page);
 
-  await page.getByTestId("deployment-row-dep-1").waitFor({ state: "visible" });
-  await openEditDialog(page);
+    await page
+      .getByTestId("deployment-row-dep-1")
+      .waitFor({ state: "visible" });
+    await openEditDialog(page);
 
-  // Wait for stepper body to render (parallel fetches must complete)
-  await expectDeploymentTypeStep(page);
+    // Wait for stepper body to render (parallel fetches must complete)
+    await expectDeploymentTypeStep(page);
 
-  // Change the name so the update payload is non-empty (no-op saves keep the modal open)
-  const nameInput = page.getByPlaceholder("e.g., Sales Bot");
-  await nameInput.fill("Updated Deployment");
+    // Change the name so the update payload is non-empty (no-op saves keep the modal open)
+    const nameInput = page.getByPlaceholder("e.g., Sales Bot");
+    await nameInput.fill("Updated Deployment");
 
-  // Navigate through the stepper steps to reach Review
-  // Step: Type → click Next
-  await page.getByTestId("deployment-stepper-next").click();
+    // Navigate through the stepper steps to reach Review
+    // Step: Type → click Next
+    await page.getByTestId("deployment-stepper-next").click();
 
-  // Step: Flows → click Next
-  await page.getByTestId("deployment-stepper-next").click();
+    // Step: Flows → click Next
+    await page.getByTestId("deployment-stepper-next").click();
 
-  // Step: Review → click Update (final step)
-  const patchRequestPromise = page.waitForRequest(
-    (req) =>
-      req.url().includes("/api/v1/deployments/dep-1") &&
-      req.method() === "PATCH",
-  );
+    // Step: Review → click Update (final step)
+    const patchRequestPromise = page.waitForRequest(
+      (req) =>
+        req.url().includes("/api/v1/deployments/dep-1") &&
+        req.method() === "PATCH",
+    );
 
-  await page.getByTestId("deployment-stepper-next").click();
+    await page.getByTestId("deployment-stepper-next").click();
 
-  await patchRequestPromise;
+    await patchRequestPromise;
 
-  // Modal should close after PATCH
-  await expect(page.getByTestId("stepper-modal-title")).not.toBeVisible();
-});
+    // Modal should close after PATCH
+    await expect(page.getByTestId("stepper-modal-title")).not.toBeVisible();
+  },
+);
 
-test("Cancel during edit closes modal without calling PATCH", {
-  tag: ["@release", "@workspace", "@api"],
-}, async ({ page }) => {
-  await setupRoutes(page);
-  await navigateToDeployments(page);
+test(
+  "Cancel during edit closes modal without calling PATCH",
+  {
+    tag: ["@release", "@workspace", "@api"],
+  },
+  async ({ page }) => {
+    await setupRoutes(page);
+    await navigateToDeployments(page);
 
-  await page.getByTestId("deployment-row-dep-1").waitFor({ state: "visible" });
-  await openEditDialog(page);
+    await page
+      .getByTestId("deployment-row-dep-1")
+      .waitFor({ state: "visible" });
+    await openEditDialog(page);
 
-  // Wait for stepper body to render
-  await expectDeploymentTypeStep(page);
+    // Wait for stepper body to render
+    await expectDeploymentTypeStep(page);
 
-  let patchCalled = false;
-  page.on("request", (req) => {
-    if (
-      req.url().includes("/api/v1/deployments/dep-1") &&
-      req.method() === "PATCH"
-    ) {
-      patchCalled = true;
-    }
-  });
+    let patchCalled = false;
+    page.on("request", (req) => {
+      if (
+        req.url().includes("/api/v1/deployments/dep-1") &&
+        req.method() === "PATCH"
+      ) {
+        patchCalled = true;
+      }
+    });
 
-  // Click Cancel
-  await page.getByRole("button", { name: "Cancel" }).click();
+    // Click Cancel
+    await page.getByRole("button", { name: "Cancel" }).click();
 
-  // Modal should be closed
-  await expect(page.getByTestId("stepper-modal-title")).not.toBeVisible();
+    // Modal should be closed
+    await expect(page.getByTestId("stepper-modal-title")).not.toBeVisible();
 
-  // PATCH must not have been called
-  expect(patchCalled).toBe(false);
-});
+    // PATCH must not have been called
+    expect(patchCalled).toBe(false);
+  },
+);
 
 // ---------------------------------------------------------------------------
 // Helper: set up routes with connection data for edit-mode connection tests
@@ -331,132 +361,144 @@ async function setupRoutesWithConnections(
 // ---------------------------------------------------------------------------
 // Test: PATCH includes new connections added to a pre-existing flow
 // ---------------------------------------------------------------------------
-test("Edit mode includes new connections in PATCH request", {
-  tag: ["@release", "@workspace", "@api"],
-}, async ({ page }) => {
-  await awaitBootstrapTest(page, { skipModal: true });
-  const folderId = await getDefaultProjectIdForTest(page);
+test(
+  "Edit mode includes new connections in PATCH request",
+  {
+    tag: ["@release", "@workspace", "@api"],
+  },
+  async ({ page }) => {
+    await awaitBootstrapTest(page, { skipModal: true });
+    const folderId = await getDefaultProjectIdForTest(page);
 
-  await setupRoutesWithConnections(page, folderId);
-  await page.getByTestId("deployments-btn").click();
-  await page.waitForSelector('[data-testid="subtab-deployments"]');
+    await setupRoutesWithConnections(page, folderId);
+    await page.getByTestId("deployments-btn").click();
+    await page.waitForSelector('[data-testid="subtab-deployments"]');
 
-  // Open edit dialog
-  await page.getByTestId("deployment-row-dep-1").waitFor({ state: "visible" });
-  await page.getByTestId("actions-deployment-dep-1").click();
-  await page.getByRole("menuitem", { name: "Update" }).click();
-  await page.waitForSelector('[data-testid="stepper-modal-title"]');
+    // Open edit dialog
+    await page
+      .getByTestId("deployment-row-dep-1")
+      .waitFor({ state: "visible" });
+    await page.getByTestId("actions-deployment-dep-1").click();
+    await page.getByRole("menuitem", { name: "Update" }).click();
+    await page.waitForSelector('[data-testid="stepper-modal-title"]');
 
-  // Step 1 (Type) → Next
-  await expectDeploymentTypeStep(page);
-  await page.getByTestId("deployment-stepper-next").click();
+    // Step 1 (Type) → Next
+    await expectDeploymentTypeStep(page);
+    await page.getByTestId("deployment-stepper-next").click();
 
-  // Step 2 (Flows) — flow "f1" should already be attached
-  await expectFlowsStep(page);
-  await page.waitForSelector('[data-testid="flow-item-f1"]');
+    // Step 2 (Flows) — flow "f1" should already be attached
+    await expectFlowsStep(page);
+    await page.waitForSelector('[data-testid="flow-item-f1"]');
 
-  // Click the pre-attached flow and its version to open the connection panel
-  await page.getByTestId("flow-item-f1").click();
-  await page.waitForSelector('[data-testid="version-item-fv1"]');
-  await page.getByTestId("version-item-fv1-select").click();
+    // Click the pre-attached flow and its version to open the connection panel
+    await page.getByTestId("flow-item-f1").click();
+    await page.waitForSelector('[data-testid="version-item-fv1"]');
+    await page.getByTestId("version-item-fv1-select").click();
 
-  // Wait for connection panel to appear with available connections
-  await page.waitForSelector('[data-testid="connection-item-existing-app"]');
-  await page.waitForSelector('[data-testid="connection-item-new-app"]');
+    // Wait for connection panel to appear with available connections
+    await page.waitForSelector('[data-testid="connection-item-existing-app"]');
+    await page.waitForSelector('[data-testid="connection-item-new-app"]');
 
-  // The existing connection should already be checked; select the new one too
-  await page.getByTestId("connection-item-new-app").click();
+    // The existing connection should already be checked; select the new one too
+    await page.getByTestId("connection-item-new-app").click();
 
-  // Attach connections
-  await page.getByTestId("connection-attach").click();
+    // Attach connections
+    await page.getByTestId("connection-attach").click();
 
-  // Step 3 (Review) → click Next
-  await page.getByTestId("deployment-stepper-next").click();
+    // Step 3 (Review) → click Next
+    await page.getByTestId("deployment-stepper-next").click();
 
-  // Intercept the PATCH request and verify its body
-  const patchRequestPromise = page.waitForRequest(
-    (req) =>
-      req.url().includes("/api/v1/deployments/dep-1") &&
-      req.method() === "PATCH",
-  );
+    // Intercept the PATCH request and verify its body
+    const patchRequestPromise = page.waitForRequest(
+      (req) =>
+        req.url().includes("/api/v1/deployments/dep-1") &&
+        req.method() === "PATCH",
+    );
 
-  // Click Update
-  await page.getByTestId("deployment-stepper-next").click();
-  const patchRequest = await patchRequestPromise;
-  const body = patchRequest.postDataJSON();
+    // Click Update
+    await page.getByTestId("deployment-stepper-next").click();
+    const patchRequest = await patchRequestPromise;
+    const body = patchRequest.postDataJSON();
 
-  // Verify the PATCH body includes the new connection
-  const upsertFlows = body?.provider_data?.upsert_flows ?? [];
-  const flowEntry = upsertFlows.find(
-    (f: { flow_version_id: string }) => f.flow_version_id === "fv1",
-  );
-  expect(flowEntry).toBeDefined();
-  expect(flowEntry.add_app_ids).toContain("new-app");
-  // The existing connection should NOT appear in add_app_ids (it was already there)
-  expect(flowEntry.add_app_ids).not.toContain("existing-app");
-  // Nothing was removed
-  expect(flowEntry.remove_app_ids).toEqual([]);
-});
+    // Verify the PATCH body includes the new connection
+    const upsertFlows = body?.provider_data?.upsert_flows ?? [];
+    const flowEntry = upsertFlows.find(
+      (f: { flow_version_id: string }) => f.flow_version_id === "fv1",
+    );
+    expect(flowEntry).toBeDefined();
+    expect(flowEntry.add_app_ids).toContain("new-app");
+    // The existing connection should NOT appear in add_app_ids (it was already there)
+    expect(flowEntry.add_app_ids).not.toContain("existing-app");
+    // Nothing was removed
+    expect(flowEntry.remove_app_ids).toEqual([]);
+  },
+);
 
 // ---------------------------------------------------------------------------
 // Test: PATCH includes removed connections from a pre-existing flow
 // ---------------------------------------------------------------------------
-test("Edit mode includes removed connections in PATCH request", {
-  tag: ["@release", "@workspace", "@api"],
-}, async ({ page }) => {
-  await awaitBootstrapTest(page, { skipModal: true });
-  const folderId = await getDefaultProjectIdForTest(page);
+test(
+  "Edit mode includes removed connections in PATCH request",
+  {
+    tag: ["@release", "@workspace", "@api"],
+  },
+  async ({ page }) => {
+    await awaitBootstrapTest(page, { skipModal: true });
+    const folderId = await getDefaultProjectIdForTest(page);
 
-  await setupRoutesWithConnections(page, folderId);
-  await page.getByTestId("deployments-btn").click();
-  await page.waitForSelector('[data-testid="subtab-deployments"]');
+    await setupRoutesWithConnections(page, folderId);
+    await page.getByTestId("deployments-btn").click();
+    await page.waitForSelector('[data-testid="subtab-deployments"]');
 
-  // Open edit dialog
-  await page.getByTestId("deployment-row-dep-1").waitFor({ state: "visible" });
-  await page.getByTestId("actions-deployment-dep-1").click();
-  await page.getByRole("menuitem", { name: "Update" }).click();
-  await page.waitForSelector('[data-testid="stepper-modal-title"]');
+    // Open edit dialog
+    await page
+      .getByTestId("deployment-row-dep-1")
+      .waitFor({ state: "visible" });
+    await page.getByTestId("actions-deployment-dep-1").click();
+    await page.getByRole("menuitem", { name: "Update" }).click();
+    await page.waitForSelector('[data-testid="stepper-modal-title"]');
 
-  // Step 1 (Type) → Next
-  await expectDeploymentTypeStep(page);
-  await page.getByTestId("deployment-stepper-next").click();
+    // Step 1 (Type) → Next
+    await expectDeploymentTypeStep(page);
+    await page.getByTestId("deployment-stepper-next").click();
 
-  // Step 2 (Flows)
-  await expectFlowsStep(page);
-  await page.waitForSelector('[data-testid="flow-item-f1"]');
-  await page.getByTestId("flow-item-f1").click();
-  await page.waitForSelector('[data-testid="version-item-fv1"]');
-  await page.getByTestId("version-item-fv1-select").click();
+    // Step 2 (Flows)
+    await expectFlowsStep(page);
+    await page.waitForSelector('[data-testid="flow-item-f1"]');
+    await page.getByTestId("flow-item-f1").click();
+    await page.waitForSelector('[data-testid="version-item-fv1"]');
+    await page.getByTestId("version-item-fv1-select").click();
 
-  // Wait for connection panel
-  await page.waitForSelector('[data-testid="connection-item-existing-app"]');
+    // Wait for connection panel
+    await page.waitForSelector('[data-testid="connection-item-existing-app"]');
 
-  // Deselect the existing connection (uncheck it)
-  await page.getByTestId("connection-item-existing-app").click();
+    // Deselect the existing connection (uncheck it)
+    await page.getByTestId("connection-item-existing-app").click();
 
-  // Select only the new connection
-  await page.getByTestId("connection-item-new-app").click();
-  await page.getByTestId("connection-attach").click();
+    // Select only the new connection
+    await page.getByTestId("connection-item-new-app").click();
+    await page.getByTestId("connection-attach").click();
 
-  // Step 3 (Review) → click Next
-  await page.getByTestId("deployment-stepper-next").click();
+    // Step 3 (Review) → click Next
+    await page.getByTestId("deployment-stepper-next").click();
 
-  const patchRequestPromise = page.waitForRequest(
-    (req) =>
-      req.url().includes("/api/v1/deployments/dep-1") &&
-      req.method() === "PATCH",
-  );
+    const patchRequestPromise = page.waitForRequest(
+      (req) =>
+        req.url().includes("/api/v1/deployments/dep-1") &&
+        req.method() === "PATCH",
+    );
 
-  // Click Update
-  await page.getByTestId("deployment-stepper-next").click();
-  const patchRequest = await patchRequestPromise;
-  const body = patchRequest.postDataJSON();
+    // Click Update
+    await page.getByTestId("deployment-stepper-next").click();
+    const patchRequest = await patchRequestPromise;
+    const body = patchRequest.postDataJSON();
 
-  const upsertFlows = body?.provider_data?.upsert_flows ?? [];
-  const flowEntry = upsertFlows.find(
-    (f: { flow_version_id: string }) => f.flow_version_id === "fv1",
-  );
-  expect(flowEntry).toBeDefined();
-  expect(flowEntry.add_app_ids).toContain("new-app");
-  expect(flowEntry.remove_app_ids).toContain("existing-app");
-});
+    const upsertFlows = body?.provider_data?.upsert_flows ?? [];
+    const flowEntry = upsertFlows.find(
+      (f: { flow_version_id: string }) => f.flow_version_id === "fv1",
+    );
+    expect(flowEntry).toBeDefined();
+    expect(flowEntry.add_app_ids).toContain("new-app");
+    expect(flowEntry.remove_app_ids).toContain("existing-app");
+  },
+);

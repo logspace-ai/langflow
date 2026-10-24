@@ -2,173 +2,195 @@ import { expect, test } from "../../fixtures";
 import { TEXTS } from "../../utils/constants/texts";
 import { openBlankFlow } from "../../utils/flow/open-blank-flow";
 
-test("user should be able to edit tools", {
-  tag: ["@release", "@components"],
-}, async ({ page }) => {
-  await openBlankFlow(page);
+test(
+  "user should be able to edit tools",
+  {
+    tag: ["@release", "@components"],
+  },
+  async ({ page }) => {
+    await openBlankFlow(page);
 
-  await page.getByTestId("sidebar-search-input").click();
-  await page.getByTestId("sidebar-search-input").fill(TEXTS.searchUrl);
+    await page.getByTestId("sidebar-search-input").click();
+    await page.getByTestId("sidebar-search-input").fill(TEXTS.searchUrl);
 
-  await page.waitForSelector('[data-testid="data_sourceURL"]', {
-    timeout: 3000,
-  });
-
-  await page
-    .getByTestId("data_sourceURL")
-    .hover()
-    .then(async () => {
-      await page.getByTestId("add-component-button-url").click();
+    await page.waitForSelector('[data-testid="data_sourceURL"]', {
+      timeout: 3000,
     });
 
-  await page.waitForSelector('[data-testid="generic-node-title-arrangement"]', {
-    timeout: 3000,
-  });
+    await page
+      .getByTestId("data_sourceURL")
+      .hover()
+      .then(async () => {
+        await page.getByTestId("add-component-button-url").click();
+      });
 
-  await page.getByTestId("generic-node-title-arrangement").click();
+    await page.waitForSelector(
+      '[data-testid="generic-node-title-arrangement"]',
+      {
+        timeout: 3000,
+      },
+    );
 
-  await page.waitForTimeout(500);
+    await page.getByTestId("generic-node-title-arrangement").click();
 
-  await page.getByTestId("tool-mode-button").click();
+    await page.waitForTimeout(500);
 
-  await page.locator('[data-testid="icon-Hammer"]').nth(0).waitFor({
-    timeout: 3000,
-    state: "visible",
-  });
+    await page.getByTestId("tool-mode-button").click();
 
-  await page.waitForSelector("text=tools", { timeout: 30000 });
+    await page.locator('[data-testid="icon-Hammer"]').nth(0).waitFor({
+      timeout: 3000,
+      state: "visible",
+    });
 
-  await page.getByTestId("button_open_actions").click();
+    await page.waitForSelector("text=tools", { timeout: 30000 });
 
-  await page.waitForSelector("text=URL", { timeout: 30000 });
+    await page.getByTestId("button_open_actions").click();
 
-  const rowsCount = await page.getByRole("gridcell").count();
+    await page.waitForSelector("text=URL", { timeout: 30000 });
 
-  expect(rowsCount).toBeGreaterThan(2);
+    const rowsCount = await page.getByRole("gridcell").count();
 
-  // Scope to the enable ("name") column: the HITL approval_actions column also renders an
-  // eInput checkbox, so a global nth() index would land on it instead of the action toggle.
-  const enableCheckboxes = page.locator(
-    '[col-id="name"] input[data-ref="eInput"]',
-  );
+    expect(rowsCount).toBeGreaterThan(2);
 
-  expect(await enableCheckboxes.nth(0).isChecked()).toBe(true);
+    // Scope to the enable ("name") column: the HITL approval_actions column also renders an
+    // eInput checkbox, so a global nth() index would land on it instead of the action toggle.
+    const enableCheckboxes = page.locator(
+      '[col-id="name"] input[data-ref="eInput"]',
+    );
 
-  expect(await enableCheckboxes.nth(1).isChecked()).toBe(true);
+    expect(await enableCheckboxes.nth(0).isChecked()).toBe(true);
 
-  await enableCheckboxes.nth(0).click();
+    expect(await enableCheckboxes.nth(1).isChecked()).toBe(true);
 
-  await page.waitForTimeout(500);
+    await enableCheckboxes.nth(0).click();
 
-  expect(await enableCheckboxes.nth(1).isChecked()).toBe(false);
+    await page.waitForTimeout(500);
 
-  await enableCheckboxes.nth(0).click();
+    expect(await enableCheckboxes.nth(1).isChecked()).toBe(false);
 
-  await page.waitForTimeout(500);
+    await enableCheckboxes.nth(0).click();
 
-  await page.getByRole("gridcell").nth(0).click();
+    await page.waitForTimeout(500);
 
-  await page.waitForTimeout(500);
+    await page.getByRole("gridcell").nth(0).click();
 
-  expect(
-    await page.locator('[data-testid="sidebar_header_name"]').isHidden(),
-  ).toBe(true);
+    await page.waitForTimeout(500);
 
-  expect(
-    await page.locator('[data-testid="sidebar_header_description"]').isHidden(),
-  ).toBe(true);
+    expect(
+      await page.locator('[data-testid="sidebar_header_name"]').isHidden(),
+    ).toBe(true);
 
-  expect(
-    await page.locator('[data-testid="input_update_name"]').isVisible(),
-  ).toBe(true);
+    expect(
+      await page
+        .locator('[data-testid="sidebar_header_description"]')
+        .isHidden(),
+    ).toBe(true);
 
-  expect(
-    await page.locator('[data-testid="input_update_description"]').isVisible(),
-  ).toBe(true);
+    expect(
+      await page.locator('[data-testid="input_update_name"]').isVisible(),
+    ).toBe(true);
 
-  await page.locator('[data-testid="input_update_name"]').fill("test name");
+    expect(
+      await page
+        .locator('[data-testid="input_update_description"]')
+        .isVisible(),
+    ).toBe(true);
 
-  await page.waitForTimeout(500);
+    await page.locator('[data-testid="input_update_name"]').fill("test name");
 
-  await page
-    .locator('[data-testid="input_update_description"]')
-    .fill("test description");
+    await page.waitForTimeout(500);
 
-  await page.waitForTimeout(500);
+    await page
+      .locator('[data-testid="input_update_description"]')
+      .fill("test description");
 
-  await page.getByText(TEXTS.close).last().click();
+    await page.waitForTimeout(500);
 
-  await page.waitForTimeout(500);
+    await page.getByText(TEXTS.close).last().click();
 
-  expect(await page.getByTestId("tool_test_name").isVisible()).toBe(true);
+    await page.waitForTimeout(500);
 
-  await page.waitForSelector('[data-testid="generic-node-title-arrangement"]', {
-    timeout: 3000,
-  });
+    expect(await page.getByTestId("tool_test_name").isVisible()).toBe(true);
 
-  await page.waitForSelector('[data-testid="div-tools_tools_metadata"]', {
-    timeout: 3000,
-  });
+    await page.waitForSelector(
+      '[data-testid="generic-node-title-arrangement"]',
+      {
+        timeout: 3000,
+      },
+    );
 
-  expect(
-    await page.locator('[data-testid="div-tools_tools_metadata"]').isVisible(),
-  ).toBe(true);
+    await page.waitForSelector('[data-testid="div-tools_tools_metadata"]', {
+      timeout: 3000,
+    });
 
-  await page.getByTestId("button_open_actions").click();
+    expect(
+      await page
+        .locator('[data-testid="div-tools_tools_metadata"]')
+        .isVisible(),
+    ).toBe(true);
 
-  await page.waitForTimeout(500);
+    await page.getByTestId("button_open_actions").click();
 
-  expect(await enableCheckboxes.nth(1).isChecked()).toBe(true);
+    await page.waitForTimeout(500);
 
-  await page.waitForTimeout(500);
+    expect(await enableCheckboxes.nth(1).isChecked()).toBe(true);
 
-  await page.getByRole("gridcell").nth(0).click();
+    await page.waitForTimeout(500);
 
-  await page.waitForTimeout(500);
+    await page.getByRole("gridcell").nth(0).click();
 
-  expect(
-    await page.locator('[data-testid="sidebar_header_name"]').isHidden(),
-  ).toBe(true);
+    await page.waitForTimeout(500);
 
-  expect(
-    await page.locator('[data-testid="sidebar_header_description"]').isHidden(),
-  ).toBe(true);
+    expect(
+      await page.locator('[data-testid="sidebar_header_name"]').isHidden(),
+    ).toBe(true);
 
-  expect(
-    await page.locator('[data-testid="input_update_name"]').isVisible(),
-  ).toBe(true);
+    expect(
+      await page
+        .locator('[data-testid="sidebar_header_description"]')
+        .isHidden(),
+    ).toBe(true);
 
-  expect(
-    await page.locator('[data-testid="input_update_description"]').isVisible(),
-  ).toBe(true);
+    expect(
+      await page.locator('[data-testid="input_update_name"]').isVisible(),
+    ).toBe(true);
 
-  expect(
-    await page.locator('[data-testid="input_update_name"]').inputValue(),
-  ).toBe("test_name");
+    expect(
+      await page
+        .locator('[data-testid="input_update_description"]')
+        .isVisible(),
+    ).toBe(true);
 
-  expect(
-    await page.locator('[data-testid="input_update_description"]').inputValue(),
-  ).toBe("test description");
+    expect(
+      await page.locator('[data-testid="input_update_name"]').inputValue(),
+    ).toBe("test_name");
 
-  await page.locator('[data-testid="input_update_name"]').fill("");
+    expect(
+      await page
+        .locator('[data-testid="input_update_description"]')
+        .inputValue(),
+    ).toBe("test description");
 
-  await page.waitForTimeout(500);
+    await page.locator('[data-testid="input_update_name"]').fill("");
 
-  await page.locator('[data-testid="input_update_description"]').fill("");
+    await page.waitForTimeout(500);
 
-  await page.waitForTimeout(500);
+    await page.locator('[data-testid="input_update_description"]').fill("");
 
-  await page.getByTestId("btn_close_tools_modal").click();
+    await page.waitForTimeout(500);
 
-  await page.waitForTimeout(500);
+    await page.getByTestId("btn_close_tools_modal").click();
 
-  await expect(page.getByTestId("btn_close_tools_modal")).not.toBeInViewport({
-    timeout: 3000,
-  });
+    await page.waitForTimeout(500);
 
-  await page.getByText(TEXTS.close).last().click();
+    await expect(page.getByTestId("btn_close_tools_modal")).not.toBeInViewport({
+      timeout: 3000,
+    });
 
-  expect(
-    await page.locator('[data-testid="tool_fetch_content"]').isVisible(),
-  ).toBe(true);
-});
+    await page.getByText(TEXTS.close).last().click();
+
+    expect(
+      await page.locator('[data-testid="tool_fetch_content"]').isVisible(),
+    ).toBe(true);
+  },
+);

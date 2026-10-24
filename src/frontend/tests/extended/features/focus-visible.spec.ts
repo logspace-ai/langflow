@@ -99,32 +99,36 @@ async function expectFocusIndicator(
   ).toBe(true);
 }
 
-test("login page — every interactive element shows a visible focus indicator when tabbed to", {
-  tag: ["@release", "@workspace"],
-}, async ({ page }) => {
-  await page.goto("/login");
-  await page.waitForLoadState("networkidle");
+test(
+  "login page — every interactive element shows a visible focus indicator when tabbed to",
+  {
+    tag: ["@release", "@workspace"],
+  },
+  async ({ page }) => {
+    await page.goto("/login");
+    await page.waitForLoadState("networkidle");
 
-  // Tab through up to 20 focusable elements
-  const violations: string[] = [];
-  for (let i = 0; i < 20; i++) {
-    await page.keyboard.press("Tab");
-    const indicator = await getFocusIndicator(page);
-    if (!indicator) continue;
+    // Tab through up to 20 focusable elements
+    const violations: string[] = [];
+    for (let i = 0; i < 20; i++) {
+      await page.keyboard.press("Tab");
+      const indicator = await getFocusIndicator(page);
+      if (!indicator) continue;
 
-    // Skip elements that are intentionally not interactive (body, html)
-    if (["body", "html"].includes(indicator.tag)) continue;
+      // Skip elements that are intentionally not interactive (body, html)
+      if (["body", "html"].includes(indicator.tag)) continue;
 
-    if (!hasPerceivableFocusIndicator(indicator)) {
-      violations.push(formatIndicator(indicator));
+      if (!hasPerceivableFocusIndicator(indicator)) {
+        violations.push(formatIndicator(indicator));
+      }
     }
-  }
 
-  expect(
-    violations,
-    `Focus visible violations found:\n${violations.join("\n")}`,
-  ).toHaveLength(0);
-});
+    expect(
+      violations,
+      `Focus visible violations found:\n${violations.join("\n")}`,
+    ).toHaveLength(0);
+  },
+);
 
 test(
   "canvas controls — add note, zoom, and fit view buttons show focus ring when tabbed to",

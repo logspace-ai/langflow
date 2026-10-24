@@ -238,19 +238,23 @@ const THEMES: Array<{
 test.describe("auth page accessibility", () => {
   for (const theme of THEMES) {
     for (const state of AUTH_STATES) {
-      test(`scans ${state.label} (${theme.name})`, {
-        tag: ["@release", "@workspace"],
-      }, async ({ page }) => {
-        await theme.force(page);
-        await state.drive(page);
-        if (theme.name === "dark") {
-          await expect(page.locator("body")).toHaveClass(/dark/);
-        }
-        await page.runA11yScan(
-          `${state.label}${theme.suffix}`,
-          theme.scanOptions,
-        );
-      });
+      test(
+        `scans ${state.label} (${theme.name})`,
+        {
+          tag: ["@release", "@workspace"],
+        },
+        async ({ page }) => {
+          await theme.force(page);
+          await state.drive(page);
+          if (theme.name === "dark") {
+            await expect(page.locator("body")).toHaveClass(/dark/);
+          }
+          await page.runA11yScan(
+            `${state.label}${theme.suffix}`,
+            theme.scanOptions,
+          );
+        },
+      );
     }
   }
 });

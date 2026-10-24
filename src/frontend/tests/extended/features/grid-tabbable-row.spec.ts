@@ -141,57 +141,63 @@ test(
   },
 );
 
-test("messages grid stays keyboard-enterable and arrow-navigable after scrolling", {
-  tag: ["@release", "@workspace"],
-}, async ({ page }) => {
-  await page.route("**/api/v1/monitor/messages*", async (route: Route) => {
-    if (route.request().method() !== "GET") return route.continue();
-    await route.fulfill({ json: buildMessages(MOCK_MESSAGE_COUNT) });
-  });
+test(
+  "messages grid stays keyboard-enterable and arrow-navigable after scrolling",
+  {
+    tag: ["@release", "@workspace"],
+  },
+  async ({ page }) => {
+    await page.route("**/api/v1/monitor/messages*", async (route: Route) => {
+      if (route.request().method() !== "GET") return route.continue();
+      await route.fulfill({ json: buildMessages(MOCK_MESSAGE_COUNT) });
+    });
 
-  await page.goto("/settings/messages");
-  await page
-    .locator('.ag-center-cols-container [role="row"]')
-    .first()
-    .waitFor({ timeout: TIMEOUTS.standard });
+    await page.goto("/settings/messages");
+    await page
+      .locator('.ag-center-cols-container [role="row"]')
+      .first()
+      .waitFor({ timeout: TIMEOUTS.standard });
 
-  const { scrollHeight, clientHeight } = await getViewportMetrics(page);
-  await scrollGridTo(page, scrollHeight - clientHeight);
+    const { scrollHeight, clientHeight } = await getViewportMetrics(page);
+    await scrollGridTo(page, scrollHeight - clientHeight);
 
-  expect(
-    await getTabbableRowIndexes(page),
-    "grid lost its keyboard tab stop after scrolling to the bottom",
-  ).toHaveLength(1);
+    expect(
+      await getTabbableRowIndexes(page),
+      "grid lost its keyboard tab stop after scrolling to the bottom",
+    ).toHaveLength(1);
 
-  // Tab in from the page chrome. AG Grid's tab guards intercept the entry and
-  // hand focus to a header cell rather than to the roving row itself, so the
-  // assertion is "focus ends up inside the grid", not "focus lands on the row".
-  await page.evaluate(() => document.body.focus());
-  let enteredAfter = -1;
-  for (let press = 0; press < 40; press++) {
-    await page.keyboard.press("Tab");
-    const insideGrid = await page.evaluate(() =>
-      Boolean(document.activeElement?.closest(".ag-root-wrapper")),
-    );
-    if (insideGrid) {
-      enteredAfter = press;
-      break;
+    // Tab in from the page chrome. AG Grid's tab guards intercept the entry and
+    // hand focus to a header cell rather than to the roving row itself, so the
+    // assertion is "focus ends up inside the grid", not "focus lands on the row".
+    await page.evaluate(() => document.body.focus());
+    let enteredAfter = -1;
+    for (let press = 0; press < 40; press++) {
+      await page.keyboard.press("Tab");
+      const insideGrid = await page.evaluate(() =>
+        Boolean(document.activeElement?.closest(".ag-root-wrapper")),
+      );
+      if (insideGrid) {
+        enteredAfter = press;
+        break;
+      }
     }
-  }
-  expect(
-    enteredAfter,
-    "could not reach the grid with the Tab key after scrolling",
-  ).toBeGreaterThanOrEqual(0);
+    expect(
+      enteredAfter,
+      "could not reach the grid with the Tab key after scrolling",
+    ).toBeGreaterThanOrEqual(0);
 
-  // Arrow keys still drive AG Grid's own cell navigation once focus is inside.
-  await page.keyboard.press("ArrowDown");
-  await expect(page.locator(".ag-cell-focus")).toHaveCount(1);
-  const firstCell = await page.locator(".ag-cell-focus").getAttribute("col-id");
+    // Arrow keys still drive AG Grid's own cell navigation once focus is inside.
+    await page.keyboard.press("ArrowDown");
+    await expect(page.locator(".ag-cell-focus")).toHaveCount(1);
+    const firstCell = await page
+      .locator(".ag-cell-focus")
+      .getAttribute("col-id");
 
-  await page.keyboard.press("ArrowDown");
-  await expect(page.locator(".ag-cell-focus")).toHaveCount(1);
-  expect(
-    await page.locator(".ag-cell-focus").getAttribute("col-id"),
-    "ArrowDown should stay in the same column while moving down rows",
-  ).toBe(firstCell);
-});
+    await page.keyboard.press("ArrowDown");
+    await expect(page.locator(".ag-cell-focus")).toHaveCount(1);
+    expect(
+      await page.locator(".ag-cell-focus").getAttribute("col-id"),
+      "ArrowDown should stay in the same column while moving down rows",
+    ).toBe(firstCell);
+  },
+);

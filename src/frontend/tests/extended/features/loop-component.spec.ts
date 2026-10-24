@@ -7,236 +7,240 @@ import { openBlankFlow } from "../../utils/flow/open-blank-flow";
 import { uploadFile } from "../../utils/upload-file";
 import { zoomOut } from "../../utils/zoom-out";
 
-test("should process loop with update data correctly", {
-  tag: ["@release", "@workspace", "@components"],
-}, async ({ page }) => {
-  await openBlankFlow(page);
+test(
+  "should process loop with update data correctly",
+  {
+    tag: ["@release", "@workspace", "@components"],
+  },
+  async ({ page }) => {
+    await openBlankFlow(page);
 
-  await addLegacyComponents(page);
+    await addLegacyComponents(page);
 
-  await page.waitForSelector(
-    '[data-testid="sidebar-custom-component-button"]',
-    {
-      timeout: 3000,
-    },
-  );
+    await page.waitForSelector(
+      '[data-testid="sidebar-custom-component-button"]',
+      {
+        timeout: 3000,
+      },
+    );
 
-  // Add URL component
-  await page.getByTestId("sidebar-search-input").click();
-  await page.getByTestId("sidebar-search-input").fill(TEXTS.searchUrl);
-  await page.waitForSelector('[data-testid="data_sourceURL"]', {
-    timeout: 1000,
-  });
-
-  await zoomOut(page, 3);
-
-  await page
-    .getByTestId("data_sourceURL")
-    .dragTo(page.locator('//*[@id="react-flow-id"]'), {
-      targetPosition: { x: 50, y: 100 },
+    // Add URL component
+    await page.getByTestId("sidebar-search-input").click();
+    await page.getByTestId("sidebar-search-input").fill(TEXTS.searchUrl);
+    await page.waitForSelector('[data-testid="data_sourceURL"]', {
+      timeout: 1000,
     });
 
-  // Add Loop component
-  await page.getByTestId("sidebar-search-input").click();
-  await page.getByTestId("sidebar-search-input").fill("loop");
-  await page.waitForSelector('[data-testid="flow_controlsLoop"]', {
-    timeout: 1000,
-  });
+    await zoomOut(page, 3);
 
-  await page
-    .getByTestId("flow_controlsLoop")
-    .first()
-    .dragTo(page.locator('//*[@id="react-flow-id"]'), {
-      targetPosition: { x: 280, y: 100 },
+    await page
+      .getByTestId("data_sourceURL")
+      .dragTo(page.locator('//*[@id="react-flow-id"]'), {
+        targetPosition: { x: 50, y: 100 },
+      });
+
+    // Add Loop component
+    await page.getByTestId("sidebar-search-input").click();
+    await page.getByTestId("sidebar-search-input").fill("loop");
+    await page.waitForSelector('[data-testid="flow_controlsLoop"]', {
+      timeout: 1000,
     });
 
-  // Add Update Data component
-  await page.getByTestId("sidebar-search-input").click();
-  await page.getByTestId("sidebar-search-input").fill("data operations");
-  await page.waitForSelector('[data-testid="processingData Operations"]', {
-    timeout: 1000,
-  });
+    await page
+      .getByTestId("flow_controlsLoop")
+      .first()
+      .dragTo(page.locator('//*[@id="react-flow-id"]'), {
+        targetPosition: { x: 280, y: 100 },
+      });
 
-  await page
-    .getByTestId("processingData Operations")
-    .dragTo(page.locator('//*[@id="react-flow-id"]'), {
-      targetPosition: { x: 500, y: 100 },
+    // Add Update Data component
+    await page.getByTestId("sidebar-search-input").click();
+    await page.getByTestId("sidebar-search-input").fill("data operations");
+    await page.waitForSelector('[data-testid="processingData Operations"]', {
+      timeout: 1000,
     });
 
-  await adjustScreenView(page, { numberOfZoomOut: 3 });
+    await page
+      .getByTestId("processingData Operations")
+      .dragTo(page.locator('//*[@id="react-flow-id"]'), {
+        targetPosition: { x: 500, y: 100 },
+      });
 
-  // The unified Operations component defaults to the "Text" input type.
-  // Switch it to "JSON" now, while no neighboring node can overlap the
-  // tab, so its JSON input/output handles render for the wiring below.
-  await page.getByTestId("tab_1_json").first().click();
-  await page
-    .getByTestId("handle-operations-shownode-json-left")
-    .first()
-    .waitFor({ state: "visible", timeout: 30000 });
+    await adjustScreenView(page, { numberOfZoomOut: 3 });
 
-  // Add Parse Data component
-  await page.getByTestId("sidebar-search-input").click();
-  await page.getByTestId("sidebar-search-input").fill("Parser");
-  await page.waitForSelector('[data-testid="processingParser"]', {
-    timeout: 1000,
-  });
+    // The unified Operations component defaults to the "Text" input type.
+    // Switch it to "JSON" now, while no neighboring node can overlap the
+    // tab, so its JSON input/output handles render for the wiring below.
+    await page.getByTestId("tab_1_json").first().click();
+    await page
+      .getByTestId("handle-operations-shownode-json-left")
+      .first()
+      .waitFor({ state: "visible", timeout: 30000 });
 
-  await page
-    .getByTestId("processingParser")
-    .dragTo(page.locator('//*[@id="react-flow-id"]'), {
-      // Far from the viewport center so it cannot land on the Data
-      // Operations node that the preceding fit-view just centered.
-      targetPosition: { x: 950, y: 550 },
+    // Add Parse Data component
+    await page.getByTestId("sidebar-search-input").click();
+    await page.getByTestId("sidebar-search-input").fill("Parser");
+    await page.waitForSelector('[data-testid="processingParser"]', {
+      timeout: 1000,
     });
 
-  //This one is for testing the wrong loop message
+    await page
+      .getByTestId("processingParser")
+      .dragTo(page.locator('//*[@id="react-flow-id"]'), {
+        // Far from the viewport center so it cannot land on the Data
+        // Operations node that the preceding fit-view just centered.
+        targetPosition: { x: 950, y: 550 },
+      });
 
-  await page.getByTestId("sidebar-search-input").fill("Read File");
-  await page.waitForSelector('[data-testid="files_and_knowledgeRead File"]', {
-    timeout: 1000,
-  });
+    //This one is for testing the wrong loop message
 
-  await page
-    .getByTestId("files_and_knowledgeRead File")
-    .dragTo(page.locator('//*[@id="react-flow-id"]'), {
-      targetPosition: { x: 600, y: 400 },
+    await page.getByTestId("sidebar-search-input").fill("Read File");
+    await page.waitForSelector('[data-testid="files_and_knowledgeRead File"]', {
+      timeout: 1000,
     });
 
-  // Add Chat Output through the verified sidebar path so the wiring below
-  // cannot race a dropped drag event.
-  await addComponentFromSidebar(page, {
-    search: TEXTS.searchChatOutput,
-    testId: "input_outputChat Output",
-    position: { x: 200, y: 100 },
-  });
-  await expect(page.getByTestId("title-Chat Output")).toBeVisible();
+    await page
+      .getByTestId("files_and_knowledgeRead File")
+      .dragTo(page.locator('//*[@id="react-flow-id"]'), {
+        targetPosition: { x: 600, y: 400 },
+      });
 
-  await adjustScreenView(page, { numberOfZoomOut: 3 });
+    // Add Chat Output through the verified sidebar path so the wiring below
+    // cannot race a dropped drag event.
+    await addComponentFromSidebar(page, {
+      search: TEXTS.searchChatOutput,
+      testId: "input_outputChat Output",
+      position: { x: 200, y: 100 },
+    });
+    await expect(page.getByTestId("title-Chat Output")).toBeVisible();
 
-  // Loop Item -> Update Data
+    await adjustScreenView(page, { numberOfZoomOut: 3 });
 
-  await page
-    .getByTestId("handle-loopcomponent-shownode-item-right")
-    .first()
-    .click();
-  await page
-    .getByTestId("handle-operations-shownode-json-left")
-    .first()
-    .click();
+    // Loop Item -> Update Data
 
-  // URL -> Loop Data
-  await page
-    .getByTestId("handle-urlcomponent-shownode-extracted pages-right")
-    .first()
-    .click();
-  await page
-    .getByTestId("handle-loopcomponent-shownode-inputs-left")
-    .first()
-    .click();
+    await page
+      .getByTestId("handle-loopcomponent-shownode-item-right")
+      .first()
+      .click();
+    await page
+      .getByTestId("handle-operations-shownode-json-left")
+      .first()
+      .click();
 
-  // Loop Done -> Parse Data
-  await page
-    .getByTestId("handle-loopcomponent-shownode-done-right")
-    .first()
-    .click();
-  await page
-    .getByTestId("handle-parsercomponent-shownode-json or table-left")
-    .first()
-    .click();
+    // URL -> Loop Data
+    await page
+      .getByTestId("handle-urlcomponent-shownode-extracted pages-right")
+      .first()
+      .click();
+    await page
+      .getByTestId("handle-loopcomponent-shownode-inputs-left")
+      .first()
+      .click();
 
-  // Parse Data -> Chat Output
-  await page
-    .getByTestId("handle-parsercomponent-shownode-parsed text-right")
-    .first()
-    .click();
+    // Loop Done -> Parse Data
+    await page
+      .getByTestId("handle-loopcomponent-shownode-done-right")
+      .first()
+      .click();
+    await page
+      .getByTestId("handle-parsercomponent-shownode-json or table-left")
+      .first()
+      .click();
 
-  await page
-    .getByTestId("handle-chatoutput-noshownode-inputs-target")
-    .first()
-    .click();
+    // Parse Data -> Chat Output
+    await page
+      .getByTestId("handle-parsercomponent-shownode-parsed text-right")
+      .first()
+      .click();
 
-  await page.getByTestId("canvas_controls_dropdown").click();
+    await page
+      .getByTestId("handle-chatoutput-noshownode-inputs-target")
+      .first()
+      .click();
 
-  await page.getByTestId("canvas_controls_dropdown").click({ force: true });
+    await page.getByTestId("canvas_controls_dropdown").click();
 
-  await page.getByTestId("div-generic-node").nth(5).click();
+    await page.getByTestId("canvas_controls_dropdown").click({ force: true });
 
-  await page.waitForTimeout(1000);
+    await page.getByTestId("div-generic-node").nth(5).click();
 
-  await page.getByTestId("input-list-plus-btn_urls-0").click();
+    await page.waitForTimeout(1000);
 
-  // Configure components
-  await page
-    .getByTestId("inputlist_str_urls_0")
-    .fill("https://en.wikipedia.org/wiki/Artificial_intelligence");
-  await page
-    .getByTestId("inputlist_str_urls_1")
-    .fill("https://en.wikipedia.org/wiki/Human_intelligence");
+    await page.getByTestId("input-list-plus-btn_urls-0").click();
 
-  await page.getByTestId("title-Data Operations").click();
+    // Configure components
+    await page
+      .getByTestId("inputlist_str_urls_0")
+      .fill("https://en.wikipedia.org/wiki/Artificial_intelligence");
+    await page
+      .getByTestId("inputlist_str_urls_1")
+      .fill("https://en.wikipedia.org/wiki/Human_intelligence");
 
-  await page.waitForTimeout(1000);
+    await page.getByTestId("title-Data Operations").click();
 
-  // Click on the "Select Operation" text/button in the Data Operations component
-  await page.getByText("Select Operation").click();
+    await page.waitForTimeout(1000);
 
-  await page.getByTestId("list_item_append_or_update").click();
+    // Click on the "Select Operation" text/button in the Data Operations component
+    await page.getByText("Select Operation").click();
 
-  // Wait for keypair fields to render after update_build_config round-trip
-  await page.waitForSelector('[data-testid="keypair0"]', {
-    timeout: 30000,
-  });
+    await page.getByTestId("list_item_append_or_update").click();
 
-  await page.getByTestId("keypair0").fill("text");
-  await page.getByTestId("keypair100").fill("modified_value");
+    // Wait for keypair fields to render after update_build_config round-trip
+    await page.waitForSelector('[data-testid="keypair0"]', {
+      timeout: 30000,
+    });
 
-  await uploadFile(page, "test_file.txt");
+    await page.getByTestId("keypair0").fill("text");
+    await page.getByTestId("keypair100").fill("modified_value");
 
-  // Build and run, expect the wrong loop message
-  await page.getByTestId("button_run_read file").click();
+    await uploadFile(page, "test_file.txt");
 
-  await page.waitForSelector(`text=${TEXTS.toastBuiltSuccessfully}`, {
-    timeout: 30000,
-  });
+    // Build and run, expect the wrong loop message
+    await page.getByTestId("button_run_read file").click();
 
-  // Delete the second parse data used to test
+    await page.waitForSelector(`text=${TEXTS.toastBuiltSuccessfully}`, {
+      timeout: 30000,
+    });
 
-  await page.getByTestId("title-Read File").last().click();
+    // Delete the second parse data used to test
 
-  await page.getByTestId("more-options-modal").click();
+    await page.getByTestId("title-Read File").last().click();
 
-  await page.getByText(TEXTS.delete, { exact: true }).first().click();
+    await page.getByTestId("more-options-modal").click();
 
-  // Update Data -> Loop Item (left side)
+    await page.getByText(TEXTS.delete, { exact: true }).first().click();
 
-  await page
-    .getByTestId("handle-operations-shownode-json-right")
-    .first()
-    .click();
-  await page
-    .getByTestId("handle-loopcomponent-shownode-item-left")
-    .first()
-    .click();
+    // Update Data -> Loop Item (left side)
 
-  // Build and run
-  await page.getByTestId("title-Chat Output").click();
-  await page.keyboard.press(`ControlOrMeta+.`);
-  await page.getByTestId("button_run_chat output").click();
+    await page
+      .getByTestId("handle-operations-shownode-json-right")
+      .first()
+      .click();
+    await page
+      .getByTestId("handle-loopcomponent-shownode-item-left")
+      .first()
+      .click();
 
-  // Verify output
-  const chatOutputInspectionButton = page
-    .getByTestId("output-inspection-output message-chatoutput")
-    .first();
-  await expect(chatOutputInspectionButton).toBeVisible({ timeout: 30000 });
-  await expect(chatOutputInspectionButton).toBeEnabled({ timeout: 60000 });
-  await chatOutputInspectionButton.click();
+    // Build and run
+    await page.getByTestId("title-Chat Output").click();
+    await page.keyboard.press(`ControlOrMeta+.`);
+    await page.getByTestId("button_run_chat output").click();
 
-  const output = await page
-    .getByPlaceholder(TEXTS.placeholderEmpty)
-    .textContent();
-  expect(output).toContain("modified_value");
+    // Verify output
+    const chatOutputInspectionButton = page
+      .getByTestId("output-inspection-output message-chatoutput")
+      .first();
+    await expect(chatOutputInspectionButton).toBeVisible({ timeout: 30000 });
+    await expect(chatOutputInspectionButton).toBeEnabled({ timeout: 60000 });
+    await chatOutputInspectionButton.click();
 
-  // Count occurrences of modified_value in output
-  const matches = output?.match(/modified_value/g) || [];
-  expect(matches).toHaveLength(2);
-});
+    const output = await page
+      .getByPlaceholder(TEXTS.placeholderEmpty)
+      .textContent();
+    expect(output).toContain("modified_value");
+
+    // Count occurrences of modified_value in output
+    const matches = output?.match(/modified_value/g) || [];
+    expect(matches).toHaveLength(2);
+  },
+);

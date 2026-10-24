@@ -23,28 +23,34 @@ async function saveLockFromSettings(page: Page, locked: boolean) {
   });
 }
 
-test("should make the canvas editable right after unlocking a reloaded locked flow", {
-  tag: ["@release"],
-}, async ({ page }) => {
-  await openStarterProject(page, TEXTS.templateBasicPrompting);
-  const flowId = flowIdFrom(page);
+test(
+  "should make the canvas editable right after unlocking a reloaded locked flow",
+  {
+    tag: ["@release"],
+  },
+  async ({ page }) => {
+    await openStarterProject(page, TEXTS.templateBasicPrompting);
+    const flowId = flowIdFrom(page);
 
-  await saveLockFromSettings(page, true);
-  await page.reload();
-  await waitForFlowEditorReady(page);
+    await saveLockFromSettings(page, true);
+    await page.reload();
+    await waitForFlowEditorReady(page);
 
-  await saveLockFromSettings(page, false);
+    await saveLockFromSettings(page, false);
 
-  const nodeCount = await page.locator(".react-flow__node").count();
-  await page.getByTestId("sidebar-search-input").click();
-  await page.getByTestId("sidebar-search-input").fill("chat output");
-  await page
-    .getByTestId("input_outputChat Output")
-    .dragTo(page.locator('//*[@id="react-flow-id"]'), {
-      targetPosition: { x: 200, y: 200 },
-    });
+    const nodeCount = await page.locator(".react-flow__node").count();
+    await page.getByTestId("sidebar-search-input").click();
+    await page.getByTestId("sidebar-search-input").fill("chat output");
+    await page
+      .getByTestId("input_outputChat Output")
+      .dragTo(page.locator('//*[@id="react-flow-id"]'), {
+        targetPosition: { x: 200, y: 200 },
+      });
 
-  await expect(page.locator(".react-flow__node")).toHaveCount(nodeCount + 1);
-  const persisted = await page.request.get(`/api/v1/flows/${flowId}`);
-  expect(((await persisted.json()) as { locked?: boolean }).locked).toBe(false);
-});
+    await expect(page.locator(".react-flow__node")).toHaveCount(nodeCount + 1);
+    const persisted = await page.request.get(`/api/v1/flows/${flowId}`);
+    expect(((await persisted.json()) as { locked?: boolean }).locked).toBe(
+      false,
+    );
+  },
+);

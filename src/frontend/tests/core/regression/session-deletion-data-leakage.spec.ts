@@ -76,116 +76,124 @@ test.describe("Session Deletion Data Leakage Fix", () => {
     return messages.length;
   }
 
-  test("should prevent data leakage when default session is deleted and recreated", {
-    tag: ["@release"],
-  }, async ({ page }) => {
-    await seedLoopbackProvider(page);
-    await awaitBootstrapTest(page);
+  test(
+    "should prevent data leakage when default session is deleted and recreated",
+    {
+      tag: ["@release"],
+    },
+    async ({ page }) => {
+      await seedLoopbackProvider(page);
+      await awaitBootstrapTest(page);
 
-    // Load a starter project
-    await page.getByTestId("side_nav_options_all-templates").click();
-    await page
-      .getByRole("heading", { name: TEXTS.templateBasicPrompting })
-      .click();
-    await configureLoopbackOpenAI(page);
+      // Load a starter project
+      await page.getByTestId("side_nav_options_all-templates").click();
+      await page
+        .getByRole("heading", { name: TEXTS.templateBasicPrompting })
+        .click();
+      await configureLoopbackOpenAI(page);
 
-    // Open playground
-    await page
-      .getByRole("button", { name: TEXTS.playground, exact: true })
-      .click();
-    await page.waitForTimeout(2000);
+      // Open playground
+      await page
+        .getByRole("button", { name: TEXTS.playground, exact: true })
+        .click();
+      await page.waitForTimeout(2000);
 
-    // Send message in default session and wait for build to complete
-    const originalMessage = `Original message ${Date.now()}`;
-    await sendMessage(page, originalMessage);
-    await waitForBuildComplete(page, 1);
+      // Send message in default session and wait for build to complete
+      const originalMessage = `Original message ${Date.now()}`;
+      await sendMessage(page, originalMessage);
+      await waitForBuildComplete(page, 1);
 
-    // Verify message appears (auto-retry until visible)
-    await expect(
-      page.getByText(originalMessage, { exact: false }).first(),
-    ).toBeVisible({ timeout: 10000 });
+      // Verify message appears (auto-retry until visible)
+      await expect(
+        page.getByText(originalMessage, { exact: false }).first(),
+      ).toBeVisible({ timeout: 10000 });
 
-    // Delete the default session
-    await deleteSession(page, "Default Session");
+      // Delete the default session
+      await deleteSession(page, "Default Session");
 
-    // Wait for old messages to be cleared from the DOM
-    await page.waitForFunction(
-      () =>
-        document.querySelectorAll('[data-testid="div-chat-message"]').length ===
-        0,
-      { timeout: 10000 },
-    );
+      // Wait for old messages to be cleared from the DOM
+      await page.waitForFunction(
+        () =>
+          document.querySelectorAll('[data-testid="div-chat-message"]')
+            .length === 0,
+        { timeout: 10000 },
+      );
 
-    // Verify the old message does NOT appear after deletion
-    await expect(
-      page.getByText(originalMessage, { exact: false }).first(),
-    ).not.toBeVisible({ timeout: 10000 });
+      // Verify the old message does NOT appear after deletion
+      await expect(
+        page.getByText(originalMessage, { exact: false }).first(),
+      ).not.toBeVisible({ timeout: 10000 });
 
-    // Send a different message (this will be in a new/recreated default session)
-    const newMessage = `New message ${Date.now()}`;
-    await sendMessage(page, newMessage);
-    await waitForBuildComplete(page, 1);
+      // Send a different message (this will be in a new/recreated default session)
+      const newMessage = `New message ${Date.now()}`;
+      await sendMessage(page, newMessage);
+      await waitForBuildComplete(page, 1);
 
-    // Verify only the new message appears
-    await expect(
-      page.getByText(newMessage, { exact: false }).first(),
-    ).toBeVisible({ timeout: 10000 });
-    await expect(
-      page.getByText(originalMessage, { exact: false }).first(),
-    ).not.toBeVisible({ timeout: 10000 });
+      // Verify only the new message appears
+      await expect(
+        page.getByText(newMessage, { exact: false }).first(),
+      ).toBeVisible({ timeout: 10000 });
+      await expect(
+        page.getByText(originalMessage, { exact: false }).first(),
+      ).not.toBeVisible({ timeout: 10000 });
 
-    // Verify message count is correct (should only have the new message)
-    const messageCount = await getMessageCount(page);
-    expect(messageCount).toBe(1);
-  });
+      // Verify message count is correct (should only have the new message)
+      const messageCount = await getMessageCount(page);
+      expect(messageCount).toBe(1);
+    },
+  );
 
-  test("should clear LLM context when session is deleted", {
-    tag: ["@release"],
-  }, async ({ page }) => {
-    await seedLoopbackProvider(page);
-    await awaitBootstrapTest(page);
+  test(
+    "should clear LLM context when session is deleted",
+    {
+      tag: ["@release"],
+    },
+    async ({ page }) => {
+      await seedLoopbackProvider(page);
+      await awaitBootstrapTest(page);
 
-    // Load a starter project with memory
-    await page.getByTestId("side_nav_options_all-templates").click();
-    await page
-      .getByRole("heading", { name: TEXTS.templateBasicPrompting })
-      .click();
-    await configureLoopbackOpenAI(page);
+      // Load a starter project with memory
+      await page.getByTestId("side_nav_options_all-templates").click();
+      await page
+        .getByRole("heading", { name: TEXTS.templateBasicPrompting })
+        .click();
+      await configureLoopbackOpenAI(page);
 
-    // Open playground
-    await page
-      .getByRole("button", { name: TEXTS.playground, exact: true })
-      .click();
-    await page.waitForTimeout(2000);
+      // Open playground
+      await page
+        .getByRole("button", { name: TEXTS.playground, exact: true })
+        .click();
+      await page.waitForTimeout(2000);
 
-    // Send a message with specific information in default session
-    await sendMessage(page, "My name is Victor");
-    await waitForBuildComplete(page, 1);
+      // Send a message with specific information in default session
+      await sendMessage(page, "My name is Victor");
+      await waitForBuildComplete(page, 1);
 
-    // Delete the default session to clear context
-    await deleteSession(page, "Default Session");
+      // Delete the default session to clear context
+      await deleteSession(page, "Default Session");
 
-    // Wait for old messages to be cleared
-    await page.waitForFunction(
-      () =>
-        document.querySelectorAll('[data-testid="div-chat-message"]').length ===
-        0,
-      { timeout: 10000 },
-    );
+      // Wait for old messages to be cleared
+      await page.waitForFunction(
+        () =>
+          document.querySelectorAll('[data-testid="div-chat-message"]')
+            .length === 0,
+        { timeout: 10000 },
+      );
 
-    // Ask a question that would require the deleted context
-    await sendMessage(page, "What is my name?");
-    await waitForBuildComplete(page, 1);
+      // Ask a question that would require the deleted context
+      await sendMessage(page, "What is my name?");
+      await waitForBuildComplete(page, 1);
 
-    // Get the response text from the last bot message
-    const messages = await page
-      .locator('[data-testid="div-chat-message"]')
-      .all();
-    const lastMessage = messages[messages.length - 1];
-    const responseText = await lastMessage.textContent();
+      // Get the response text from the last bot message
+      const messages = await page
+        .locator('[data-testid="div-chat-message"]')
+        .all();
+      const lastMessage = messages[messages.length - 1];
+      const responseText = await lastMessage.textContent();
 
-    // Verify the AI does NOT remember "Victor" from the deleted session
-    // The response should indicate it doesn't know the name
-    expect(responseText?.toLowerCase()).not.toContain("victor");
-  });
+      // Verify the AI does NOT remember "Victor" from the deleted session
+      // The response should indicate it doesn't know the name
+      expect(responseText?.toLowerCase()).not.toContain("victor");
+    },
+  );
 });

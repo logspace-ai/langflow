@@ -58,31 +58,35 @@ async function mockAnthropicModelCatalog(page: Page) {
   );
 }
 
-test("user can select Anthropic before running Simple Agent through the loopback provider", {
-  tag: ["@release", "@components"],
-}, async ({ page }) => {
-  await seedLoopbackProvider(page);
-  await mockAnthropicModelCatalog(page);
-  await openStarterProject(page, "Simple Agent");
+test(
+  "user can select Anthropic before running Simple Agent through the loopback provider",
+  {
+    tag: ["@release", "@components"],
+  },
+  async ({ page }) => {
+    await seedLoopbackProvider(page);
+    await mockAnthropicModelCatalog(page);
+    await openStarterProject(page, "Simple Agent");
 
-  const modelDropdown = page.getByTestId(TID.modelModel);
-  await modelDropdown.click();
-  const anthropicOption = page.getByTestId(
-    `Anthropic-${ANTHROPIC_MODEL}-option`,
-  );
-  await anthropicOption.scrollIntoViewIfNeeded();
-  await anthropicOption.click();
-  await expect(modelDropdown).toContainText(ANTHROPIC_MODEL);
+    const modelDropdown = page.getByTestId(TID.modelModel);
+    await modelDropdown.click();
+    const anthropicOption = page.getByTestId(
+      `Anthropic-${ANTHROPIC_MODEL}-option`,
+    );
+    await anthropicOption.scrollIntoViewIfNeeded();
+    await anthropicOption.click();
+    await expect(modelDropdown).toContainText(ANTHROPIC_MODEL);
 
-  // The assertion above covers current ModelInput catalog selection. Runtime
-  // behavior is intentionally isolated from Anthropic credentials/network by
-  // switching the saved flow to the local OpenAI-compatible fixture below.
-  await configureLoopbackOpenAI(page);
+    // The assertion above covers current ModelInput catalog selection. Runtime
+    // behavior is intentionally isolated from Anthropic credentials/network by
+    // switching the saved flow to the local OpenAI-compatible fixture below.
+    await configureLoopbackOpenAI(page);
 
-  await page.getByTestId(TID.playgroundBtnFlowIo).click();
-  await sendPlaygroundMessage(page, "Describe deterministic CI in one line.");
+    await page.getByTestId(TID.playgroundBtnFlowIo).click();
+    await sendPlaygroundMessage(page, "Describe deterministic CI in one line.");
 
-  await expect(page.locator(".markdown.prose").last()).toContainText(/\S/, {
-    timeout: TIMEOUTS.buildComplete,
-  });
-});
+    await expect(page.locator(".markdown.prose").last()).toContainText(/\S/, {
+      timeout: TIMEOUTS.buildComplete,
+    });
+  },
+);

@@ -24,36 +24,40 @@ async function toggleNodeState(page: Page, action: "minimize" | "expand") {
   }
 }
 
-test("user must be able to minimize and expand a node how many times as they want", {
-  tag: ["@release", "@components"],
-}, async ({ page }) => {
-  await awaitBootstrapTest(page);
-  await page.getByTestId("blank-flow").click();
+test(
+  "user must be able to minimize and expand a node how many times as they want",
+  {
+    tag: ["@release", "@components"],
+  },
+  async ({ page }) => {
+    await awaitBootstrapTest(page);
+    await page.getByTestId("blank-flow").click();
 
-  await addLegacyComponents(page);
+    await addLegacyComponents(page);
 
-  await page.getByTestId("sidebar-search-input").click();
-  await page.getByTestId("sidebar-search-input").fill(TEXTS.searchTextOutput);
+    await page.getByTestId("sidebar-search-input").click();
+    await page.getByTestId("sidebar-search-input").fill(TEXTS.searchTextOutput);
 
-  await page
-    .getByTestId("input_outputText Output")
-    .hover()
-    .then(async () => {
-      await page.getByTestId("add-component-button-text-output").click();
+    await page
+      .getByTestId("input_outputText Output")
+      .hover()
+      .then(async () => {
+        await page.getByTestId("add-component-button-text-output").click();
+      });
+
+    await page.waitForSelector('[data-testid="title-Text Output"]', {
+      timeout: 3000,
     });
 
-  await page.waitForSelector('[data-testid="title-Text Output"]', {
-    timeout: 3000,
-  });
+    expect(await page.getByText("Toolset", { exact: true }).count()).toBe(0);
+    await page.getByTestId("title-Text Output").click();
+    expect(await page.getByTestId("hide-node-content").count()).toBe(0);
 
-  expect(await page.getByText("Toolset", { exact: true }).count()).toBe(0);
-  await page.getByTestId("title-Text Output").click();
-  expect(await page.getByTestId("hide-node-content").count()).toBe(0);
+    await adjustScreenView(page, { numberOfZoomOut: 3 });
 
-  await adjustScreenView(page, { numberOfZoomOut: 3 });
-
-  for (let i = 0; i < 5; i++) {
-    await toggleNodeState(page, "minimize");
-    await toggleNodeState(page, "expand");
-  }
-});
+    for (let i = 0; i < 5; i++) {
+      await toggleNodeState(page, "minimize");
+      await toggleNodeState(page, "expand");
+    }
+  },
+);

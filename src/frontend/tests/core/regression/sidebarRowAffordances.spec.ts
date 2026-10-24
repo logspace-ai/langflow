@@ -16,62 +16,66 @@ import { openBlankFlow } from "../../utils/flow/open-blank-flow";
  * are on screen at once: the short row proves the measurement is sound, the
  * long ones are the regression.
  */
-test("sidebar add button and drag handle stay inside the row for long component names", {
-  tag: ["@release", "@components", "@workspace"],
-}, async ({ page }) => {
-  await page.setViewportSize({ width: 1470, height: 704 });
-  await openBlankFlow(page);
+test(
+  "sidebar add button and drag handle stay inside the row for long component names",
+  {
+    tag: ["@release", "@components", "@workspace"],
+  },
+  async ({ page }) => {
+    await page.setViewportSize({ width: 1470, height: 704 });
+    await openBlankFlow(page);
 
-  await page.getByTestId("sidebar-search-input").fill("embed");
-  const longRow = page.getByTestId(
-    "amazon_amazon bedrock embeddings_draggable",
-  );
-  await expect(longRow).toBeVisible({ timeout: 30000 });
-
-  const overflowing = await page.evaluate(() => {
-    const rows = Array.from(
-      document.querySelectorAll<HTMLElement>('[data-testid$="_draggable"]'),
+    await page.getByTestId("sidebar-search-input").fill("embed");
+    const longRow = page.getByTestId(
+      "amazon_amazon bedrock embeddings_draggable",
     );
-    return rows
-      .map((row) => {
-        const rowBox = row.getBoundingClientRect();
-        const grip = row.querySelector('[data-testid="icon-GripVertical"]');
-        const gripBox = grip?.getBoundingClientRect();
-        return {
-          name:
-            row.querySelector('[data-testid="display-name"]')?.textContent ??
-            row.getAttribute("data-testid"),
-          // Positive means the handle sticks out past the row's right edge.
-          overflow: gripBox ? Math.round(gripBox.right - rowBox.right) : null,
-        };
-      })
-      .filter((r) => r.overflow === null || r.overflow > 0);
-  });
+    await expect(longRow).toBeVisible({ timeout: 30000 });
 
-  expect(
-    overflowing,
-    `rows whose drag handle renders outside the row: ${JSON.stringify(
+    const overflowing = await page.evaluate(() => {
+      const rows = Array.from(
+        document.querySelectorAll<HTMLElement>('[data-testid$="_draggable"]'),
+      );
+      return rows
+        .map((row) => {
+          const rowBox = row.getBoundingClientRect();
+          const grip = row.querySelector('[data-testid="icon-GripVertical"]');
+          const gripBox = grip?.getBoundingClientRect();
+          return {
+            name:
+              row.querySelector('[data-testid="display-name"]')?.textContent ??
+              row.getAttribute("data-testid"),
+            // Positive means the handle sticks out past the row's right edge.
+            overflow: gripBox ? Math.round(gripBox.right - rowBox.right) : null,
+          };
+        })
+        .filter((r) => r.overflow === null || r.overflow > 0);
+    });
+
+    expect(
       overflowing,
-    )}`,
-  ).toEqual([]);
+      `rows whose drag handle renders outside the row: ${JSON.stringify(
+        overflowing,
+      )}`,
+    ).toEqual([]);
 
-  // The `+` is hidden until hover by design; on an affected row it never
-  // appears at all because the whole action container is off the row.
-  await longRow.hover();
+    // The `+` is hidden until hover by design; on an affected row it never
+    // appears at all because the whole action container is off the row.
+    await longRow.hover();
 
-  const addButton = longRow.getByTestId(
-    "add-component-button-amazon-bedrock-embeddings",
-  );
-  await expect(addButton).toBeVisible();
+    const addButton = longRow.getByTestId(
+      "add-component-button-amazon-bedrock-embeddings",
+    );
+    await expect(addButton).toBeVisible();
 
-  const rowBox = await longRow.boundingBox();
-  const addBox = await addButton.boundingBox();
-  expect(rowBox).not.toBeNull();
-  expect(addBox).not.toBeNull();
-  expect(addBox!.x + addBox!.width).toBeLessThanOrEqual(
-    rowBox!.x + rowBox!.width,
-  );
+    const rowBox = await longRow.boundingBox();
+    const addBox = await addButton.boundingBox();
+    expect(rowBox).not.toBeNull();
+    expect(addBox).not.toBeNull();
+    expect(addBox!.x + addBox!.width).toBeLessThanOrEqual(
+      rowBox!.x + rowBox!.width,
+    );
 
-  await addButton.click();
-  await expect(page.locator(".react-flow__node")).toHaveCount(1);
-});
+    await addButton.click();
+    await expect(page.locator(".react-flow__node")).toHaveCount(1);
+  },
+);
